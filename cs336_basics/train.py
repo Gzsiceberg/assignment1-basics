@@ -9,9 +9,12 @@ import random
 from einops import rearrange, einsum
 from jaxtyping import Float, Int, jaxtyped
 from beartype import beartype as typechecker
+from cs336_basics.data_loader import get_batch
 from cs336_basics.model.linear import Linear
 from cs336_basics.model.common import get_device
-from cs336_basics.model.optimizer import SGD, AdaGrad
+from cs336_basics.model.loss import cross_entropy
+from cs336_basics.model.optimizer import SGD, AdaGrad, AdamW, calc_llm_memory, gradient_clipping
+from cs336_basics.model.transformer import TransformerLM
 
 is_main_file = __name__ == "__main__"
 
@@ -47,37 +50,103 @@ def load_checkpoint(
     return checkpoint["iteration"]
 
 
-class LinearModel(nn.Module):
-    def __init__(self, dim: int, num_layers: int = 1):
-        super().__init__()
-        self.layers = nn.ModuleList()
-        for _ in range(num_layers):
-            self.layers.append(Linear(dim, dim))
-        self.final_layer = Linear(dim, 1)
-
-    @jaxtyped(typechecker=typechecker)
-    def forward(self, x: Float[torch.Tensor, "batch dim"]) -> Float[torch.Tensor, "batch"]:
-        B, D = x.shape
-        assert (
-            D == self.layers[0].in_features
-        ), f"Input dimension {D} does not match model dimension {self.layers[0].in_features}"
-        for layer in self.layers:
-            x = layer(x)
-
-        x = self.final_layer(x)
-        assert x.shape == (B, 1), f"Output shape {x.shape} does not match expected shape {(B, 1)}"
-
-        x = x.squeeze(-1)
-        assert x.shape == (B,), f"Squeezed output shape {x.shape} does not match expected shape {(B,)}"
-        return x
-
-
 if is_main_file:
-    weights = torch.nn.Parameter(5 * torch.randn((10, 10)))
-    opt = SGD([weights], lr=1e3)
-    for t in range(100):
-        opt.zero_grad()  # Reset the gradients for all learnable parameters.
-        loss = (weights**2).mean()  # Compute a scalar loss value.
-        print(loss.cpu().item())
+    import argparse
+
+    parser = argparse.ArgumentParser()
+    parser.add_argument(
+        "--file",
+        type=str,
+        help="Path to save the checkpoint",
+        default="data/TinyStoriesV2-GPT4-train-bpe-merged.npy",
+    )
+    """
+    Optimizer parameters
+    """
+    parser.add_argument("--lr", type=float, required=False, help="Learning rate", default=1e-3)
+    parser.add_argument("--weight_decay", type=float, required=False, help="Weight decay", default=0.01)
+    parser.add_argument("--betas", type=float, nargs=2, required=False, help="Betas for AdamW", default=(0.9, 0.999))
+    """
+    Model parameters
+    vocab_size = 50_257 num_layers = 48
+    d_model = 1600  num_heads = 24
+    d_ff = 6400  max_seq_len = 1024
+    theta = 100000.0  ffn_type = "silu"
+    """
+    parser.add_argument("--vocab_size", type=int, required=False, help="Vocabulary size", default=10000)
+    parser.add_argument("--num_layers", type=int, required=False, help="Number of layers", default=2)
+    parser.add_argument("--d_model", type=int, required=False, help="Model dimension", default=128)
+    parser.add_argument("--num_heads", type=int, required=False, help="Number of attention heads", default=8)
+    parser.add_argument("--d_ff", type=int, required=False, help="Feedforward dimension", default=512)
+    parser.add_argument("--max_seq_len", type=int, required=False, help="Maximum sequence length", default=64)
+    parser.add_argument("--theta", type=float, required=False, help="RoPE parameter", default=100000.0)
+    parser.add_argument("--ffn_type", type=str, required=False, help="Feedforward network type", default="silu")
+    """
+    Gradient parameters
+    """
+    parser.add_argument("--grad_clip", type=float, required=False, help="Gradient clipping value", default=0)
+    parser.add_argument("--batch_size", type=int, required=False, help="Batch size", default=16)
+    parser.add_argument("--steps", type=int, required=False, help="Number of training steps", default=1000)
+    """
+    Checkpoint parameters
+    """
+    parser.add_argument("--checkpoint_interval", type=int, required=False, help="Checkpoint save interval", default=100)
+    parser.add_argument(
+        "--checkpoint_path", type=str, required=False, help="Path to save checkpoints", default="checkpoints/"
+    )
+    parser.add_argument("--profile", action="store_true", help="Enable profiling")
+    args = parser.parse_args()
+
+    calc_llm_memory(args.vocab_size, args.max_seq_len, 
+                    args.num_layers, args.d_model, args.num_heads, 
+                    args.batch_size, ffn_type=args.ffn_type)
+    if args.profile:
+        exit(0)
+
+    llm = TransformerLM(
+        vocab_size=args.vocab_size,
+        num_layers=args.num_layers,
+        d_model=args.d_model,
+        num_heads=args.num_heads,
+        d_ff=args.d_ff,
+        max_seq_len=args.max_seq_len,
+        theta=args.theta,
+        device=get_device(),
+        dtype=torch.float32,
+        ffn_type=args.ffn_type,
+    )
+    opt = AdamW(llm.parameters(), lr=args.lr, beta1=args.betas[0], beta2=args.betas[1], weight_decay=args.weight_decay)
+    if not os.path.exists(args.checkpoint_path):
+        os.makedirs(args.checkpoint_path)
+
+    data = np.memmap(args.file, mode="r", dtype=np.int16)
+    iteration = 0
+    if os.path.exists(os.path.join(args.checkpoint_path, "latest.pt")):
+        print(f"Loading checkpoint from {os.path.join(args.checkpoint_path, 'latest.pt')}")
+        iteration = load_checkpoint(os.path.join(args.checkpoint_path, "latest.pt"), llm, opt)
+        print(f"Resumed from iteration {iteration}")
+
+    device = get_device()
+    device_str = str(device)
+    from rich.progress import track
+
+    for t in track(range(iteration, args.steps)):
+        x, y = get_batch(data, args.batch_size, args.max_seq_len, device_str)
+        opt.zero_grad(set_to_none=True)  # Reset the gradients for all learnable parameters.
+        logits = llm(x)  # Forward pass to get logits.
+        loss = cross_entropy(logits, y)  # Compute the cross-entropy loss.
+        if args.grad_clip > 0:
+            gradient_clipping(llm.parameters(), args.grad_clip)
+        if t % 100 == 0 or t == args.steps - 1:
+            print(f"Step {t}: loss {loss.cpu().item()}")
         loss.backward()  # Run backward pass, which computes gradients.
-        opt.step()
+        opt.step()  # Update parameters based on computed gradients.
+
+        if (t + 1) % args.checkpoint_interval == 0 or t == args.steps - 1:
+            checkpoint_file = os.path.join(args.checkpoint_path, f"checkpoint_{t+1}.pt")
+            print(f"Saving checkpoint to {checkpoint_file}")
+            save_checkpoint(llm, opt, t + 1, checkpoint_file)
+
+            # Also save a latest checkpoint
+            latest_file = os.path.join(args.checkpoint_path, "latest.pt")
+            save_checkpoint(llm, opt, t + 1, latest_file)

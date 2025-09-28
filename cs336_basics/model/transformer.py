@@ -87,6 +87,7 @@ class TransformerLM(nn.Module):
         theta: float,
         device: torch.device | None = None,
         dtype: torch.dtype | None = None,
+        ffn_type: str = "swiglu",
     ) -> None:
         super().__init__()
         """
@@ -111,6 +112,7 @@ class TransformerLM(nn.Module):
                     rope=self.rope,
                     device=device,
                     dtype=dtype,
+                    ffn_type=ffn_type,
                 )
                 for _ in range(num_layers)
             ]
