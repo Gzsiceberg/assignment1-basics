@@ -16,6 +16,7 @@ def get_lr_cosine_schedule(step: int, a_max: float, a_min: float, t_warmup: int,
     a = a_min + 0.5 * (a_max - a_min) * (1 + math.cos(math.pi * (step - t_warmup) / (t_cooldown - t_warmup)))
     return a
 
+
 def gradient_clipping(parameters: Iterable[nn.Parameter], max_l2_norm: float) -> None:
     sum_norm_squared = 0.0
     for p in parameters:
