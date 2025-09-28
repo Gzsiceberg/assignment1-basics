@@ -1,0 +1,38 @@
+import math
+from typing import Iterable
+import torch
+from torch import nn, Tensor, softmax
+from einops import rearrange, einsum
+import numpy as np
+from jaxtyping import Float, Int, jaxtyped, Bool
+from beartype import beartype as typechecker
+from rich.progress import track
+
+
+@jaxtyped(typechecker=typechecker)
+def get_batch(
+    data: Int[np.ndarray, "num_samples"], batch_size: int, context_length: int, device: str
+) -> tuple[Int[torch.Tensor, "batch seq_len"], Int[torch.Tensor, "batch seq_len"]]:
+    shape = data.shape
+    num_samples = shape[0]
+    num_samples -= context_length
+
+    start_idx = np.random.randint(0, num_samples, batch_size)
+    assert start_idx.shape == (batch_size,), f"Start index shape {start_idx.shape} does not match expected shape {(batch_size,)}"
+
+    start_idx = rearrange(start_idx, "batch -> batch 1")
+    idx_range = np.arange(context_length)
+    idx_range = rearrange(idx_range, "seq_len -> 1 seq_len")
+    batch_indices = start_idx + idx_range
+
+    x = torch.tensor(data[batch_indices]).to(device=device, dtype=torch.int32)
+    y = torch.tensor(data[batch_indices + 1]).to(device=device, dtype=torch.int32)
+    assert x.shape == (
+        batch_size,
+        context_length,
+    ), f"Input shape {x.shape} does not match expected shape {(batch_size, context_length)}"
+    assert y.shape == (
+        batch_size,
+        context_length,
+    ), f"Label shape {y.shape} does not match expected shape {(batch_size, context_length)}"
+    return x, y
