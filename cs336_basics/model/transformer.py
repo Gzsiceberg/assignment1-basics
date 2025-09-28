@@ -31,7 +31,7 @@ class TransformerBlock(nn.Module):
     ) -> None:
         super().__init__()
         """
-        Parameters: 4 * d_model^2 + 3 * d_model * d_ff (SwiGLU) + 2 * d_model (RMSNorms)
+        Parameters: 4 * d_model^2 (MHA) + 3 * d_model * d_ff (SwiGLU) + 2 * d_model (RMSNorms)
         """
         d_k: int = d_model // num_heads
         if rope is not None:
@@ -138,14 +138,20 @@ class TransformerLM(nn.Module):
 
 def calc_num_params(vocab_size: int, num_layers: int, d_model: int, num_heads: int, d_ff: int) -> int:
     embedding_params = vocab_size * d_model
-    block_params = num_layers * (4 * d_model * d_model + 3 * d_model * d_ff + 2 * d_model)
+    mha_params = 4 * d_model * d_model * num_layers
+    ffn_params = 3 * d_model * d_ff * num_layers
+    rmsnorm_params = 2 * d_model * num_layers
+    block_params = mha_params + ffn_params + rmsnorm_params
     rmsnorm_params = d_model
     lmhead_params = d_model * vocab_size
     total_params = embedding_params + block_params + rmsnorm_params + lmhead_params
-    print(f"Embedding params: {embedding_params:,}")
-    print(f"Block params: {block_params:,}")
-    print(f"RMSNorm params: {rmsnorm_params:,}")
-    print(f"LM Head params: {lmhead_params:,}")
+    print(f"Embedding params: {embedding_params:,} Percent: {embedding_params/total_params:.2%}")
+    print(f"MHA params: {mha_params:,} Percent: {mha_params/total_params:.2%}")
+    print(f"FFN params: {ffn_params:,} Percent: {ffn_params/total_params:.2%}")
+    print(f"rmsnorm params: {rmsnorm_params:,} Percent: {rmsnorm_params/total_params:.2%}")
+    print(f"Block params: {block_params:,} Percent: {block_params/total_params:.2%}")
+    print(f"RMSNorm params: {rmsnorm_params:,} Percent: {rmsnorm_params/total_params:.2%}")
+    print(f"LM Head params: {lmhead_params:,} Percent: {lmhead_params/total_params:.2%}")
     print(f"Total params: {total_params:,} ({total_params * 4 / (1024**3):.2f} GB)")
     return total_params
 
@@ -156,10 +162,10 @@ def calc_flops(seq_len: int, batch_size: int, num_layers: int, d_model: int, d_f
     flops_block = atten_flops + ffn_flops
     flops_out = 2 * d_model * vocab_size * seq_len * batch_size
     total_flops = flops_block + flops_out
-    print(f"FLOPS for attention: {atten_flops / 1e12:.2f} TFLOPS {atten_flops:,} FLOPS")
-    print(f"FLOPS for FFN: {ffn_flops / 1e12:.2f} TFLOPS {ffn_flops:,} FLOPS")
-    print(f"FLOPS per Transformer block: {flops_block / 1e12:.2f} TFLOPS {flops_block:,} FLOPS")
-    print(f"FLOPS for output layer: {flops_out / 1e12:.2f} TFLOPS {flops_out:,} FLOPS")
+    print(f"FLOPS for attention: {atten_flops / 1e12:.2f} TFLOPS {atten_flops:,} FLOPS Percent: {atten_flops/total_flops:.2%}")
+    print(f"FLOPS for FFN: {ffn_flops / 1e12:.2f} TFLOPS {ffn_flops:,} FLOPS, Percent: {ffn_flops/total_flops:.2%}")
+    print(f"FLOPS per Transformer block: {flops_block / 1e12:.2f} TFLOPS {flops_block:,} FLOPS, Percent: {flops_block/total_flops:.2%}")
+    print(f"FLOPS for output layer: {flops_out / 1e12:.2f} TFLOPS {flops_out:,} FLOPS, Percent: {flops_out/total_flops:.2%}")
     print(f"Total FLOPS: {total_flops / 1e12:.2f} TFLOPS {total_flops:,} FLOPS")
     return total_flops
 
@@ -167,6 +173,7 @@ def calc_flops(seq_len: int, batch_size: int, num_layers: int, d_model: int, d_f
 if __name__ == "__main__":
     from rich import print
 
+    print("--- GPT-XL-like Model Configuration ---")
     vocab_size = 50_257
     num_layers = 48
     d_model = 1600
@@ -174,7 +181,6 @@ if __name__ == "__main__":
     d_ff = 6400
     max_seq_len = 1024
     theta = 100000.0
-
     # model = TransformerLM(
     #     vocab_size=vocab_size,
     #     num_layers=num_layers,
@@ -186,13 +192,58 @@ if __name__ == "__main__":
     # )
     # total_params = sum(p.numel() for p in model.parameters())
     # print(f"Model parameters: {total_params:,}")
-
-    print("--- Estimating Parameters and FLOPS ---")
+    print("--- Estimating Parameters ---")
     estimate_params = calc_num_params(vocab_size, num_layers, d_model, num_heads, d_ff)
-    memory_gb = estimate_params * 4 / (1024**3)
 
     print("\n--- Estimating FLOPS ---")
     flops = calc_flops(
         seq_len=max_seq_len, batch_size=1, num_layers=num_layers, d_model=d_model, d_ff=d_ff, vocab_size=vocab_size
     )
-    tflops = flops / 1e12
+    print("-" * 80)
+
+    print("--- GPT-2 small Model Configuration ---")
+    num_layers = 12
+    d_model = 768
+    num_heads = 12
+    print("--- Estimating Parameters ---")
+    estimate_params = calc_num_params(vocab_size, num_layers, d_model, num_heads, d_ff)
+
+    print("\n--- Estimating FLOPS ---")
+    flops = calc_flops(
+        seq_len=max_seq_len, batch_size=1, num_layers=num_layers, d_model=d_model, d_ff=d_ff, vocab_size=vocab_size
+    )
+    print("-" * 80)
+
+    print("--- GPT-2 medium Model Configuration ---")
+    num_layers = 24
+    d_model = 1024
+    num_heads = 16
+    print("--- Estimating Parameters ---")
+    estimate_params = calc_num_params(vocab_size, num_layers, d_model, num_heads, d_ff)
+
+    print("\n--- Estimating FLOPS ---")
+    flops = calc_flops(
+        seq_len=max_seq_len, batch_size=1, num_layers=num_layers, d_model=d_model, d_ff=d_ff, vocab_size=vocab_size
+    )
+    print("-" * 80)
+
+    print("--- GPT-2 large Model Configuration ---")
+    num_layers = 36
+    d_model = 1280
+    num_heads = 20
+    print("--- Estimating Parameters ---")
+    estimate_params = calc_num_params(vocab_size, num_layers, d_model, num_heads, d_ff)
+
+    print("\n--- Estimating FLOPS ---")
+    flops = calc_flops(
+        seq_len=max_seq_len, batch_size=1, num_layers=num_layers, d_model=d_model, d_ff=d_ff, vocab_size=vocab_size
+    )
+    print("-" * 80)
+
+
+    max_seq_len = 16_384
+    print("--- Estimating FLOPS for 16K context ---")
+    flops = calc_flops(
+        seq_len=max_seq_len, batch_size=1, num_layers=num_layers, d_model=d_model, d_ff=d_ff, vocab_size=vocab_size
+    )
+    print("-" * 80)

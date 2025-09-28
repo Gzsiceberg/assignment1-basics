@@ -60,6 +60,9 @@ class MultiHeadAttention(nn.Module):
         dtype: torch.dtype | None = None,
     ) -> None:
         super().__init__()
+        """
+        Parameters: 4 * d_model^2 (Linear layers)
+        """
         d_k = d_v = d_model // num_heads
         self.rope = rope
         self.wq = Linear(d_model, num_heads * d_k, device=device, dtype=dtype)
