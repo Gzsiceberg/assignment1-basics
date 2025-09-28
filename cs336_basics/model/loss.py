@@ -7,11 +7,10 @@ from beartype import beartype as typechecker
 
 
 @jaxtyped(typechecker=typechecker)
-def log_softmax(x: Float[torch.Tensor, "batch num_classes"], dim: int = -1) -> Float[torch.Tensor, "batch num_classes"]:
+def log_softmax(x: Float[torch.Tensor, "... num_classes"], dim: int = -1) -> Float[torch.Tensor, "... num_classes"]:
     """
-    x: (batch, num_classes)
-    FLOPS: batch * num_classes
-    Output: (batch, num_classes)
+    x: (..., num_classes)
+    Output: (..., num_classes)
     """
     x_max = x.max(dim=dim, keepdim=True).values
     x = x - x_max
@@ -22,18 +21,16 @@ def log_softmax(x: Float[torch.Tensor, "batch num_classes"], dim: int = -1) -> F
 
 @jaxtyped(typechecker=typechecker)
 def cross_entropy(
-    logits: Float[torch.Tensor, "batch num_classes"],
-    targets: Int[torch.Tensor, "batch"],
+    logits: Float[torch.Tensor, "... num_classes"],
+    targets: Int[torch.Tensor, "..."],
 ) -> Float[torch.Tensor, ""]:
     """
-    logits: (batch, num_classes)
-    targets: (batch,) with values in [0, num_classes-1]
-    FLOPS: batch * num_classes
+    logits: (..., num_classes)
+    targets: (...,) with values in [0, num_classes-1]
     Output: scalar loss
     """
-    B = logits.shape[0]
     log_probs = log_softmax(logits, dim=-1)
-    loss = -log_probs[torch.arange(B), targets].mean()
+    loss = -log_probs[..., targets].mean()
     return loss
 
 
