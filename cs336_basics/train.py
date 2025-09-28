@@ -90,16 +90,24 @@ if is_main_file:
     """
     Checkpoint parameters
     """
-    parser.add_argument("--checkpoint_interval", type=int, required=False, help="Checkpoint save interval", default=100)
+    parser.add_argument(
+        "--checkpoint_interval", type=float, required=False, help="Checkpoint save interval percent", default=0.05
+    )
     parser.add_argument(
         "--checkpoint_path", type=str, required=False, help="Path to save checkpoints", default="checkpoints/"
     )
     parser.add_argument("--profile", action="store_true", help="Enable profiling")
     args = parser.parse_args()
 
-    calc_llm_memory(args.vocab_size, args.max_seq_len, 
-                    args.num_layers, args.d_model, args.num_heads, 
-                    args.batch_size, ffn_type=args.ffn_type)
+    calc_llm_memory(
+        args.vocab_size,
+        args.max_seq_len,
+        args.num_layers,
+        args.d_model,
+        args.num_heads,
+        args.batch_size,
+        ffn_type=args.ffn_type,
+    )
     if args.profile:
         exit(0)
 
@@ -130,6 +138,11 @@ if is_main_file:
     device_str = str(device)
     from rich.progress import track
 
+    checkpoint_interval = max(1, int(args.steps * args.checkpoint_interval))
+    checkpoint_step = checkpoint_interval
+    while checkpoint_step <= iteration:
+        checkpoint_step += checkpoint_interval
+
     for t in track(range(iteration, args.steps)):
         x, y = get_batch(data, args.batch_size, args.max_seq_len, device_str)
         opt.zero_grad(set_to_none=True)  # Reset the gradients for all learnable parameters.
@@ -142,7 +155,7 @@ if is_main_file:
         loss.backward()  # Run backward pass, which computes gradients.
         opt.step()  # Update parameters based on computed gradients.
 
-        if (t + 1) % args.checkpoint_interval == 0 or t == args.steps - 1:
+        if t + 1 == checkpoint_step or t == args.steps - 1:
             checkpoint_file = os.path.join(args.checkpoint_path, f"checkpoint_{t+1}.pt")
             print(f"Saving checkpoint to {checkpoint_file}")
             save_checkpoint(llm, opt, t + 1, checkpoint_file)
@@ -150,3 +163,4 @@ if is_main_file:
             # Also save a latest checkpoint
             latest_file = os.path.join(args.checkpoint_path, "latest.pt")
             save_checkpoint(llm, opt, t + 1, latest_file)
+            checkpoint_step += checkpoint_interval
