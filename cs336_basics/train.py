@@ -1,5 +1,7 @@
+import os
 from types import NoneType
 from typing import Callable, Iterable, Optional, overload
+import typing
 import torch
 from torch import nn
 import numpy as np
@@ -20,6 +22,29 @@ torch.manual_seed(seed)
 np.random.seed(seed)
 # Python
 random.seed(seed)
+
+
+def save_checkpoint(
+    model: nn.Module,
+    optimizer: torch.optim.Optimizer,
+    iteration: int,
+    out: str | os.PathLike | typing.BinaryIO | typing.IO[bytes],
+) -> None:
+    checkpoint = {
+        "model_state_dict": model.state_dict(),
+        "optimizer_state_dict": optimizer.state_dict(),
+        "iteration": iteration,
+    }
+    torch.save(checkpoint, out)
+
+
+def load_checkpoint(
+    src: str | os.PathLike | typing.BinaryIO | typing.IO[bytes], model: nn.Module, optimizer: torch.optim.Optimizer
+) -> int:
+    checkpoint = torch.load(src)
+    model.load_state_dict(checkpoint["model_state_dict"])
+    optimizer.load_state_dict(checkpoint["optimizer_state_dict"])
+    return checkpoint["iteration"]
 
 
 class LinearModel(nn.Module):
@@ -51,8 +76,8 @@ if is_main_file:
     weights = torch.nn.Parameter(5 * torch.randn((10, 10)))
     opt = SGD([weights], lr=1e3)
     for t in range(100):
-        opt.zero_grad() # Reset the gradients for all learnable parameters.
-        loss = (weights**2).mean() # Compute a scalar loss value.
+        opt.zero_grad()  # Reset the gradients for all learnable parameters.
+        loss = (weights**2).mean()  # Compute a scalar loss value.
         print(loss.cpu().item())
-        loss.backward() # Run backward pass, which computes gradients.
-        opt.step() 
+        loss.backward()  # Run backward pass, which computes gradients.
+        opt.step()
