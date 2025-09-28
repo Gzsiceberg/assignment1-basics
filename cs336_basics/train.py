@@ -136,31 +136,43 @@ if is_main_file:
 
     device = get_device()
     device_str = str(device)
-    from rich.progress import track
+    from rich.progress import Progress, TaskID
 
     checkpoint_interval = max(1, int(args.steps * args.checkpoint_interval))
     checkpoint_step = checkpoint_interval
     while checkpoint_step <= iteration:
         checkpoint_step += checkpoint_interval
 
-    for t in track(range(iteration, args.steps)):
-        x, y = get_batch(data, args.batch_size, args.max_seq_len, device_str)
-        opt.zero_grad(set_to_none=True)  # Reset the gradients for all learnable parameters.
-        logits = llm(x)  # Forward pass to get logits.
-        loss = cross_entropy(logits, y)  # Compute the cross-entropy loss.
-        if args.grad_clip > 0:
-            gradient_clipping(llm.parameters(), args.grad_clip)
-        if t % 100 == 0 or t == args.steps - 1:
-            print(f"Step {t}: loss {loss.cpu().item()}")
-        loss.backward()  # Run backward pass, which computes gradients.
-        opt.step()  # Update parameters based on computed gradients.
+    last_batch_loss = 0
+    
+    with Progress() as progress:
+        task = progress.add_task(f"[green]Training loss {last_batch_loss:.4f}", total=args.steps - iteration)
+        
+        for t in range(iteration, args.steps):
+            x, y = get_batch(data, args.batch_size, args.max_seq_len, device_str)
+            opt.zero_grad(set_to_none=True)  # Reset the gradients for all learnable parameters.
+            logits = llm(x)  # Forward pass to get logits.
+            loss = cross_entropy(logits, y)  # Compute the cross-entropy loss.
+            if args.grad_clip > 0:
+                gradient_clipping(llm.parameters(), args.grad_clip)
+            
+            current_loss = loss.cpu().item()
+            if t % 100 == 0 or t == args.steps - 1:
+                last_batch_loss = current_loss
+                print(f"Step {t}: loss {last_batch_loss:.4f}")
+            
+            # Update progress bar description with current loss
+            progress.update(task, description=f"[green]Training loss {current_loss:.4f}", advance=1)
+            
+            loss.backward()  # Run backward pass, which computes gradients.
+            opt.step()  # Update parameters based on computed gradients.
 
-        if t + 1 == checkpoint_step or t == args.steps - 1:
-            checkpoint_file = os.path.join(args.checkpoint_path, f"checkpoint_{t+1}.pt")
-            print(f"Saving checkpoint to {checkpoint_file}")
-            save_checkpoint(llm, opt, t + 1, checkpoint_file)
+            if t + 1 == checkpoint_step or t == args.steps - 1:
+                checkpoint_file = os.path.join(args.checkpoint_path, f"checkpoint_{t+1}.pt")
+                print(f"Saving checkpoint to {checkpoint_file}")
+                save_checkpoint(llm, opt, t + 1, checkpoint_file)
 
-            # Also save a latest checkpoint
-            latest_file = os.path.join(args.checkpoint_path, "latest.pt")
-            save_checkpoint(llm, opt, t + 1, latest_file)
-            checkpoint_step += checkpoint_interval
+                # Also save a latest checkpoint
+                latest_file = os.path.join(args.checkpoint_path, "latest.pt")
+                save_checkpoint(llm, opt, t + 1, latest_file)
+                checkpoint_step += checkpoint_interval
