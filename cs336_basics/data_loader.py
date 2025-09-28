@@ -11,13 +11,21 @@ from rich.progress import track
 
 @jaxtyped(typechecker=typechecker)
 def get_batch(
-    data: Int[np.ndarray, "num_samples"], batch_size: int, context_length: int, device: str
+    data: Int[np.ndarray, "num_samples"], batch_size: int, context_length: int, device: str,
+    all_random: bool = True,
 ) -> tuple[Int[torch.Tensor, "batch seq_len"], Int[torch.Tensor, "batch seq_len"]]:
     shape = data.shape
     num_samples = shape[0]
     num_samples -= context_length
 
-    start_idx = np.random.randint(0, num_samples, batch_size)
+    if all_random:
+        start_idx = np.random.randint(0, num_samples, batch_size)
+    else:
+        if num_samples - batch_size <= 0:
+            raise ValueError("Not enough samples to create a batch with the given context length.")
+        start = np.random.randint(0, num_samples - batch_size)
+        start_idx = np.arange(start, start + batch_size)
+
     assert start_idx.shape == (batch_size,), f"Start index shape {start_idx.shape} does not match expected shape {(batch_size,)}"
 
     start_idx = rearrange(start_idx, "batch -> batch 1")
