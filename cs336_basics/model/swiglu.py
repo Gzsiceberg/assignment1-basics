@@ -15,6 +15,13 @@ class SwiGLU(nn.Module):
 
     def __init__(self, dim: int, dim_ff: int, device: torch.device | None = None, dtype: torch.dtype | None = None):
         super().__init__()
+        """
+        Parameters: 
+            - fc1: (dim_ff, dim)
+            - fc2: (dim, dim_ff)
+            - fc3: (dim_ff, dim)
+            - Total Parameters: 3 * dim * dim_ff
+        """
         self.dim = dim
         if dim_ff > 0:
             self.dim_ff = dim_ff

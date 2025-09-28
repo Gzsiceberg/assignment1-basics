@@ -30,6 +30,9 @@ class TransformerBlock(nn.Module):
         dtype: torch.dtype | None = None,
     ) -> None:
         super().__init__()
+        """
+        Parameters: 4 * d_model^2 + 3 * d_model * d_ff (SwiGLU) + 2 * d_model (RMSNorms)
+        """
         d_k: int = d_model // num_heads
         if rope is not None:
             assert rope.d_k == d_k, f"RoPE d_k {rope.d_k} must match model d_model/num_heads {d_k}"
@@ -80,8 +83,16 @@ class TransformerLM(nn.Module):
         dtype: torch.dtype | None = None,
     ) -> None:
         super().__init__()
+        """
+        Parameters: 
+            - Embedding: (vocab_size, d_model)
+            - transformer_blocks: num_layers * (4 * d_model^2 + 3 * d_model * d_ff + 2 * d_model)
+            - rms_norm: d_model
+            - lm_head: (d_model, vocab_size)
+            - Total Parameters: Embedding + transformer_blocks + rms_norm + lm_head
+        """
         d_k: int = d_model // num_heads
-        self.rope = RoPE(theta=theta, d_k=d_model // num_heads, max_seq_len=max_seq_len, device=device)
+        self.rope = RoPE(theta=theta, d_k=d_k, max_seq_len=max_seq_len, device=device)
         self.token_embedding = Embedding(vocab_size, d_model, device=device, dtype=dtype)
         self.layers = nn.ModuleList(
             [
@@ -100,7 +111,7 @@ class TransformerLM(nn.Module):
         )
         self.rms_norm = RMSNorm(d_model, device=device, dtype=dtype)
         self.lm_head = Linear(d_model, vocab_size, device=device, dtype=dtype)
-    
+
     @jaxtyped(typechecker=typechecker)
     def forward(
         self,
@@ -114,12 +125,74 @@ class TransformerLM(nn.Module):
         FLOPS_OUT: 2 * d_model * vocab_size * seq_len * ... (batch size and other dimensions)
         Total FLOPS: FLOPS_BLOCK + FLOPS_OUT
         """
-        x = self.token_embedding(token_ids) 
+        x = self.token_embedding(token_ids)
         for layer in self.layers:
             x = layer(x, token_positions=token_positions)
         x = self.rms_norm(x)
         logits = self.lm_head(x)
         return logits
-    
+
     def extra_repr(self) -> str:
         return f"token_embedding={self.token_embedding}, layers={self.layers}, rms_norm={self.rms_norm}, output_linear={self.lm_head}, softmax={self.softmax}"
+
+
+def calc_num_params(vocab_size: int, num_layers: int, d_model: int, num_heads: int, d_ff: int) -> int:
+    embedding_params = vocab_size * d_model
+    block_params = num_layers * (4 * d_model * d_model + 3 * d_model * d_ff + 2 * d_model)
+    rmsnorm_params = d_model
+    lmhead_params = d_model * vocab_size
+    total_params = embedding_params + block_params + rmsnorm_params + lmhead_params
+    print(f"Embedding params: {embedding_params:,}")
+    print(f"Block params: {block_params:,}")
+    print(f"RMSNorm params: {rmsnorm_params:,}")
+    print(f"LM Head params: {lmhead_params:,}")
+    print(f"Total params: {total_params:,} ({total_params * 4 / (1024**3):.2f} GB)")
+    return total_params
+
+
+def calc_flops(seq_len: int, batch_size: int, num_layers: int, d_model: int, d_ff: int, vocab_size: int) -> int:
+    atten_flops = num_layers * (4 * seq_len * seq_len * d_model + 8 * d_model * d_model * seq_len) * batch_size
+    ffn_flops = num_layers * (6 * d_model * d_ff * seq_len) * batch_size
+    flops_block = atten_flops + ffn_flops
+    flops_out = 2 * d_model * vocab_size * seq_len * batch_size
+    total_flops = flops_block + flops_out
+    print(f"FLOPS for attention: {atten_flops / 1e12:.2f} TFLOPS {atten_flops:,} FLOPS")
+    print(f"FLOPS for FFN: {ffn_flops / 1e12:.2f} TFLOPS {ffn_flops:,} FLOPS")
+    print(f"FLOPS per Transformer block: {flops_block / 1e12:.2f} TFLOPS {flops_block:,} FLOPS")
+    print(f"FLOPS for output layer: {flops_out / 1e12:.2f} TFLOPS {flops_out:,} FLOPS")
+    print(f"Total FLOPS: {total_flops / 1e12:.2f} TFLOPS {total_flops:,} FLOPS")
+    return total_flops
+
+
+if __name__ == "__main__":
+    from rich import print
+
+    vocab_size = 50_257
+    num_layers = 48
+    d_model = 1600
+    num_heads = 24
+    d_ff = 6400
+    max_seq_len = 1024
+    theta = 100000.0
+
+    # model = TransformerLM(
+    #     vocab_size=vocab_size,
+    #     num_layers=num_layers,
+    #     d_model=d_model,
+    #     num_heads=num_heads,
+    #     d_ff=d_ff,
+    #     max_seq_len=max_seq_len,
+    #     theta=theta,
+    # )
+    # total_params = sum(p.numel() for p in model.parameters())
+    # print(f"Model parameters: {total_params:,}")
+
+    print("--- Estimating Parameters and FLOPS ---")
+    estimate_params = calc_num_params(vocab_size, num_layers, d_model, num_heads, d_ff)
+    memory_gb = estimate_params * 4 / (1024**3)
+
+    print("\n--- Estimating FLOPS ---")
+    flops = calc_flops(
+        seq_len=max_seq_len, batch_size=1, num_layers=num_layers, d_model=d_model, d_ff=d_ff, vocab_size=vocab_size
+    )
+    tflops = flops / 1e12

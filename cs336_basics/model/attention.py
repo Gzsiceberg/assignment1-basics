@@ -106,6 +106,7 @@ class MultiHeadAttention(nn.Module):
         FLOPS_ATTN: 4 * seq_len^2 * d_model * ... (batch size and other dimensions)
         FLOPS_wq_wk_wv_wo: 4 * 2 * d_model * d_model * seq_len * ... (batch size and other dimensions)
         Total FLOPS: FLOPS_ATTN + FLOPS_wq_wk_wv_wo
+        Parameters: 4 * d_model^2 (Linear layers)
         Output: (..., seq_len, d_model)
         """
         seq_len = x.shape[-2]
