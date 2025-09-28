@@ -8,6 +8,15 @@ from jaxtyping import Float, Int, jaxtyped, Bool
 from beartype import beartype as typechecker
 
 
+def get_lr_cosine_schedule(step: int, a_max: float, a_min: float, t_warmup: int, t_cooldown: int) -> float:
+    if step < t_warmup:
+        return a_max * step / t_warmup
+    elif step > t_cooldown:
+        return a_min
+    a = a_min + 0.5 * (a_max - a_min) * (1 + math.cos(math.pi * (step - t_warmup) / (t_cooldown - t_warmup)))
+    return a
+
+
 class SGD(torch.optim.Optimizer):
     def __init__(self, params: Iterable[nn.Parameter], lr=1e-3):
         assert lr > 0, f"Learning rate must be positive, got {lr}"
@@ -56,7 +65,7 @@ class AdamW(torch.optim.Optimizer):
 
     def step(self) -> None:  # type: ignore
         """
-        Parameters state: 
+        Parameters state:
         - t: time step per param group
         - m: first moment per param
         - v: second moment per param
@@ -83,7 +92,16 @@ class AdamW(torch.optim.Optimizer):
                 param.data -= lr_t * m / (torch.sqrt(v) + eps)
                 param.data -= lr * weight_decay * param.data
 
-def calc_llm_memory(vocab_size: int, context_length: int, num_layers: int, d_model: int, num_heads: int, batch_size: int, ffn_type="swiglu") -> None:
+
+def calc_llm_memory(
+    vocab_size: int,
+    context_length: int,
+    num_layers: int,
+    d_model: int,
+    num_heads: int,
+    batch_size: int,
+    ffn_type="swiglu",
+) -> None:
     d_ff = 4 * d_model
     embedding_params = vocab_size * d_model
     embedding_gradients = embedding_params
@@ -99,7 +117,13 @@ def calc_llm_memory(vocab_size: int, context_length: int, num_layers: int, d_mod
     mha_softmax_activations = num_heads * context_length * context_length * num_layers
     mha_attention_values_activations = context_length * d_model * num_layers
     mha_o_activations = context_length * d_model * num_layers
-    mha_activations = mha_qkv_activations + mha_o_activations + mha_attention_scores_activations + mha_softmax_activations + mha_attention_values_activations
+    mha_activations = (
+        mha_qkv_activations
+        + mha_o_activations
+        + mha_attention_scores_activations
+        + mha_softmax_activations
+        + mha_attention_values_activations
+    )
 
     ffn_params = 3 if ffn_type == "swiglu" else 2 * d_model * d_ff * num_layers
     ffn_params_gradients = ffn_params
@@ -123,11 +147,19 @@ def calc_llm_memory(vocab_size: int, context_length: int, num_layers: int, d_mod
     cross_entropy_loss_activation = context_length
 
     total_params = embedding_params + block_params + lmfinal_rmsnorm_params + lmhead_params
-    total_gradients = embedding_gradients + mha_gradients + ffn_params_gradients + \
-        rmsnorm_params_gradients + lmfinal_rmsnorm_params_gradients + lmhead_params_gradients
+    total_gradients = (
+        embedding_gradients
+        + mha_gradients
+        + ffn_params_gradients
+        + rmsnorm_params_gradients
+        + lmfinal_rmsnorm_params_gradients
+        + lmhead_params_gradients
+    )
     total_adammw_states = 2 * total_params
-    total_activations = block_activations + lmfinal_rmsnorm_activation + lmhead_params_activations + cross_entropy_loss_activation
-    
+    total_activations = (
+        block_activations + lmfinal_rmsnorm_activation + lmhead_params_activations + cross_entropy_loss_activation
+    )
+
     print(f"Total parameters: {total_params:,}")
     print(f"Total activations: {total_activations:,}")
     print(f"params + gradients + states: {(total_params + total_gradients + total_adammw_states) * 4:,}")
@@ -142,6 +174,7 @@ def calc_llm_memory(vocab_size: int, context_length: int, num_layers: int, d_mod
     print(f"AdamW states memory (GB): {adammw_states_memory:.2f}")
     print(f"Activations memory (GB): {activations_memory:.2f}")
     print(f"Total memory (GB): {total_memory:.2f}")
+
 
 if __name__ == "__main__":
     vocab_size = 50_257
