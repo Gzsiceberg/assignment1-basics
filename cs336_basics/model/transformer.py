@@ -142,10 +142,10 @@ class TransformerLM(nn.Module):
         return f"token_embedding={self.token_embedding}, layers={self.layers}, rms_norm={self.rms_norm}, output_linear={self.lm_head}, softmax={self.softmax}"
 
 
-def calc_num_params(vocab_size: int, num_layers: int, d_model: int, num_heads: int, d_ff: int) -> int:
+def calc_num_params(vocab_size: int, num_layers: int, d_model: int, num_heads: int, d_ff: int, ffn_type:str = "swiglu") -> int:
     embedding_params = vocab_size * d_model
     mha_params = 4 * d_model * d_model * num_layers
-    ffn_params = 3 * d_model * d_ff * num_layers
+    ffn_params = 3 if ffn_type == "swiglu" else 2 * d_model * d_ff * num_layers
     rmsnorm_params = 2 * d_model * num_layers
     block_params = mha_params + ffn_params + rmsnorm_params
     rmsnorm_params = d_model
@@ -162,9 +162,9 @@ def calc_num_params(vocab_size: int, num_layers: int, d_model: int, num_heads: i
     return total_params
 
 
-def calc_flops(seq_len: int, batch_size: int, num_layers: int, d_model: int, d_ff: int, vocab_size: int) -> int:
+def calc_flops(seq_len: int, batch_size: int, num_layers: int, d_model: int, d_ff: int, vocab_size: int, ffn_type:str = "swiglu") -> int:
     atten_flops = num_layers * (4 * seq_len * seq_len * d_model + 8 * d_model * d_model * seq_len) * batch_size
-    ffn_flops = num_layers * (6 * d_model * d_ff * seq_len) * batch_size
+    ffn_flops = num_layers * (6 if ffn_type == "ffn_type" else 4 * d_model * d_ff * seq_len) * batch_size
     flops_block = atten_flops + ffn_flops
     flops_out = 2 * d_model * vocab_size * seq_len * batch_size
     total_flops = flops_block + flops_out
@@ -187,6 +187,7 @@ if __name__ == "__main__":
     d_ff = 6400
     max_seq_len = 1024
     theta = 100000.0
+    ffn_type = "silu"
     # model = TransformerLM(
     #     vocab_size=vocab_size,
     #     num_layers=num_layers,
@@ -199,11 +200,11 @@ if __name__ == "__main__":
     # total_params = sum(p.numel() for p in model.parameters())
     # print(f"Model parameters: {total_params:,}")
     print("--- Estimating Parameters ---")
-    estimate_params = calc_num_params(vocab_size, num_layers, d_model, num_heads, d_ff)
+    estimate_params = calc_num_params(vocab_size, num_layers, d_model, num_heads, d_ff, ffn_type)
 
     print("\n--- Estimating FLOPS ---")
     flops = calc_flops(
-        seq_len=max_seq_len, batch_size=1, num_layers=num_layers, d_model=d_model, d_ff=d_ff, vocab_size=vocab_size
+        seq_len=max_seq_len, batch_size=1, num_layers=num_layers, d_model=d_model, d_ff=d_ff, vocab_size=vocab_size, ffn_type=ffn_type
     )
     print("-" * 80)
 
@@ -212,11 +213,11 @@ if __name__ == "__main__":
     d_model = 768
     num_heads = 12
     print("--- Estimating Parameters ---")
-    estimate_params = calc_num_params(vocab_size, num_layers, d_model, num_heads, d_ff)
+    estimate_params = calc_num_params(vocab_size, num_layers, d_model, num_heads, d_ff, ffn_type)
 
     print("\n--- Estimating FLOPS ---")
     flops = calc_flops(
-        seq_len=max_seq_len, batch_size=1, num_layers=num_layers, d_model=d_model, d_ff=d_ff, vocab_size=vocab_size
+        seq_len=max_seq_len, batch_size=1, num_layers=num_layers, d_model=d_model, d_ff=d_ff, vocab_size=vocab_size, ffn_type=ffn_type
     )
     print("-" * 80)
 
@@ -225,11 +226,11 @@ if __name__ == "__main__":
     d_model = 1024
     num_heads = 16
     print("--- Estimating Parameters ---")
-    estimate_params = calc_num_params(vocab_size, num_layers, d_model, num_heads, d_ff)
+    estimate_params = calc_num_params(vocab_size, num_layers, d_model, num_heads, d_ff, ffn_type)
 
     print("\n--- Estimating FLOPS ---")
     flops = calc_flops(
-        seq_len=max_seq_len, batch_size=1, num_layers=num_layers, d_model=d_model, d_ff=d_ff, vocab_size=vocab_size
+        seq_len=max_seq_len, batch_size=1, num_layers=num_layers, d_model=d_model, d_ff=d_ff, vocab_size=vocab_size, ffn_type=ffn_type
     )
     print("-" * 80)
 
@@ -238,11 +239,11 @@ if __name__ == "__main__":
     d_model = 1280
     num_heads = 20
     print("--- Estimating Parameters ---")
-    estimate_params = calc_num_params(vocab_size, num_layers, d_model, num_heads, d_ff)
+    estimate_params = calc_num_params(vocab_size, num_layers, d_model, num_heads, d_ff, ffn_type)
 
     print("\n--- Estimating FLOPS ---")
     flops = calc_flops(
-        seq_len=max_seq_len, batch_size=1, num_layers=num_layers, d_model=d_model, d_ff=d_ff, vocab_size=vocab_size
+        seq_len=max_seq_len, batch_size=1, num_layers=num_layers, d_model=d_model, d_ff=d_ff, vocab_size=vocab_size, ffn_type=ffn_type
     )
     print("-" * 80)
 
@@ -250,6 +251,6 @@ if __name__ == "__main__":
     max_seq_len = 16_384
     print("--- Estimating FLOPS for 16K context ---")
     flops = calc_flops(
-        seq_len=max_seq_len, batch_size=1, num_layers=num_layers, d_model=d_model, d_ff=d_ff, vocab_size=vocab_size
+        seq_len=max_seq_len, batch_size=1, num_layers=num_layers, d_model=d_model, d_ff=d_ff, vocab_size=vocab_size, ffn_type=ffn_type
     )
     print("-" * 80)
