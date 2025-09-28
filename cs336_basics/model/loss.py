@@ -35,3 +35,14 @@ def cross_entropy(
     log_probs = log_softmax(logits, dim=-1)
     loss = -log_probs[torch.arange(B), targets].mean()
     return loss
+
+
+@jaxtyped(typechecker=typechecker)
+def perplexity(loss: Float[torch.Tensor, ""]) -> Float[torch.Tensor, ""]:
+    """
+    loss: scalar loss
+    FLOPS: 1
+    Output: scalar perplexity
+    """
+    ppl = torch.exp(loss)
+    return ppl
