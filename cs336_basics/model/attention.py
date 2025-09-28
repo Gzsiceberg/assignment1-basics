@@ -36,6 +36,7 @@ class Attention(nn.Module):
         attention_scores = einsum(query, key, "batch ... n d_k, batch ... m d_k -> batch ... n m")
         attention_scores = attention_scores / np.sqrt(d_k)
         if mask is not None:
+            assert attention_scores.shape == mask.shape if mask is not None else attention_scores.shape, f"Attention scores shape {attention_scores.shape} must match mask shape {mask.shape if mask is not None else 'N/A'}"
             attention_scores = attention_scores.masked_fill(mask == 0, float("-inf"))
         attention_weights = self.softmax(attention_scores)
         value = einsum(attention_weights, value, "batch ... n m, batch ... m d_v -> batch ... n d_v")
@@ -142,7 +143,7 @@ class MultiHeadAttention(nn.Module):
         value = rearrange(
             value, "... seq_len (heads d_v) -> ... heads seq_len d_v", heads=self.num_heads, seq_len=seq_len
         )
-        mask = self._create_mask(x.shape, seq_len, x.device, token_positions)
+        mask = self._create_mask(query.shape, seq_len, query.device, token_positions)
 
         out = self.attention(query, key, value, mask=mask)
         out = rearrange(out, "... heads seq_len d_v -> ... seq_len (heads d_v)")
