@@ -304,6 +304,7 @@ def run_transformer_block(
         running the Transformer block on the input features while using RoPE.
     """
     from cs336_basics.model.transformer import TransformerBlock
+    from cs336_basics.model.swiglu import SwiGLU
     transformer_block = TransformerBlock(d_model, num_heads, d_ff, max_seq_len, theta, device=in_features.device, dtype=in_features.dtype)
     transformer_block.multi_head_attention.wq.weight.data = weights["attn.q_proj.weight"]
     transformer_block.multi_head_attention.wk.weight.data = weights["attn.k_proj.weight"]
@@ -311,6 +312,7 @@ def run_transformer_block(
     transformer_block.multi_head_attention.wo.weight.data = weights["attn.output_proj.weight"]
     transformer_block.rms_norm1.scale.data = weights["ln1.weight"]
 
+    assert isinstance(transformer_block.ffn, SwiGLU), "Expected SwiGLU instance in TransformerBlock ffn"
     transformer_block.ffn.fc1.weight.data = weights["ffn.w1.weight"]
     transformer_block.ffn.fc2.weight.data = weights["ffn.w2.weight"]
     transformer_block.ffn.fc3.weight.data = weights["ffn.w3.weight"]
@@ -399,6 +401,7 @@ def run_transformer_lm(
         next-word distribution for each token.
     """
     from cs336_basics.model.transformer import TransformerLM, TransformerBlock
+    from cs336_basics.model.swiglu import SwiGLU
     transformer_lm = TransformerLM(vocab_size=vocab_size, 
                                    num_layers=num_layers, 
                                    d_model=d_model, 
@@ -418,6 +421,7 @@ def run_transformer_lm(
         layer.multi_head_attention.wo.weight.data = weights[f"layers.{i}.attn.output_proj.weight"]
         layer.rms_norm1.scale.data = weights[f"layers.{i}.ln1.weight"]
 
+        assert isinstance(layer.ffn, SwiGLU), "Expected SwiGLU instance in TransformerBlock ffn"
         layer.ffn.fc1.weight.data = weights[f"layers.{i}.ffn.w1.weight"]
         layer.ffn.fc2.weight.data = weights[f"layers.{i}.ffn.w2.weight"]
         layer.ffn.fc3.weight.data = weights[f"layers.{i}.ffn.w3.weight"]
