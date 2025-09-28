@@ -9,6 +9,7 @@ from cs336_basics.model.embedding import Embedding
 from cs336_basics.model.linear import Linear
 from cs336_basics.model.rmsnorm import RMSNorm
 from cs336_basics.model.rope import RoPE
+from cs336_basics.model.silu import SiLU
 from cs336_basics.model.swiglu import SwiGLU
 
 
@@ -16,7 +17,7 @@ class TransformerBlock(nn.Module):
     multi_head_attention: MultiHeadAttention
     rms_norm1: RMSNorm
     rms_norm2: RMSNorm
-    ffn: SwiGLU
+    ffn: nn.Module
 
     def __init__(
         self,
@@ -28,6 +29,7 @@ class TransformerBlock(nn.Module):
         rope: RoPE | None = None,
         device: torch.device | None = None,
         dtype: torch.dtype | None = None,
+        **kwargs,
     ) -> None:
         super().__init__()
         """
@@ -42,7 +44,11 @@ class TransformerBlock(nn.Module):
         self.multi_head_attention = MultiHeadAttention(d_model, num_heads, rope=rope, device=device, dtype=dtype)
 
         self.rms_norm2 = RMSNorm(d_model, device=device, dtype=dtype)
-        self.ffn = SwiGLU(d_model, d_ff, device=device, dtype=dtype)
+        ffn_type = kwargs.get("ffn_type", "swiglu")
+        if ffn_type == "swiglu":
+            self.ffn = SwiGLU(d_model, d_ff, device=device, dtype=dtype)
+        elif ffn_type == "relu":
+            self.ffn = SiLU(d_model, d_ff, device=device, dtype=dtype)
 
     @jaxtyped(typechecker=typechecker)
     def forward(

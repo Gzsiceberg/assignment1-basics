@@ -4,21 +4,8 @@ from einops import rearrange, einsum
 import numpy as np
 
 
-class SiLU(nn.Module):
-    def __init__(self) -> None:
-        super().__init__()
-
-    def forward(self, x: torch.Tensor) -> torch.Tensor:
-        """
-        x: (..., )
-        Output: (..., )
-        Flops: 3 * ... (batch size and other dimensions)
-        """
-        return x * torch.sigmoid(x)
-
-    def extra_repr(self) -> str:
-        return "SiLU Activation Function"
-
+def silu_activation(x: torch.Tensor) -> torch.Tensor:
+    return x * torch.sigmoid(x)
 
 class Sofmtax(nn.Module):
     dim: int

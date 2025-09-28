@@ -464,9 +464,8 @@ def run_silu(in_features: Float[Tensor, " ..."]) -> Float[Tensor, " ..."]:
         Float[Tensor,"..."]: of with the same shape as `in_features` with the output of applying
         SiLU to each element.
     """
-    from cs336_basics.model.activation import SiLU
-    silu = SiLU()
-    return silu(in_features)
+    from cs336_basics.model.activation import silu_activation
+    return silu_activation(in_features)
 
 
 def run_get_batch(
