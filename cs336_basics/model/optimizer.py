@@ -47,3 +47,32 @@ class AdaGrad(torch.optim.Optimizer):
                 grad = param.grad.data
                 param.data -= lr * grad / (torch.sqrt(g2) + 1e-8)
         return None
+
+
+class AdamW(torch.optim.Optimizer):
+    def __init__(self, params: Iterable[nn.Parameter], lr=1e-3, beta1=0.9, beta2=0.999, eps=1e-8, weight_decay=0.01):
+        defaults = dict(lr=lr, beta1=beta1, beta2=beta2, eps=eps, weight_decay=weight_decay)
+        super().__init__(params, defaults)
+
+    def step(self) -> None:  # type: ignore
+        for group in self.param_groups:
+            lr = group["lr"]
+            beta1 = group["beta1"]
+            beta2 = group["beta2"]
+            eps = group["eps"]
+            weight_decay = group["weight_decay"]
+
+            for param in group["params"]:
+                if param.grad is None:
+                    continue
+                state = self.state[param]
+                t = state.get("t", 0) + 1
+                m = state.get("m", torch.zeros_like(param))
+                v = state.get("v", torch.zeros_like(param))
+
+                m = beta1 * m + (1 - beta1) * param.grad
+                v = beta2 * v + (1 - beta2) * torch.square(param.grad)
+
+                lr_t = lr * math.sqrt(1 - beta2**t) / (1 - beta1**t)
+                param.data -= lr_t * m / (torch.sqrt(v) + eps)
+                param.data -= lr * weight_decay * param.data
