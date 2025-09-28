@@ -15,6 +15,8 @@ from cs336_basics.model.common import get_device
 from cs336_basics.model.loss import cross_entropy
 from cs336_basics.model.optimizer import SGD, AdaGrad, AdamW, calc_llm_memory, gradient_clipping
 from cs336_basics.model.transformer import TransformerLM
+from rich.progress import Progress, TaskID, track
+
 
 is_main_file = __name__ == "__main__"
 
@@ -49,6 +51,25 @@ def load_checkpoint(
     optimizer.load_state_dict(checkpoint["optimizer_state_dict"])
     return checkpoint["iteration"]
 
+def calc_validation_loss(
+    llm: TransformerLM,
+    data: np.memmap,
+    batch_size: int,
+    max_seq_len: int,
+    device_str: str,
+    evl_iters: int = 500,
+) -> float:
+    llm.eval()
+    avg_loss = 0.0
+    with torch.no_grad():
+        for t in track(range(evl_iters)):
+            x, y = get_batch(data, batch_size, max_seq_len, device_str)
+            logits = llm(x)
+            loss = cross_entropy(logits, y)
+            avg_loss += loss.cpu().item() / evl_iters
+    llm.train()
+    return avg_loss
+
 
 if is_main_file:
     import argparse
@@ -60,6 +81,8 @@ if is_main_file:
         help="Path to save the checkpoint",
         default="data/TinyStoriesV2-GPT4-train-bpe-merged.npy",
     )
+    parser.add_argument("--valid-file", type=str, help="Path to validation data", 
+                        default="data/TinyStoriesV2-GPT4-valid-bpe-merged.npy")
     """
     Optimizer parameters
     """
@@ -111,6 +134,7 @@ if is_main_file:
     if args.profile:
         exit(0)
 
+    print("-" * 120)
     llm = TransformerLM(
         vocab_size=args.vocab_size,
         num_layers=args.num_layers,
@@ -128,6 +152,9 @@ if is_main_file:
         os.makedirs(args.checkpoint_path)
 
     data = np.memmap(args.file, mode="r", dtype=np.int16)
+    print(f"Training data has {data.shape[0]} tokens.")
+    valid_data = np.memmap(args.valid_file, mode="r", dtype=np.int16)
+    print(f"Validation data has {valid_data.shape[0]} tokens.")
     iteration = 0
     if os.path.exists(os.path.join(args.checkpoint_path, "latest.pt")):
         print(f"Loading checkpoint from {os.path.join(args.checkpoint_path, 'latest.pt')}")
@@ -136,7 +163,6 @@ if is_main_file:
 
     device = get_device()
     device_str = str(device)
-    from rich.progress import Progress, TaskID
 
     checkpoint_interval = max(1, int(args.steps * args.checkpoint_interval))
     checkpoint_step = checkpoint_interval
@@ -176,3 +202,12 @@ if is_main_file:
                 latest_file = os.path.join(args.checkpoint_path, "latest.pt")
                 save_checkpoint(llm, opt, t + 1, latest_file)
                 checkpoint_step += checkpoint_interval
+
+                valid_loss = calc_validation_loss(
+                    llm,
+                    valid_data,
+                    args.batch_size,
+                    args.max_seq_len,
+                    device_str
+                )
+                print(f"Validation loss after step {t+1}: {valid_loss:.4f}")

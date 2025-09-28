@@ -12,13 +12,17 @@ from rich.progress import track
 @jaxtyped(typechecker=typechecker)
 def get_batch(
     data: Int[np.ndarray, "num_samples"], batch_size: int, context_length: int, device: str,
-    all_random: bool = True,
+    specifed_start: int | None = None, all_random: bool = False
 ) -> tuple[Int[torch.Tensor, "batch seq_len"], Int[torch.Tensor, "batch seq_len"]]:
     shape = data.shape
     num_samples = shape[0]
     num_samples -= context_length
 
-    if all_random:
+    if specifed_start is not None:
+        if specifed_start < 0 or specifed_start + batch_size > num_samples:
+            raise ValueError("Specified start index is out of bounds.")
+        start_idx = np.arange(specifed_start, specifed_start + batch_size)
+    elif all_random:
         start_idx = np.random.randint(0, num_samples, batch_size)
     else:
         if num_samples - batch_size <= 0:
