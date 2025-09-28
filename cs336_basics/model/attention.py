@@ -90,12 +90,24 @@ class MultiHeadAttention(nn.Module):
     ) -> Bool[Tensor, "... seq_len seq_len"]:
         batch_dims = query_shape[:-2]
 
+        casual_mask = self._get_causal_mask(seq_len, device)
         if token_positions is not None:
+            shape = token_positions.shape
+            assert shape == (*batch_dims, seq_len), f"token_positions shape {shape} must match {(*batch_dims, seq_len)}"
             position_query = rearrange(token_positions, "... n -> ... n 1")
             position_key = rearrange(token_positions, "... m -> ... 1 m")
-            casual_mask = position_query >= position_key
-        else:
-            casual_mask = self._get_causal_mask(seq_len, device)
+            position_mask = position_query >= position_key
+
+            is_new_seq = torch.zeros(shape, dtype=torch.bool, device=device)
+            is_new_seq[..., 1:] = token_positions[..., 1:] < token_positions[..., :-1]
+            assert is_new_seq.shape == shape, f"is_new_seq shape {is_new_seq.shape} must match {shape}"
+            seq_ids = torch.cumsum(is_new_seq, dim=-1, dtype=torch.int32)
+            assert seq_ids.shape == shape, f"seq_ids shape {seq_ids.shape} must match {shape}"
+            seq_id_query = rearrange(seq_ids, "... n -> ... n 1")
+            seq_id_key = rearrange(seq_ids, "... m -> ... 1 m")
+            is_same_seq = seq_id_query == seq_id_key
+
+            casual_mask = casual_mask & position_mask & is_same_seq
         casual_mask = casual_mask.expand(*batch_dims, seq_len, seq_len)
         return casual_mask
 
