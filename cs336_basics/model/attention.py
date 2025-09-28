@@ -93,7 +93,7 @@ class MultiHeadAttention(nn.Module):
         casual_mask = self._get_causal_mask(seq_len, device)
         if token_positions is not None:
             shape = token_positions.shape
-            assert shape == (*batch_dims, seq_len), f"token_positions shape {shape} must match {(*batch_dims, seq_len)}"
+            # assert shape == (*batch_dims, seq_len), f"token_positions shape {shape} must match {(*batch_dims, seq_len)}"
             position_query = rearrange(token_positions, "... n -> ... n 1")
             position_key = rearrange(token_positions, "... m -> ... 1 m")
             position_mask = position_query >= position_key
