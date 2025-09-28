@@ -16,6 +16,22 @@ def get_lr_cosine_schedule(step: int, a_max: float, a_min: float, t_warmup: int,
     a = a_min + 0.5 * (a_max - a_min) * (1 + math.cos(math.pi * (step - t_warmup) / (t_cooldown - t_warmup)))
     return a
 
+def gradient_clipping(parameters: Iterable[nn.Parameter], max_l2_norm: float) -> None:
+    sum_norm_squared = 0.0
+    for p in parameters:
+        if p.grad is None:
+            continue
+        param_norm = p.grad.data.square().sum()
+        sum_norm_squared += param_norm.item()
+    total_norm = math.sqrt(sum_norm_squared)
+    if total_norm < max_l2_norm:
+        return
+    clip_coef = max_l2_norm / (total_norm + 1e-6)
+    for p in parameters:
+        if p.grad is None:
+            continue
+        p.grad.data.mul_(clip_coef)
+
 
 class SGD(torch.optim.Optimizer):
     def __init__(self, params: Iterable[nn.Parameter], lr=1e-3):
