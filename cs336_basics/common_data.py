@@ -25,6 +25,13 @@ class ExperimentConfig(BaseModel):
     steps: int = 1000
     checkpoints_interval: int = 1
     checkpoints_path: str = "checkpoints"
+    eval_steps: int = 100
+
+    lr_schedule: str = "constant"  # Options: "constant", "linear", "cosine"
+    lr_min: float = 0
+    lr_max: float = 0.001
+    warmup_ratio: float = 0.1
+    cosine_cycle_ratio: float = 1.0
 
 
 class DataConfig(BaseModel):

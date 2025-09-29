@@ -1,8 +1,8 @@
 from datetime import datetime
 import json
+import math
 import os
 from time import time
-import typing
 import torch
 from torch import nn
 import numpy as np
@@ -15,7 +15,7 @@ from cs336_basics.logger import setup_logging
 from cs336_basics.model import calculator
 from cs336_basics.model.common import get_device
 from cs336_basics.model.loss import cross_entropy
-from cs336_basics.model.optimizer import AdamW, gradient_clipping
+from cs336_basics.model.optimizer import AdamW, get_lr_cosine_schedule, gradient_clipping
 from cs336_basics.model.transformer import TransformerLM
 from rich.progress import Progress, TaskID, track
 from logger import print
@@ -144,6 +144,8 @@ if is_main_file:
     with Progress() as progress:
         task = progress.add_task(f"[green]Training loss {last_batch_loss:.4f}", total=exp_config.steps - iteration)
 
+        warmup_steps: int = int(exp_config.warmup_ratio * exp_config.steps)
+        cosine_cycle_steps: int = round(exp_config.cosine_cycle_ratio * exp_config.steps)
         for t in range(iteration, exp_config.steps):
             x, y = get_batch(data, exp_config.batch_size, model_config.max_seq_len, device_str)
             opt.zero_grad(set_to_none=True)  # Reset the gradients for all learnable parameters.
@@ -151,6 +153,12 @@ if is_main_file:
             loss = cross_entropy(logits, y)  # Compute the cross-entropy loss.
             if opt_config.grad_clip > 0:
                 gradient_clipping(llm.parameters(), opt_config.grad_clip)
+            
+            if exp_config.lr_schedule == "constant":
+                pass  # Keep the learning rate constant
+            elif exp_config.lr_schedule == "cosine":
+                lr: float = get_lr_cosine_schedule(t, exp_config.lr_min, exp_config.lr_max, 
+                                                   warmup_steps, cosine_cycle_steps)
 
             current_loss = loss.cpu().item()
             now = time()
@@ -181,6 +189,7 @@ if is_main_file:
                 save_checkpoint(llm, opt, t + 1, latest_file, model_config=model_config_dict)
 
                 valid_loss = calc_validation_loss(
-                    llm, valid_data, exp_config.batch_size, model_config.max_seq_len, device_str
+                    llm, valid_data, exp_config.batch_size, model_config.max_seq_len, device_str,
+                    evl_iters=exp_config.eval_steps,
                 )
-                print(f"Validation loss after step {t+1}: {valid_loss:.4f}")
+                print(f"Validation loss. step {t+1}: {valid_loss:.4f}")
