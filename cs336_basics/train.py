@@ -17,7 +17,7 @@ from cs336_basics.model.optimizer import AdamW, get_lr_cosine_schedule, gradient
 from cs336_basics.model.transformer import TransformerLM
 from rich.progress import Progress, TaskID, track
 
-from cs336_basics.region_timer import RegionTimer
+from cs336_basics.region_timer import ContextTimer, RegionTimer
 
 is_main_file = __name__ == "__main__"
 
@@ -194,19 +194,17 @@ if is_main_file:
             print_and_log(f"Using cosine learning rate schedule with min {opt_config.lr_min}, max {opt_config.lr_max}, "
                           f"warmup steps {warmup_steps}, cosine cycle steps {cosine_cycle_steps}")
         for t in range(iteration, exp_config.steps):
-            region_timer.start("get_batch")
-            x, y = get_batch(data, exp_config.batch_size, model_config.max_seq_len, 
-                             device_str)
-            region_timer.stop("get_batch")
+            with ContextTimer(region_timer, "get_batch", True):
+                x, y = get_batch(data, exp_config.batch_size, model_config.max_seq_len, 
+                                device_str)
 
-            region_timer.start("train_forward")
-            opt.zero_grad(set_to_none=True)  # Reset the gradients for all learnable parameters.
-            logits = llm(x)  # Forward pass to get logits.
-            loss = cross_entropy(logits, y)  # Compute the cross-entropy loss.
-            if opt_config.grad_clip > 0:
-                gradient_clipping(llm.parameters(), opt_config.grad_clip)
-            current_loss = loss.item()
-            region_timer.stop("train_forward")
+            with ContextTimer(region_timer, "forward", True):
+                logits = llm(x)  # Forward pass to get logits.
+                loss = cross_entropy(logits, y)  # Compute the cross-entropy loss.
+                current_loss = loss.item()
+            
+            with ContextTimer(region_timer, "backward", True):
+                loss.backward()  # Run backward pass, which computes gradients.
 
             now = time()
             last_batch_count += 1
@@ -221,54 +219,50 @@ if is_main_file:
                 last_batch_count = 0
                 last_print_time = now
 
-
-            region_timer.start("train_backward")
-            lr: float = opt_config.learning_rate
-            if opt_config.lr_schedule == "cosine":
-                lr: float = get_lr_cosine_schedule(t, opt_config.lr_max, opt_config.lr_min,
-                                                   warmup_steps, cosine_cycle_steps)
-            for param_group in opt.param_groups:
-                param_group["lr"] = lr
-
-            loss.backward()  # Run backward pass, which computes gradients.
-            opt.step()  # Update parameters based on computed gradients.
-            region_timer.stop("train_backward")
+            with ContextTimer(region_timer, "update_params", True):
+                if opt_config.grad_clip > 0:
+                    gradient_clipping(llm.parameters(), opt_config.grad_clip)
+                lr: float = opt_config.learning_rate
+                if opt_config.lr_schedule == "cosine":
+                    lr: float = get_lr_cosine_schedule(t, opt_config.lr_max, opt_config.lr_min,
+                                                       warmup_steps, cosine_cycle_steps)
+                for param_group in opt.param_groups:
+                    param_group["lr"] = lr
+                opt.step()  # Update parameters based on computed gradients.
+                opt.zero_grad(set_to_none=True)  # Reset the gradients for all learnable parameters.
 
             # Update progress bar description with current loss
             remain_time_to_checkpoint = int(last_checkpoint_time + exp_config.checkpoints_interval * 60 - now)
             progress.update(task, description=f"[green]loss {current_loss:.4f} lr {lr:.4f} chp {remain_time_to_checkpoint}s", advance=1)
 
             if remain_time_to_checkpoint <= 0 or t == exp_config.steps - 1:
-                region_timer.start("checkpoint")
-                last_checkpoint_time = now
-                if exp_config.name:
-                    checkpoint_file_name = f"{exp_config.name}_checkpoint_{t+1}.pt"
-                else:
-                    checkpoint_file_name = f"checkpoint_{t+1}.pt"
-                checkpoint_file = os.path.join(exp_config.checkpoints_path, checkpoint_file_name)
-                print_and_log(f"Saving checkpoint to {checkpoint_file}")
-                model_config_dict = model_config.model_dump()
-                model_config_dict["log_file"] = log_file_name
-                save_checkpoint(llm, opt, t + 1, checkpoint_file, model_config=model_config_dict)
+                with ContextTimer(region_timer, "checkpoint", True):
+                    last_checkpoint_time = now
+                    if exp_config.name:
+                        checkpoint_file_name = f"{exp_config.name}_checkpoint_{t+1}.pt"
+                    else:
+                        checkpoint_file_name = f"checkpoint_{t+1}.pt"
+                    checkpoint_file = os.path.join(exp_config.checkpoints_path, checkpoint_file_name)
+                    print_and_log(f"Saving checkpoint to {checkpoint_file}")
+                    model_config_dict = model_config.model_dump()
+                    model_config_dict["log_file"] = log_file_name
+                    save_checkpoint(llm, opt, t + 1, checkpoint_file, model_config=model_config_dict)
 
-                # Also save a latest checkpoint
-                latest_file = os.path.join(exp_config.checkpoints_path, latest_file_name)
-                save_checkpoint(llm, opt, t + 1, latest_file, model_config=model_config_dict)
-                region_timer.stop("checkpoint")
+                    # Also save a latest checkpoint
+                    latest_file = os.path.join(exp_config.checkpoints_path, latest_file_name)
+                    save_checkpoint(llm, opt, t + 1, latest_file, model_config=model_config_dict)
 
-                region_timer.start("validation")
-                valid_loss = calc_validation_loss(
-                    llm, valid_data, exp_config.batch_size, model_config.max_seq_len, device_str,
-                    evl_iters=exp_config.eval_steps,
-                )
-                print_and_log(f"Validation loss. step {t+1}: {valid_loss:.4f}")
-                region_timer.stop("validation")
+                with ContextTimer(region_timer, "validation", True):
+                    valid_loss = calc_validation_loss(
+                        llm, valid_data, exp_config.batch_size, model_config.max_seq_len, device_str,
+                        evl_iters=exp_config.eval_steps,
+                    )
+                    print_and_log(f"Validation loss. step {t+1}: {valid_loss:.4f}")
 
                 region_timer.report()
     end_time = time()
     total_time = end_time - start_time
     print(f"Training complete. Time taken: {total_time/60:.2f} minutes")
-    region_timer.report()
 
     valid_loss = calc_validation_loss(
         llm, valid_data, exp_config.batch_size, model_config.max_seq_len, device_str,
