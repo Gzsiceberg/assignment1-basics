@@ -1,21 +1,19 @@
+from datetime import datetime
 import os
-from types import NoneType
-from typing import Callable, Iterable, Optional, overload
 import typing
 import torch
 from torch import nn
 import numpy as np
 import random
-from einops import rearrange, einsum
-from jaxtyping import Float, Int, jaxtyped
-from beartype import beartype as typechecker
 from cs336_basics.data_loader import get_batch
-from cs336_basics.model.linear import Linear
+from cs336_basics.logger import setup_logging
+from cs336_basics.model import calculator
 from cs336_basics.model.common import get_device
 from cs336_basics.model.loss import cross_entropy
-from cs336_basics.model.optimizer import SGD, AdaGrad, AdamW, calc_llm_memory, gradient_clipping
+from cs336_basics.model.optimizer import AdamW, gradient_clipping
 from cs336_basics.model.transformer import TransformerLM
 from rich.progress import Progress, TaskID, track
+from logger import print
 
 
 is_main_file = __name__ == "__main__"
@@ -51,6 +49,7 @@ def load_checkpoint(
     optimizer.load_state_dict(checkpoint["optimizer_state_dict"])
     return checkpoint["iteration"]
 
+
 def calc_validation_loss(
     llm: TransformerLM,
     data: np.memmap,
@@ -81,8 +80,9 @@ if is_main_file:
         help="Path to save the checkpoint",
         default="data/TinyStoriesV2-GPT4-train-bpe-merged.npy",
     )
-    parser.add_argument("--valid-file", type=str, help="Path to validation data", 
-                        default="data/TinyStoriesV2-GPT4-valid-bpe-merged.npy")
+    parser.add_argument(
+        "--valid-file", type=str, help="Path to validation data", default="data/TinyStoriesV2-GPT4-valid-bpe-merged.npy"
+    )
     """
     Optimizer parameters
     """
@@ -122,7 +122,9 @@ if is_main_file:
     parser.add_argument("--profile", action="store_true", help="Enable profiling")
     args = parser.parse_args()
 
-    calc_llm_memory(
+    setup_logging(args)
+
+    calculator.calc_llm_memory(
         args.vocab_size,
         args.max_seq_len,
         args.num_layers,
@@ -170,10 +172,18 @@ if is_main_file:
         checkpoint_step += checkpoint_interval
 
     last_batch_loss = 0
-    
+    log_path = "logs"
+    if not os.path.exists(log_path):
+        os.makedirs(log_path)
+    file_name = os.path.basename(args.file)
+    file_name_no_ext = os.path.splitext(file_name)[0]
+    log_file_name = f"log_{file_name_no_ext}_{datetime.now().strftime('%Y%m%d_%H%M%S')}.txt"
+    log_file = os.path.join(log_path, log_file_name)
+    print(f"Training log will be saved to {log_file}")
+
     with Progress() as progress:
         task = progress.add_task(f"[green]Training loss {last_batch_loss:.4f}", total=args.steps - iteration)
-        
+
         for t in range(iteration, args.steps):
             x, y = get_batch(data, args.batch_size, args.max_seq_len, device_str)
             opt.zero_grad(set_to_none=True)  # Reset the gradients for all learnable parameters.
@@ -181,15 +191,15 @@ if is_main_file:
             loss = cross_entropy(logits, y)  # Compute the cross-entropy loss.
             if args.grad_clip > 0:
                 gradient_clipping(llm.parameters(), args.grad_clip)
-            
+
             current_loss = loss.cpu().item()
             if t % 100 == 0 or t == args.steps - 1:
                 last_batch_loss = current_loss
                 print(f"Step {t}: loss {last_batch_loss:.4f}")
-            
+
             # Update progress bar description with current loss
             progress.update(task, description=f"[green]Training loss {current_loss:.4f}", advance=1)
-            
+
             loss.backward()  # Run backward pass, which computes gradients.
             opt.step()  # Update parameters based on computed gradients.
 
@@ -203,11 +213,5 @@ if is_main_file:
                 save_checkpoint(llm, opt, t + 1, latest_file)
                 checkpoint_step += checkpoint_interval
 
-                valid_loss = calc_validation_loss(
-                    llm,
-                    valid_data,
-                    args.batch_size,
-                    args.max_seq_len,
-                    device_str
-                )
+                valid_loss = calc_validation_loss(llm, valid_data, args.batch_size, args.max_seq_len, device_str)
                 print(f"Validation loss after step {t+1}: {valid_loss:.4f}")
