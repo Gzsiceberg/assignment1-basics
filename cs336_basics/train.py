@@ -195,8 +195,9 @@ if is_main_file:
     start_time = time()
     region_timer: RegionTimer = RegionTimer()
     
-    use_bf16 = torch.cuda.is_bf16_supported() and device.type == "cuda"
-    print_and_log(f"BF16 support: {use_bf16}, device type: {device.type}, device name: {torch.cuda.get_device_name(device) if device.type == 'cuda' else str(device)}")
+    support_bf16 = torch.cuda.is_bf16_supported() and device.type == "cuda"
+    use_bf16 = False
+    print_and_log(f"UseBF16={use_bf16} BF16 support: {support_bf16}, device type: {device.type}, device name: {torch.cuda.get_device_name(device) if device.type == 'cuda' else str(device)}")
 
     with Progress() as progress:
         task = progress.add_task(f"[green]Training loss", total=exp_config.steps - iteration)

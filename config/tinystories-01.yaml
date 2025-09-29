@@ -29,7 +29,7 @@ optimizer:
   # lr_schedule options: "constant", "cosine"
   lr_schedule: "cosine"
   lr_min: 0
-  lr_max: 6e-3
+  lr_max: 5e-3
   warmup_ratio: 0.01
   cosine_cycle_ratio: 1.0
   # AdamW parameters
