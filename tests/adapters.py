@@ -509,9 +509,8 @@ def run_softmax(in_features: Float[Tensor, " ..."], dim: int) -> Float[Tensor, "
         Float[Tensor, "..."]: Tensor of with the same shape as `in_features` with the output of
         softmax normalizing the specified `dim`.
     """
-    from cs336_basics.model.activation import Sofmtax
-    softmax = Sofmtax(dim)
-    return softmax(in_features)
+    from cs336_basics.model.activation import softmax_activation
+    return softmax_activation(in_features, dim)
 
 
 def run_cross_entropy(

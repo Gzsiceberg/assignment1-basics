@@ -14,6 +14,12 @@ def get_batch(
     data: Int[np.ndarray, "num_samples"], batch_size: int, context_length: int, device: str,
     specifed_start: int | None = None, all_random: bool = False
 ) -> tuple[Int[torch.Tensor, "batch seq_len"], Int[torch.Tensor, "batch seq_len"]]:
+    """
+    TODO: the instance will have data in two sequences, depending on the context length.
+    do we need to handle this case? do we need to ensure that the two sequences are not mixed?
+    one solution is to provide token position information, but this is not implemented yet.
+    For now, we assume that the data is a single sequence.
+    """
     shape = data.shape
     num_samples = shape[0]
     num_samples -= context_length
