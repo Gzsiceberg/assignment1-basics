@@ -10,12 +10,16 @@ from beartype import beartype as typechecker
 class Decoder:
     temperature = 1.0
     top_p = 1.0
+    end_token_id = 0
+    vocab_size = 0
 
     def __init__(self, llm: TransformerLM, device: str, temperature: float = 1.0, top_p: float = 1.0) -> None:
         self.llm = llm
         self.device = device
         self.temperature = temperature
         self.top_p = top_p
+        self.vocab_size = self.llm.vocab_size
+        self.end_token_id = self.llm.vocab_size - 1  # assuming the last token is <eos>
 
     def generate(self, prompts: list[int], max_token_count: int = -1) -> list[int]:
         self.llm.eval()
@@ -28,7 +32,7 @@ class Decoder:
             while max_token_count == -1 or len(outputs) < max_token_count:
                 logits = self.llm(x)
                 probs = softmax_activation(logits, dim=-1, temperature=self.temperature)
-                assert probs.shape == (1, self.llm.vocab_size)
+                assert probs.shape == (1, self.vocab_size)
 
                 sample_token: int = -1
                 if self.top_p < 1.0:
@@ -39,6 +43,9 @@ class Decoder:
                     greater_than_threshold = cumulative_probs > threshold
                     indices = torch.argmax(greater_than_threshold.to(torch.int64), dim=-1)
                     sample_token = int(indices[0].item())
+
+                if sample_token == self.end_token_id:
+                    break
 
                 delta_x = torch.tensor([sample_token], device=self.device)
                 x = torch.concatenate([x, delta_x])
