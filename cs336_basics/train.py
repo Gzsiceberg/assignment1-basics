@@ -1,5 +1,6 @@
 from datetime import datetime
 import os
+from time import time
 import typing
 import torch
 from torch import nn
@@ -114,12 +115,17 @@ if is_main_file:
     Checkpoint parameters
     """
     parser.add_argument(
-        "--checkpoint_interval", type=float, required=False, help="Checkpoint save interval percent", default=0.05
+        "--checkpoint_interval", type=float, required=False, help="Checkpoint save interval (in minutes)", default=1
     )
     parser.add_argument(
         "--checkpoint_path", type=str, required=False, help="Path to save checkpoints", default="checkpoints/"
     )
     parser.add_argument("--profile", action="store_true", help="Enable profiling")
+    """
+    easy to use command line arguments. 
+    """
+    parser.add_argument("--exp-name", type=str, required=False, help="Experiment name", default=f"")
+    parser.add_argument("--restore", action="store_true", help="Restore from the latest checkpoint if available")
     args = parser.parse_args()
 
     setup_logging(args)
@@ -157,29 +163,32 @@ if is_main_file:
     print(f"Training data has {data.shape[0]} tokens.")
     valid_data = np.memmap(args.valid_file, mode="r", dtype=np.int16)
     print(f"Validation data has {valid_data.shape[0]} tokens.")
+
     iteration = 0
-    if os.path.exists(os.path.join(args.checkpoint_path, "latest.pt")):
-        print(f"Loading checkpoint from {os.path.join(args.checkpoint_path, 'latest.pt')}")
-        iteration = load_checkpoint(os.path.join(args.checkpoint_path, "latest.pt"), llm, opt)
+    latest_file_name = "latest.pt"
+    if args.exp_name:
+        latest_file_name = f"{args.exp_name}_{latest_file_name}"
+    latest_file_path = os.path.join(args.checkpoint_path, latest_file_name)
+    found_latest = os.path.exists(latest_file_path)
+    if args.restore and found_latest:
+        print(f"Loading checkpoint from {latest_file_path}")
+        iteration = load_checkpoint(latest_file_path, llm, opt)
         print(f"Resumed from iteration {iteration}")
+    elif not args.restore and found_latest:
+        # ask the user if they want to overwrite the existing checkpoint
+        response = input(
+            f"Warning: Found existing checkpoint at {latest_file_path}. Do you want to overwrite it? (y/n): "
+        )
+        if response.lower() != "y":
+            print("Exiting without overwriting the checkpoint.")
+            exit(0)
 
     device = get_device()
     device_str = str(device)
 
-    checkpoint_interval = max(1, int(args.steps * args.checkpoint_interval))
-    checkpoint_step = checkpoint_interval
-    while checkpoint_step <= iteration:
-        checkpoint_step += checkpoint_interval
-
     last_batch_loss = 0
-    log_path = "logs"
-    if not os.path.exists(log_path):
-        os.makedirs(log_path)
-    file_name = os.path.basename(args.file)
-    file_name_no_ext = os.path.splitext(file_name)[0]
-    log_file_name = f"log_{file_name_no_ext}_{datetime.now().strftime('%Y%m%d_%H%M%S')}.txt"
-    log_file = os.path.join(log_path, log_file_name)
-    print(f"Training log will be saved to {log_file}")
+    last_checkpoint_time = time()
+    last_print_time = time()
 
     with Progress() as progress:
         task = progress.add_task(f"[green]Training loss {last_batch_loss:.4f}", total=args.steps - iteration)
@@ -193,7 +202,9 @@ if is_main_file:
                 gradient_clipping(llm.parameters(), args.grad_clip)
 
             current_loss = loss.cpu().item()
-            if t % 100 == 0 or t == args.steps - 1:
+            now = time()
+            if now - last_print_time >= 2 or t == args.steps - 1:
+                last_print_time = now
                 last_batch_loss = current_loss
                 print(f"Step {t}: loss {last_batch_loss:.4f}")
 
@@ -203,15 +214,19 @@ if is_main_file:
             loss.backward()  # Run backward pass, which computes gradients.
             opt.step()  # Update parameters based on computed gradients.
 
-            if t + 1 == checkpoint_step or t == args.steps - 1:
-                checkpoint_file = os.path.join(args.checkpoint_path, f"checkpoint_{t+1}.pt")
+            if now - last_checkpoint_time >= args.checkpoint_interval * 60 or t == args.steps - 1:
+                last_checkpoint_time = now
+                if args.exp_name:
+                    checkpoint_file_name = f"{args.exp_name}_checkpoint_{t+1}.pt"
+                else:
+                    checkpoint_file_name = f"checkpoint_{t+1}.pt"
+                checkpoint_file = os.path.join(args.checkpoint_path, checkpoint_file_name)
                 print(f"Saving checkpoint to {checkpoint_file}")
                 save_checkpoint(llm, opt, t + 1, checkpoint_file)
 
                 # Also save a latest checkpoint
-                latest_file = os.path.join(args.checkpoint_path, "latest.pt")
+                latest_file = os.path.join(args.checkpoint_path, latest_file_name)
                 save_checkpoint(llm, opt, t + 1, latest_file)
-                checkpoint_step += checkpoint_interval
 
                 valid_loss = calc_validation_loss(llm, valid_data, args.batch_size, args.max_seq_len, device_str)
                 print(f"Validation loss after step {t+1}: {valid_loss:.4f}")
