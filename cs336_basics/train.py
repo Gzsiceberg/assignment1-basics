@@ -165,6 +165,13 @@ if is_main_file:
         llm = torch.compile(llm)
         print_and_log(f"Torch version: {torch.__version__} model compiled with torch.compile")
         torch.set_float32_matmul_precision('high')
+        torch.backends.cuda.matmul.allow_tf32 = True
+        torch.backends.cudnn.allow_tf32 = True
+        torch.backends.cudnn.benchmark = True
+
+        print_and_log(f"matmul allow_tf32: {torch.backends.cuda.matmul.allow_tf32}")
+        print_and_log(f"cudnn allow_tf32: {torch.backends.cudnn.allow_tf32}")
+        print_and_log(f"matmul precision: {torch.get_float32_matmul_precision()}")
         print_and_log(f"Float32 matmul precision set to high")
     
     if args.restore and found_latest:
