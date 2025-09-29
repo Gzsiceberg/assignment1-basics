@@ -549,7 +549,7 @@ def get_adamw_cls() -> Any:
     """
     Returns a torch.optim.Optimizer that implements AdamW.
     """
-    from torch.optim import AdamW
+    from cs336_basics.model.optimizer import AdamW
     return AdamW
 
 

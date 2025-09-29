@@ -71,8 +71,8 @@ class AdaGrad(torch.optim.Optimizer):
 
 
 class AdamW(torch.optim.Optimizer):
-    def __init__(self, params: Iterable[nn.Parameter], lr=1e-3, beta1=0.9, beta2=0.999, eps=1e-8, weight_decay=0.01):
-        defaults = dict(lr=lr, beta1=beta1, beta2=beta2, eps=eps, weight_decay=weight_decay)
+    def __init__(self, params: Iterable[nn.Parameter], lr=1e-3, betas=(0.9, 0.999), eps=1e-8, weight_decay=0.01):
+        defaults = dict(lr=lr, betas=betas, eps=eps, weight_decay=weight_decay)
         super().__init__(params, defaults)
 
     def step(self) -> None:  # type: ignore
@@ -84,8 +84,7 @@ class AdamW(torch.optim.Optimizer):
         """
         for group in self.param_groups:
             lr = group["lr"]
-            beta1 = group["beta1"]
-            beta2 = group["beta2"]
+            (beta1, beta2) = group["betas"]
             eps = group["eps"]
             weight_decay = group["weight_decay"]
 
@@ -103,4 +102,8 @@ class AdamW(torch.optim.Optimizer):
                 lr_t = lr * math.sqrt(1 - beta2**t) / (1 - beta1**t)
                 param.data -= lr_t * m / (torch.sqrt(v) + eps)
                 param.data -= lr * weight_decay * param.data
+
+                state["t"] = t
+                state["m"] = m
+                state["v"] = v
 
