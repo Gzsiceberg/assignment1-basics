@@ -1,5 +1,8 @@
-from datetime import datetime
 import os
+use_compile = True
+if use_compile:
+    os.environ["JAXTYPING_DISABLE"] = "1"
+from datetime import datetime
 from time import time
 import torch
 from torch import nn
@@ -185,10 +188,11 @@ if is_main_file:
     region_timer: RegionTimer = RegionTimer()
 
     # Enable torch compile if available (PyTorch 2.0+)
-    llm = torch.compile(llm)
-    print_and_log(f"Torch version: {torch.__version__} model compiled with torch.compile")
-    torch.set_float32_matmul_precision('high')
-    print_and_log(f"Float32 matmul precision set to high")
+    if use_compile:
+        llm = torch.compile(llm)
+        print_and_log(f"Torch version: {torch.__version__} model compiled with torch.compile")
+        torch.set_float32_matmul_precision('high')
+        print_and_log(f"Float32 matmul precision set to high")
 
     with Progress() as progress:
         task = progress.add_task(f"[green]Training loss", total=exp_config.steps - iteration)
@@ -204,6 +208,11 @@ if is_main_file:
                                 device_str)
 
             with ContextTimer(region_timer, "forward", True):
+                """
+                TODO: try to implement mixed precision training using torch.autocast
+                https://docs.pytorch.org/docs/stable/amp.html
+                https://docs.nvidia.com/deeplearning/performance/mixed-precision-training/
+                """
                 logits = llm(x)  # Forward pass to get logits.
                 loss = cross_entropy(logits, y)  # Compute the cross-entropy loss.
 
