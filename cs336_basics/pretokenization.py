@@ -74,9 +74,11 @@ def process_chunk(idx: int, file_path: str, start: int, end: int) -> dict[bytes,
         chunk: str = f.read(end - start).decode("utf-8")
         pre_tokens_dict: dict[bytes, int] = {}
         if idx == 0:
-            print(f"Processing chunk from {start} to {end}, size {len(chunk)} bytes")
+            if is_main_file:
+                print(f"Processing chunk from {start} to {end}, size {len(chunk)} bytes")
             total_count = sum([1 for _ in split_pattern_compiled.splititer(chunk)])
-            print(f"Total documents in chunk {idx}: {total_count}")
+            if is_main_file:
+                print(f"Total documents in chunk {idx}: {total_count}")
             iterator: Iterator[str] = split_pattern_compiled.splititer(chunk)
             for _ in track(range(total_count), description=f"Processing chunk {idx}..."):
                 process_doc(next(iterator), pre_tokens_dict)
@@ -85,7 +87,8 @@ def process_chunk(idx: int, file_path: str, start: int, end: int) -> dict[bytes,
             for doc in split_pattern_compiled.splititer(chunk):
                 process_doc(doc, pre_tokens_dict)
                 total_count += 1
-            print(f"Total documents in chunk {idx}: {total_count}")
+            if is_main_file:
+                print(f"Total documents in chunk {idx}: {total_count}")
     return pre_tokens_dict
 
 
@@ -98,16 +101,19 @@ def get_pre_token_counts(file_path: str) -> dict[bytes, int]:
         f.seek(0, os.SEEK_END)
         file_size = f.tell() / 1024 / 1024  # in MB
         f.seek(0)
-        print(f"File size: {file_size} MB")
+        if is_main_file:
+            print(f"File size: {file_size} MB")
         num_processes = max(num_processes, int(file_size // 400) + 1)
-        print(f"Using {num_processes} processes")
+        if is_main_file:
+            print(f"Using {num_processes} processes")
         region_timer.start("find boundaries")
         boundaries = find_chunk_boundaries(f, num_processes, b"<|endoftext|>")
         region_timer.stop("find boundaries")
 
         # The following is a serial implementation, but you can parallelize this
         # by sending each start/end pair to a set of processes.
-        print(f"Found {len(boundaries)-1} chunks")
+        if is_main_file:
+            print(f"Found {len(boundaries)-1} chunks")
 
     # use multiprocessing to process each chunk in parallel
     pre_tokens_dict: dict[bytes, int] = {}
@@ -121,11 +127,13 @@ def get_pre_token_counts(file_path: str) -> dict[bytes, int]:
 
         region_timer.start("merge results")
         for idx, d in enumerate(all_dicts):
-            print(f"Merging {len(d)} unique pre-tokens from chunk {idx}")
+            if is_main_file:
+                print(f"Merging {len(d)} unique pre-tokens from chunk {idx}")
             for k, v in d.items():
                 pre_tokens_dict[k] = pre_tokens_dict.get(k, 0) + v
         region_timer.stop("merge results")
-        print(f"Total unique pre-tokens so far: {len(pre_tokens_dict)}")
+        if is_main_file:
+            print(f"Total unique pre-tokens so far: {len(pre_tokens_dict)}")
     if is_main_file:
         region_timer.report()
 

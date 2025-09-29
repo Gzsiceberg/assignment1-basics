@@ -12,7 +12,7 @@ from rich.progress import track
 @jaxtyped(typechecker=typechecker)
 def get_batch(
     data: Int[np.ndarray, "num_samples"], batch_size: int, context_length: int, device: str,
-    specifed_start: int | None = None, all_random: bool = False
+    specifed_start: int | None = None, all_random: bool = True
 ) -> tuple[Int[torch.Tensor, "batch seq_len"], Int[torch.Tensor, "batch seq_len"]]:
     """
     TODO: the instance will have data in two sequences, depending on the context length.
@@ -43,8 +43,8 @@ def get_batch(
     idx_range = rearrange(idx_range, "seq_len -> 1 seq_len")
     batch_indices = start_idx + idx_range
 
-    x = torch.tensor(data[batch_indices]).to(device=device, dtype=torch.int32)
-    y = torch.tensor(data[batch_indices + 1]).to(device=device, dtype=torch.int32)
+    x = torch.from_numpy(data[batch_indices])
+    y = torch.from_numpy(data[batch_indices + 1])
     assert x.shape == (
         batch_size,
         context_length,
@@ -53,4 +53,13 @@ def get_batch(
         batch_size,
         context_length,
     ), f"Label shape {y.shape} does not match expected shape {(batch_size, context_length)}"
+
+    if device.startswith("cuda"):
+        x = x.pin_memory()
+        y = y.pin_memory()
+        x = x.to(device, non_blocking=True)
+        y = y.to(device, non_blocking=True)
+    else:
+        x = x.to(device)
+        y = y.to(device)
     return x, y

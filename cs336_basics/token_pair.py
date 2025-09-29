@@ -57,12 +57,14 @@ class MaxKey:
 class TokenPairCounter:
     pair_counts: dict[Pair, int]
     pair_to_pretokens: dict[Pair, set[int]]
+    is_main_file: bool = True
     _max_heap: list[MaxKey]
 
-    def __init__(self) -> None:
+    def __init__(self, is_main_file: bool) -> None:
         self.pair_counts = {}
         self.pair_to_pretokens = {}
         self._max_heap = []
+        self.is_main_file = is_main_file
 
     def _rebuild_heap(self) -> None:
         # 当堆里陈旧元素太多时，可重建以控制内存/弹出成本
@@ -127,7 +129,8 @@ class TokenPairCounter:
         if not self.pair_counts:
             return ((b"", b""), 0)
         if len(self._max_heap) >= 3 * len(self.pair_counts):
-            print("Rebuilding heap... {} pairs, {} heap size".format(len(self.pair_counts), len(self._max_heap)))
+            if self.is_main_file:
+                print("Rebuilding heap... {} pairs, {} heap size".format(len(self.pair_counts), len(self._max_heap)))
             self._rebuild_heap()
         return self._peek_valid_max()
         # max_count = 0

@@ -57,7 +57,8 @@ def train(
     pre_tokens = PreTokens(pre_tokens_dict)
 
     pre_tokens_count = len(pre_tokens)
-    print(f"Loaded {pre_tokens_count} unique pre-tokens")
+    if is_main_file:
+        print(f"Loaded {pre_tokens_count} unique pre-tokens")
 
     bpe_params = BPETokenizerParams(vocab=dict(), merges=dict(), merges_list=[])
     for i in range(256):
@@ -65,7 +66,7 @@ def train(
 
     assert len(bpe_params.vocab) == 256
 
-    token_pair_counter: TokenPairCounter = TokenPairCounter()
+    token_pair_counter: TokenPairCounter = TokenPairCounter(is_main_file=is_main_file)
     token_pair_counter.init_from(pre_tokens)
     timer.stop("initialize")
 
@@ -93,7 +94,7 @@ def train(
         if bpe_params.vocab and len(bpe_params.vocab) >= vocab_size:
             break
 
-        if iter < 5 or iter % 500 == 99:
+        if is_main_file and (iter < 5 or iter % 500 == 99):
             print(f"New token: {new_token} with count {new_token_count}.\tnew_token_idx={new_token_idx}")
         timer.stop("add new token")
 
@@ -163,11 +164,13 @@ def train_bpe(input_path: str, vocab_size: int, special_tokens: list[str]) -> BP
     for token in special_tokens:
         token = token.encode("utf-8")
         bpe_params.vocab[len(bpe_params.vocab)] = token
-    print(f"Final vocab size: {len(bpe_params.vocab)}")
+    if is_main_file:
+        print(f"Final vocab size: {len(bpe_params.vocab)}")
     # find longest token
     timer.start("find longest token")
     longest_token = max(bpe_params.vocab.values(), key=len)
-    print(f"Longest token: {longest_token} str={longest_token.decode('utf-8')} with length {len(longest_token)}")
+    if is_main_file:
+        print(f"Longest token: {longest_token} str={longest_token.decode('utf-8')} with length {len(longest_token)}")
     timer.stop("find longest token")
 
     if is_main_file:

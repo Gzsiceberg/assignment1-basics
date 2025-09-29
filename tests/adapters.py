@@ -493,7 +493,7 @@ def run_get_batch(
         language modeling labels.
     """
     from cs336_basics.data_loader import get_batch
-    return get_batch(dataset, batch_size, context_length, device, True)
+    return get_batch(dataset, batch_size, context_length, device)
 
 
 def run_softmax(in_features: Float[Tensor, " ..."], dim: int) -> Float[Tensor, " ..."]:
@@ -598,7 +598,7 @@ def run_save_checkpoint(
             we've completed.
         out (str | os.PathLike | BinaryIO | IO[bytes]): Path or file-like object to serialize the model, optimizer, and iteration to.
     """
-    from cs336_basics.train import save_checkpoint
+    from cs336_basics.checkpoints import save_checkpoint
     save_checkpoint(model, optimizer, iteration, out)
 
 

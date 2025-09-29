@@ -16,8 +16,6 @@ from cs336_basics.model.loss import cross_entropy
 from cs336_basics.model.optimizer import AdamW, get_lr_cosine_schedule, gradient_clipping
 from cs336_basics.model.transformer import TransformerLM
 from rich.progress import Progress, TaskID, track
-from logger import print_and_log
-
 
 is_main_file = __name__ == "__main__"
 
@@ -52,6 +50,7 @@ def calc_validation_loss(
 
 if is_main_file:
     import argparse
+    from logger import print_and_log
 
     parser = argparse.ArgumentParser()
     parser.add_argument("--config", type=str, required=True, default="default.yaml", help="Path to config file (json or yaml)")

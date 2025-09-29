@@ -16,8 +16,9 @@ def save_checkpoint(
         "model_state_dict": model.state_dict(),
         "optimizer_state_dict": optimizer.state_dict(),
         "iteration": iteration,
-        "model_config": model_config,
     }
+    if model_config is not None:
+        checkpoint["model_config"] = model_config
     torch.save(checkpoint, out)
 
 
