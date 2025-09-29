@@ -152,11 +152,6 @@ if is_main_file:
             if opt_config.grad_clip > 0:
                 gradient_clipping(llm.parameters(), opt_config.grad_clip)
             
-            if exp_config.lr_schedule == "constant":
-                pass  # Keep the learning rate constant
-            elif exp_config.lr_schedule == "cosine":
-                lr: float = get_lr_cosine_schedule(t, exp_config.lr_min, exp_config.lr_max, 
-                                                   warmup_steps, cosine_cycle_steps)
 
             current_loss = loss.cpu().item()
             now = time()
@@ -165,8 +160,15 @@ if is_main_file:
                 last_batch_loss = current_loss
                 print_and_log(f"Step {t}: loss {last_batch_loss:.4f}")
 
+
+            lr: float = opt_config.learning_rate
+            if exp_config.lr_schedule == "cosine":
+                lr: float = get_lr_cosine_schedule(t, exp_config.lr_min, exp_config.lr_max, 
+                                                   warmup_steps, cosine_cycle_steps)
+            for param_group in opt.param_groups:
+                param_group["lr"] = lr
             # Update progress bar description with current loss
-            progress.update(task, description=f"[green]Training loss {current_loss:.4f}", advance=1)
+            progress.update(task, description=f"[green]loss {current_loss:.4f} lr {lr:.4f}", advance=1)
 
             loss.backward()  # Run backward pass, which computes gradients.
             opt.step()  # Update parameters based on computed gradients.
