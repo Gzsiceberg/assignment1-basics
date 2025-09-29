@@ -12,7 +12,7 @@ from rich.progress import track
 @jaxtyped(typechecker=typechecker)
 def get_batch(
     data: Int[np.ndarray, "num_samples"], batch_size: int, context_length: int, device: str,
-    specifed_start: int | None = None, all_random: bool = True
+    all_random: bool = True, specifed_start: int | None = None
 ) -> tuple[Int[torch.Tensor, "batch seq_len"], Int[torch.Tensor, "batch seq_len"]]:
     """
     TODO: the instance will have data in two sequences, depending on the context length.
@@ -29,7 +29,7 @@ def get_batch(
             raise ValueError("Specified start index is out of bounds.")
         start_idx = np.arange(specifed_start, specifed_start + batch_size)
     elif all_random:
-        start_idx = np.random.randint(0, num_samples, batch_size)
+        start_idx = np.random.randint(0, num_samples, size=batch_size)
     else:
         if num_samples - batch_size <= 0:
             raise ValueError("Not enough samples to create a batch with the given context length.")
@@ -45,6 +45,8 @@ def get_batch(
 
     x = torch.from_numpy(data[batch_indices])
     y = torch.from_numpy(data[batch_indices + 1])
+    x = x.long()
+    y = y.long()
     assert x.shape == (
         batch_size,
         context_length,

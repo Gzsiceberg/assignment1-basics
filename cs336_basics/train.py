@@ -147,7 +147,8 @@ if is_main_file:
             print_and_log(f"Using cosine learning rate schedule with min {opt_config.lr_min}, max {opt_config.lr_max}, "
                           f"warmup steps {warmup_steps}, cosine cycle steps {cosine_cycle_steps}")
         for t in range(iteration, exp_config.steps):
-            x, y = get_batch(data, exp_config.batch_size, model_config.max_seq_len, device_str)
+            x, y = get_batch(data, exp_config.batch_size, model_config.max_seq_len, 
+                             device_str)
             opt.zero_grad(set_to_none=True)  # Reset the gradients for all learnable parameters.
             logits = llm(x)  # Forward pass to get logits.
             loss = cross_entropy(logits, y)  # Compute the cross-entropy loss.
