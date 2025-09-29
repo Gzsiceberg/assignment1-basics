@@ -1,5 +1,5 @@
 experiment:
-  name: "ts_adamw"
+  name: "ts_adamw_gradclip1.0"
   checkpoint_dir: "checkpoints"
   log_dir: "logs"
   # total tokens processed = steps * batch_size * max_seq_len
