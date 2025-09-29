@@ -76,6 +76,7 @@ class TransformerBlock(nn.Module):
 
 class TransformerLM(nn.Module):
     vocab_size: int
+    max_seq_len: int
     def __init__(
         self,
         vocab_size: int,
@@ -98,6 +99,7 @@ class TransformerLM(nn.Module):
             - lm_head: (d_model, vocab_size)
             - Total Parameters: Embedding + transformer_blocks + rms_norm + lm_head
         """
+        self.max_seq_len = max_seq_len
         self.vocab_size = vocab_size
         d_k: int = d_model // num_heads
         self.rope = RoPE(theta=theta, d_k=d_k, max_seq_len=max_seq_len, device=device)

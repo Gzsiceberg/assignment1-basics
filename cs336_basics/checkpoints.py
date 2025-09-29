@@ -33,7 +33,7 @@ def load_checkpoint(
 def load_model_from(
     src: str | os.PathLike | typing.BinaryIO | typing.IO[bytes],
     device: str | torch.device = "cpu",
-) -> TransformerLM:
+) -> tuple[TransformerLM, dict]:
     checkpoint = torch.load(src)
     model_config = checkpoint.get("model_config", None)
     if model_config is None:
@@ -51,4 +51,4 @@ def load_model_from(
         device=torch.device(device),
     )
     llm.load_state_dict(checkpoint["model_state_dict"])
-    return llm
+    return llm, model_config

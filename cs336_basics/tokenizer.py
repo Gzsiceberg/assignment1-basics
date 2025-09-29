@@ -80,6 +80,8 @@ class BPETokenizer(Tokenizer):
     merges_index_dict: dict[PairIndex, int]
     token_to_index: dict[bytes, int]
     special_tokens: list[str] | None
+    end_token_str: str = "<|endoftext|>"
+    end_token_id: int
     pattern_compiled: re.Pattern[str]
     timer: RegionTimer
     encode_cache: dict[str, tuple[int, ...]] = {}
@@ -101,6 +103,8 @@ class BPETokenizer(Tokenizer):
         self.token_to_index = dict()
         for token_index, token in self.vocab.items():
             self.token_to_index[token] = token_index
+        
+        self.end_token_id = self.token_to_index[self.end_token_str.encode("utf-8")]
 
         split_pattern = "(" + "|".join(list(map(re.escape, self.special_tokens))) + ")"
         self.pattern_compiled = re.compile(split_pattern)
