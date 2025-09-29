@@ -155,6 +155,11 @@ if is_main_file:
         weight_decay=opt_config.weight_decay,
     )
 
+    device = get_device()
+    device_str = str(device)
+    llm.to(device)
+    print_and_log(f"Training on device {device_str}")
+
     # Enable torch compile if available (PyTorch 2.0+)
     if use_compile:
         llm = torch.compile(llm)
@@ -164,7 +169,7 @@ if is_main_file:
     
     if args.restore and found_latest:
         print_and_log(f"Loading checkpoint from {latest_file_path}")
-        iteration = load_checkpoint(latest_file_path, llm, opt)
+        iteration = load_checkpoint(latest_file_path, llm, optimizer=opt) # type: ignore
         print_and_log(f"Resumed from iteration {iteration}")
     elif not args.restore and found_latest:
         # ask the user if they want to overwrite the existing checkpoint
@@ -182,10 +187,6 @@ if is_main_file:
     valid_data = np.memmap(data_config.valid_data, mode="r", dtype=np.int16)
     print_and_log(f"Validation data has {valid_data.shape[0]} tokens.")
 
-    device = get_device()
-    device_str = str(device)
-    llm.to(device)
-    print_and_log(f"Training on device {device_str}")
 
     last_batch_loss = 0
     last_checkpoint_time = time()
@@ -243,7 +244,7 @@ if is_main_file:
 
             with ContextTimer(region_timer, "update_params", True):
                 if opt_config.grad_clip > 0:
-                    gradient_clipping(llm.parameters(), opt_config.grad_clip)
+                    gradient_clipping(llm.parameters(), opt_config.grad_clip) # type: ignore
                 lr: float = opt_config.learning_rate
                 if opt_config.lr_schedule == "cosine":
                     lr: float = get_lr_cosine_schedule(t, opt_config.lr_max, opt_config.lr_min,
@@ -268,11 +269,11 @@ if is_main_file:
                     print_and_log(f"Saving checkpoint to {checkpoint_file}")
                     model_config_dict = model_config.model_dump()
                     model_config_dict["log_file"] = log_file_name
-                    save_checkpoint(llm, opt, t + 1, checkpoint_file, model_config=model_config_dict)
+                    save_checkpoint(llm, opt, t + 1, checkpoint_file, model_config=model_config_dict) # type: ignore
 
                     # Also save a latest checkpoint
                     latest_file = os.path.join(exp_config.checkpoints_path, latest_file_name)
-                    save_checkpoint(llm, opt, t + 1, latest_file, model_config=model_config_dict)
+                    save_checkpoint(llm, opt, t + 1, latest_file, model_config=model_config_dict) # type: ignore
 
                 with ContextTimer(region_timer, "validation", True):
                     valid_loss = calc_validation_loss(
