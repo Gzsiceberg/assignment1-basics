@@ -92,9 +92,9 @@ if is_main_file:
     from logger import print_and_log
 
     parser = argparse.ArgumentParser()
-    parser.add_argument("--config", type=str, required=True, default="default.yaml", help="Path to config file (json or yaml)")
-    parser.add_argument("--profile", action="store_true", help="Enable profiling")
-    parser.add_argument("--restore", action="store_true", help="Restore from the latest checkpoint if available")
+    parser.add_argument("-c", "--config", type=str, required=True, default="default.yaml", help="Path to config file (json or yaml)")
+    parser.add_argument("-p", "--profile", action="store_true", help="Enable profiling")
+    parser.add_argument("-r", "--restore", action="store_true", help="Restore from the latest checkpoint if available")
     args = parser.parse_args()
     if not os.path.exists(args.config):
         print_and_log(f"Config file {args.config} does not exist.")

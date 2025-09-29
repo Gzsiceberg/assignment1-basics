@@ -7,7 +7,7 @@ experiment:
   batch_size: 64
   steps: 20000
   eval_step: 100
-  checkpoints_interval: 1
+  checkpoints_interval: 5
   checkpoints_path: "checkpoints"
 
 data:
