@@ -172,7 +172,6 @@ if is_main_file:
         print_and_log(f"matmul allow_tf32: {torch.backends.cuda.matmul.allow_tf32}")
         print_and_log(f"cudnn allow_tf32: {torch.backends.cudnn.allow_tf32}")
         print_and_log(f"matmul precision: {torch.get_float32_matmul_precision()}")
-        print_and_log(f"Float32 matmul precision set to high")
     
     if args.restore and found_latest:
         print_and_log(f"Loading checkpoint from {latest_file_path}")
