@@ -269,3 +269,9 @@ if is_main_file:
     total_time = end_time - start_time
     print(f"Training complete. Time taken: {total_time/60:.2f} minutes")
     region_timer.report()
+
+    valid_loss = calc_validation_loss(
+        llm, valid_data, exp_config.batch_size, model_config.max_seq_len, device_str,
+        evl_iters=exp_config.eval_steps * 2,
+    )
+    print_and_log(f"Final validation loss: {valid_loss:.4f}")
