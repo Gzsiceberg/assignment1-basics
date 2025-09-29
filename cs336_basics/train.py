@@ -6,7 +6,7 @@ from torch import nn
 import numpy as np
 import random
 
-from cs336_basics.checkpoints import load_checkpoint, save_checkpoint
+from cs336_basics.checkpoints import load_checkpoint, load_model_config, save_checkpoint
 from cs336_basics.common_data import DataConfig, ExperimentConfig, ModelConfig, OptimizerConfig, load_config_from_file
 from cs336_basics.data_loader import get_batch
 from cs336_basics.logger import setup_logging
@@ -48,29 +48,7 @@ def calc_validation_loss(
     return avg_loss
 
 
-if is_main_file:
-    import argparse
-    from logger import print_and_log
-
-    parser = argparse.ArgumentParser()
-    parser.add_argument("--config", type=str, required=True, default="default.yaml", help="Path to config file (json or yaml)")
-    parser.add_argument("--profile", action="store_true", help="Enable profiling")
-    parser.add_argument("--restore", action="store_true", help="Restore from the latest checkpoint if available")
-    args = parser.parse_args()
-    if not os.path.exists(args.config):
-        print_and_log(f"Config file {args.config} does not exist.")
-        exit(1)
-    config = load_config_from_file(args.config)
-    model_config: ModelConfig = ModelConfig(**config.get("model", {}))
-    data_config: DataConfig = DataConfig(**config.get("data", {}))
-    exp_config: ExperimentConfig = ExperimentConfig(**config.get("experiment", {}))
-    opt_config: OptimizerConfig = OptimizerConfig(**config.get("optimizer", {}))
-    setup_logging(exp_config)
-    print_and_log(f"Model config: {model_config}")
-    print_and_log(f"Data config: {data_config}")
-    print_and_log(f"Experiment config: {exp_config}")
-    print_and_log(f"Optimizer config: {opt_config}")
-
+def profile_model() -> float:
     calculator.calc_llm_memory(
         model_config.vocab_size,
         model_config.max_seq_len,
@@ -106,10 +84,52 @@ if is_main_file:
 
     total_training_flops = t_flops * exp_config.steps
     print_and_log(f"Total training: {total_training_flops/1e12:,.2f} TFLOPs")
-    if args.profile:
-        exit(0)
+    return t_flops
 
-    print_and_log("-" * 120)
+
+if is_main_file:
+    import argparse
+    from logger import print_and_log
+
+    parser = argparse.ArgumentParser()
+    parser.add_argument("--config", type=str, required=True, default="default.yaml", help="Path to config file (json or yaml)")
+    parser.add_argument("--profile", action="store_true", help="Enable profiling")
+    parser.add_argument("--restore", action="store_true", help="Restore from the latest checkpoint if available")
+    args = parser.parse_args()
+    if not os.path.exists(args.config):
+        print_and_log(f"Config file {args.config} does not exist.")
+        exit(1)
+    config = load_config_from_file(args.config)
+    model_config: ModelConfig = ModelConfig(**config.get("model", {}))
+    data_config: DataConfig = DataConfig(**config.get("data", {}))
+    exp_config: ExperimentConfig = ExperimentConfig(**config.get("experiment", {}))
+    opt_config: OptimizerConfig = OptimizerConfig(**config.get("optimizer", {}))
+
+    if not os.path.exists(exp_config.checkpoints_path):
+        os.makedirs(exp_config.checkpoints_path)
+
+    iteration = 0
+    latest_file_name = "latest.pt"
+    if exp_config.name:
+        latest_file_name = f"{exp_config.name}_{latest_file_name}"
+    latest_file_path = os.path.join(exp_config.checkpoints_path, latest_file_name)
+    found_latest = os.path.exists(latest_file_path)
+    log_file_name = None
+    if args.restore and found_latest:
+        print(f"loading model config from {latest_file_path}")
+        model_config_dict = load_model_config(latest_file_path)
+        log_file_name = model_config_dict.get("log_file", None)
+
+    log_file_name = setup_logging(exp_config, log_file_name)
+    print_and_log(f"Model config: {model_config}")
+    print_and_log(f"Data config: {data_config}")
+    print_and_log(f"Experiment config: {exp_config}")
+    print_and_log(f"Optimizer config: {opt_config}")
+    if args.profile:
+        profile_model()
+        exit(0)
+    
+
     llm = TransformerLM(
         vocab_size=model_config.vocab_size,
         num_layers=model_config.num_layers,
@@ -130,20 +150,7 @@ if is_main_file:
         beta2=opt_config.betas[1],
         weight_decay=opt_config.weight_decay,
     )
-    if not os.path.exists(exp_config.checkpoints_path):
-        os.makedirs(exp_config.checkpoints_path)
-
-    data = np.memmap(data_config.train_data, mode="r", dtype=np.int16)
-    print_and_log(f"Training data has {data.shape[0]} tokens.")
-    valid_data = np.memmap(data_config.valid_data, mode="r", dtype=np.int16)
-    print_and_log(f"Validation data has {valid_data.shape[0]} tokens.")
-
-    iteration = 0
-    latest_file_name = "latest.pt"
-    if exp_config.name:
-        latest_file_name = f"{exp_config.name}_{latest_file_name}"
-    latest_file_path = os.path.join(exp_config.checkpoints_path, latest_file_name)
-    found_latest = os.path.exists(latest_file_path)
+    
     if args.restore and found_latest:
         print_and_log(f"Loading checkpoint from {latest_file_path}")
         iteration = load_checkpoint(latest_file_path, llm, opt)
@@ -157,8 +164,17 @@ if is_main_file:
             print_and_log("Exiting without overwriting the checkpoint.")
             exit(0)
 
+    t_flops = profile_model()
+    print_and_log("-" * 120)
+    data = np.memmap(data_config.train_data, mode="r", dtype=np.int16)
+    print_and_log(f"Training data has {data.shape[0]} tokens.")
+    valid_data = np.memmap(data_config.valid_data, mode="r", dtype=np.int16)
+    print_and_log(f"Validation data has {valid_data.shape[0]} tokens.")
+
     device = get_device()
     device_str = str(device)
+    llm.to(device)
+    print_and_log(f"Training on device {device_str}")
 
     last_batch_loss = 0
     last_checkpoint_time = time()
@@ -219,6 +235,7 @@ if is_main_file:
                 checkpoint_file = os.path.join(exp_config.checkpoints_path, checkpoint_file_name)
                 print_and_log(f"Saving checkpoint to {checkpoint_file}")
                 model_config_dict = model_config.model_dump()
+                model_config_dict["log_file"] = log_file_name
                 save_checkpoint(llm, opt, t + 1, checkpoint_file, model_config=model_config_dict)
 
                 # Also save a latest checkpoint

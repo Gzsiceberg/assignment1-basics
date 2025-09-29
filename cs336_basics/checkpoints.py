@@ -22,6 +22,16 @@ def save_checkpoint(
     torch.save(checkpoint, out)
 
 
+def load_model_config(
+    src: str | os.PathLike | typing.BinaryIO | typing.IO[bytes],
+) -> dict:
+    checkpoint = torch.load(src)
+    model_config = checkpoint.get("model_config", None)
+    if model_config is None:
+        raise ValueError("No model_config found in the checkpoint.")
+    return model_config
+
+
 def load_checkpoint(
     src: str | os.PathLike | typing.BinaryIO | typing.IO[bytes], model: nn.Module, optimizer: torch.optim.Optimizer
 ) -> int:

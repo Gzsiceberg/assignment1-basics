@@ -11,13 +11,12 @@ def print_and_log(message: str) -> None:
         logger.info(message)
 
 
-def setup_logging(exp_config: ExperimentConfig) -> None:
+def setup_logging(exp_config: ExperimentConfig, log_file_name: str | None = None) -> str:
     log_path = exp_config.log_dir
     if not os.path.exists(log_path):
         os.makedirs(log_path)
-    if exp_config.name == "":
-        exp_config.name = "default"
-    log_file_name = f"log_{exp_config.name}_{datetime.now().strftime('%Y%m%d_%H%M%S')}.txt"
+    if log_file_name is None:
+        log_file_name = f"log_{exp_config.name}_{datetime.now().strftime('%Y%m%d_%H%M%S')}.txt"
     log_file = os.path.join(log_path, log_file_name)
     print_and_log(f"Training log will be saved to {log_file}")
 
@@ -30,3 +29,4 @@ def setup_logging(exp_config: ExperimentConfig) -> None:
 
     logger.setLevel(logging.INFO)
     logger.addHandler(file_handler)
+    return log_file_name

@@ -1,5 +1,5 @@
 experiment:
-  name: ""
+  name: "default"
   checkpoint_dir: "checkpoints"
   log_dir: "logs"
   # total tokens processed = steps * batch_size * max_seq_len
