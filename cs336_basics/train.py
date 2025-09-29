@@ -184,6 +184,12 @@ if is_main_file:
     start_time = time()
     region_timer: RegionTimer = RegionTimer()
 
+    # Enable torch compile if available (PyTorch 2.0+)
+    llm = torch.compile(llm)
+    print_and_log(f"Torch version: {torch.__version__} model compiled with torch.compile")
+    torch.set_float32_matmul_precision('high')
+    print_and_log(f"Float32 matmul precision set to high")
+
     with Progress() as progress:
         task = progress.add_task(f"[green]Training loss", total=exp_config.steps - iteration)
 
@@ -204,7 +210,7 @@ if is_main_file:
 
             now = time()
             last_batch_count += 1
-            if now - last_print_time >= 2 or t == exp_config.steps - 1:
+            if now - last_print_time >= 5 or t == exp_config.steps - 1:
                 last_batch_loss = loss.item()
                 last_train_tokens = exp_config.batch_size * model_config.max_seq_len * last_batch_count
                 tokens_per_sec = int(last_train_tokens / (now - last_print_time))
