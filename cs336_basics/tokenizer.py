@@ -13,9 +13,6 @@ from cs336_basics.pretokenization import (
 )
 from cs336_basics.region_timer import ContextTimer, RegionTimer
 from cs336_basics.token_pair import Pair, PairIndex, PairIndexState
-from rich.live import Live
-from rich.text import Text
-from rich import print
 import numpy as np
 
 is_main_file: bool = __name__ == "__main__"
@@ -469,6 +466,7 @@ def process_file(file_path: str, tokenizer: BPETokenizer) -> None:
 if is_main_file:
     import time
     import argparse
+    from rich import print
 
     parser = argparse.ArgumentParser()
     parser.add_argument(

@@ -11,7 +11,6 @@ import numpy as np
 from jaxtyping import Float, Int, jaxtyped, Bool
 from beartype import beartype as typechecker
 from cs336_basics.tokenizer import BPETokenizer
-from rich import print
 
 
 class Decoder:
@@ -35,7 +34,7 @@ class Decoder:
         self.vocab_size = self.llm.vocab_size
         self.end_token_id = self.tokenizer.end_token_id
         self.max_seq_len = self.llm.max_seq_len
-    
+
     def generate(self, prompts: str, max_token_count: int = -1) -> str:
         prompts_is_empty: bool = False
         if not prompts:
@@ -115,6 +114,7 @@ def load_tokenizer(file_prefix: str) -> BPETokenizer:
 
 if __name__ == "__main__":
     import argparse
+    from rich import print
 
     parser = argparse.ArgumentParser()
     parser.add_argument("--config", type=str, default="defaul.yaml", help="Path to config file (json or yaml)")
@@ -151,6 +151,7 @@ if __name__ == "__main__":
     # convert TinyStoriesV2-GPT4-train-bpe.npy to TinyStoriesV2-GPT4-train
     # use regex to remove -bpe(-merged)?\.npy$
     import regex as re
+
     file_prefix = re.sub(r"-bpe(-merged)?\.npy$", "", data_config.train_data)
     tokenizer: BPETokenizer = load_tokenizer(file_prefix)
 

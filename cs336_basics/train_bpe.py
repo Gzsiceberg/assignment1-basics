@@ -1,6 +1,5 @@
 import os
 import pickle
-from rich import print
 from rich.progress import track
 from cs336_basics.region_timer import RegionTimer
 from cs336_basics.pretokenization import get_pre_token_counts, global_special_tokens
@@ -179,6 +178,7 @@ def train_bpe(input_path: str, vocab_size: int, special_tokens: list[str]) -> BP
 if __name__ == "__main__":
     import argparse
     import time
+    from rich import print
 
     parser = argparse.ArgumentParser()
     parser.add_argument(

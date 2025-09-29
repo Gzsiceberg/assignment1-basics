@@ -1,6 +1,4 @@
 from datetime import datetime
-import json
-import math
 import os
 from time import time
 import torch
@@ -18,7 +16,7 @@ from cs336_basics.model.loss import cross_entropy
 from cs336_basics.model.optimizer import AdamW, get_lr_cosine_schedule, gradient_clipping
 from cs336_basics.model.transformer import TransformerLM
 from rich.progress import Progress, TaskID, track
-from logger import print
+from logger import print_and_log
 
 
 is_main_file = __name__ == "__main__"
@@ -61,7 +59,7 @@ if is_main_file:
     parser.add_argument("--restore", action="store_true", help="Restore from the latest checkpoint if available")
     args = parser.parse_args()
     if not os.path.exists(args.config):
-        print(f"Config file {args.config} does not exist.")
+        print_and_log(f"Config file {args.config} does not exist.")
         exit(1)
     config = load_config_from_file(args.config)
     model_config: ModelConfig = ModelConfig(**config.get("model", {}))
@@ -69,10 +67,10 @@ if is_main_file:
     exp_config: ExperimentConfig = ExperimentConfig(**config.get("experiment", {}))
     opt_config: OptimizerConfig = OptimizerConfig(**config.get("optimizer", {}))
     setup_logging(exp_config)
-    print(f"Model config: {model_config}")
-    print(f"Data config: {data_config}")
-    print(f"Experiment config: {exp_config}")
-    print(f"Optimizer config: {opt_config}")
+    print_and_log(f"Model config: {model_config}")
+    print_and_log(f"Data config: {data_config}")
+    print_and_log(f"Experiment config: {exp_config}")
+    print_and_log(f"Optimizer config: {opt_config}")
 
     calculator.calc_llm_memory(
         model_config.vocab_size,
@@ -86,7 +84,7 @@ if is_main_file:
     if args.profile:
         exit(0)
 
-    print("-" * 120)
+    print_and_log("-" * 120)
     llm = TransformerLM(
         vocab_size=model_config.vocab_size,
         num_layers=model_config.num_layers,
@@ -111,9 +109,9 @@ if is_main_file:
         os.makedirs(exp_config.checkpoints_path)
 
     data = np.memmap(data_config.train_data, mode="r", dtype=np.int16)
-    print(f"Training data has {data.shape[0]} tokens.")
+    print_and_log(f"Training data has {data.shape[0]} tokens.")
     valid_data = np.memmap(data_config.valid_data, mode="r", dtype=np.int16)
-    print(f"Validation data has {valid_data.shape[0]} tokens.")
+    print_and_log(f"Validation data has {valid_data.shape[0]} tokens.")
 
     iteration = 0
     latest_file_name = "latest.pt"
@@ -122,16 +120,16 @@ if is_main_file:
     latest_file_path = os.path.join(exp_config.checkpoints_path, latest_file_name)
     found_latest = os.path.exists(latest_file_path)
     if args.restore and found_latest:
-        print(f"Loading checkpoint from {latest_file_path}")
+        print_and_log(f"Loading checkpoint from {latest_file_path}")
         iteration = load_checkpoint(latest_file_path, llm, opt)
-        print(f"Resumed from iteration {iteration}")
+        print_and_log(f"Resumed from iteration {iteration}")
     elif not args.restore and found_latest:
         # ask the user if they want to overwrite the existing checkpoint
         response = input(
             f"Warning: Found existing checkpoint at {latest_file_path}. Do you want to overwrite it? (y/n): "
         )
         if response.lower() != "y":
-            print("Exiting without overwriting the checkpoint.")
+            print_and_log("Exiting without overwriting the checkpoint.")
             exit(0)
 
     device = get_device()
@@ -165,7 +163,7 @@ if is_main_file:
             if now - last_print_time >= 2 or t == exp_config.steps - 1:
                 last_print_time = now
                 last_batch_loss = current_loss
-                print(f"Step {t}: loss {last_batch_loss:.4f}")
+                print_and_log(f"Step {t}: loss {last_batch_loss:.4f}")
 
             # Update progress bar description with current loss
             progress.update(task, description=f"[green]Training loss {current_loss:.4f}", advance=1)
@@ -180,7 +178,7 @@ if is_main_file:
                 else:
                     checkpoint_file_name = f"checkpoint_{t+1}.pt"
                 checkpoint_file = os.path.join(exp_config.checkpoints_path, checkpoint_file_name)
-                print(f"Saving checkpoint to {checkpoint_file}")
+                print_and_log(f"Saving checkpoint to {checkpoint_file}")
                 model_config_dict = model_config.model_dump()
                 save_checkpoint(llm, opt, t + 1, checkpoint_file, model_config=model_config_dict)
 
@@ -192,4 +190,4 @@ if is_main_file:
                     llm, valid_data, exp_config.batch_size, model_config.max_seq_len, device_str,
                     evl_iters=exp_config.eval_steps,
                 )
-                print(f"Validation loss. step {t+1}: {valid_loss:.4f}")
+                print_and_log(f"Validation loss. step {t+1}: {valid_loss:.4f}")

@@ -2,8 +2,6 @@ import math
 from typing import Iterable
 import torch
 from torch import nn
-from rich import print
-
 
 def get_lr_cosine_schedule(step: int, a_max: float, a_min: float, t_warmup: int, t_cooldown: int) -> float:
     if step < t_warmup:

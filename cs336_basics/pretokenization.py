@@ -2,7 +2,6 @@ import multiprocessing
 import regex as re
 import os
 from typing import BinaryIO, Iterator
-from rich import print
 from rich.progress import track
 import pickle
 from cs336_basics.region_timer import RegionTimer
@@ -136,6 +135,7 @@ def get_pre_token_counts(file_path: str) -> dict[bytes, int]:
 if __name__ == "__main__":
     import argparse
     import time
+    from rich import print
 
     parser = argparse.ArgumentParser()
     parser.add_argument(
