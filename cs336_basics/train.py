@@ -148,8 +148,7 @@ if is_main_file:
     opt = AdamW(
         llm.parameters(),
         lr=opt_config.learning_rate,
-        beta1=opt_config.betas[0],
-        beta2=opt_config.betas[1],
+        betas = opt_config.betas,
         weight_decay=opt_config.weight_decay,
     )
     
