@@ -180,6 +180,7 @@ if is_main_file:
     last_checkpoint_time = time()
     last_print_time = time()
     last_batch_count = 0
+    start_time = time()
 
     with Progress() as progress:
         task = progress.add_task(f"[green]Training loss", total=exp_config.steps - iteration)
@@ -247,3 +248,6 @@ if is_main_file:
                     evl_iters=exp_config.eval_steps,
                 )
                 print_and_log(f"Validation loss. step {t+1}: {valid_loss:.4f}")
+    end_time = time()
+    total_time = end_time - start_time
+    print(f"Training complete. Time taken: {total_time/60:.2f} minutes")
