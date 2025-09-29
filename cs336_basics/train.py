@@ -80,6 +80,32 @@ if is_main_file:
         exp_config.batch_size,
         ffn_type=model_config.ffn_type,
     )
+    t_flops = calculator.calc_flops(
+        seq_len=model_config.max_seq_len,
+        d_model=model_config.d_model,
+        num_layers=model_config.num_layers,
+        batch_size=exp_config.batch_size,
+        vocab_size=model_config.vocab_size,
+        ffn_type=model_config.ffn_type,
+        d_ff=model_config.d_ff,
+    )
+    t_params = calculator.calc_num_params(
+        vocab_size=model_config.vocab_size,
+        d_model=model_config.d_model,
+        num_layers=model_config.num_layers,
+        num_heads=model_config.num_heads,
+        ffn_type=model_config.ffn_type,
+        d_ff=model_config.d_ff,
+    )
+    print_and_log("-" * 120)
+    t_flops *= 3  # for gradiend update
+    t_flops_per_token = t_flops / (exp_config.batch_size * model_config.max_seq_len)
+    print_and_log(f"FLOPs per step: {t_flops/1e6:,.2f} MFLOPs. FLOPs per token: {t_flops_per_token/1e6:,.2f} MFLOPs")
+    estimated_flops = t_params * 6.0
+    print_and_log(f"model parameters: {t_params/1e6:.2f} M, estimated FLOPs per token: {estimated_flops/1e6:,.2f} MFLOPs")
+
+    total_training_flops = t_flops * exp_config.steps
+    print_and_log(f"Total training: {total_training_flops/1e12:,.2f} TFLOPs")
     if args.profile:
         exit(0)
 
@@ -137,6 +163,7 @@ if is_main_file:
     last_batch_loss = 0
     last_checkpoint_time = time()
     last_print_time = time()
+    last_batch_count = 0
 
     with Progress() as progress:
         task = progress.add_task(f"[green]Training loss", total=exp_config.steps - iteration)
@@ -156,12 +183,19 @@ if is_main_file:
                 gradient_clipping(llm.parameters(), opt_config.grad_clip)
             
 
-            current_loss = loss.cpu().item()
+            current_loss = loss.item()
             now = time()
+            last_batch_count += 1
             if now - last_print_time >= 2 or t == exp_config.steps - 1:
-                last_print_time = now
                 last_batch_loss = current_loss
-                print_and_log(f"Step {t}: loss {last_batch_loss:.4f}")
+                last_train_tokens = exp_config.batch_size * model_config.max_seq_len * last_batch_count
+                tokens_per_sec = int(last_train_tokens / (now - last_print_time))
+                last_tflops = (t_flops * last_batch_count) / 1e12
+                tflops_per_sec = last_tflops / (now - last_print_time)
+                delta_time = now - last_print_time
+                print_and_log(f"Step {t}: loss {last_batch_loss:.4f} tokens/sec {tokens_per_sec:,} Tflops/sec {tflops_per_sec:,.2f}")
+                last_batch_count = 0
+                last_print_time = now
 
 
             lr: float = opt_config.learning_rate
