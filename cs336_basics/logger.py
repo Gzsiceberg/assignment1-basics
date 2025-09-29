@@ -3,6 +3,8 @@ import os
 from datetime import datetime
 import rich
 
+from cs336_basics.common_data import ExperimentConfig
+
 is_setup = False
 logger = logging.getLogger("cs336_basics")
 
@@ -12,17 +14,17 @@ def print(message: str) -> None:
         logger.info(message)
 
 
-def setup_logging(args) -> None:
+def setup_logging(exp_config: ExperimentConfig) -> None:
     global is_setup
     if is_setup:
         return
     is_setup = True
-    log_path = "logs"
+    log_path = exp_config.log_dir
     if not os.path.exists(log_path):
         os.makedirs(log_path)
-    file_name = os.path.basename(args.file)
-    file_name_no_ext = os.path.splitext(file_name)[0]
-    log_file_name = f"log_{file_name_no_ext}_{datetime.now().strftime('%Y%m%d_%H%M%S')}.txt"
+    if exp_config.name == "":
+        exp_config.name = "default"
+    log_file_name = f"log_{exp_config.name}_{datetime.now().strftime('%Y%m%d_%H%M%S')}.txt"
     log_file = os.path.join(log_path, log_file_name)
     print(f"Training log will be saved to {log_file}")
 
@@ -34,8 +36,3 @@ def setup_logging(args) -> None:
 
     logger.setLevel(logging.INFO)
     logger.addHandler(file_handler)
-    # log all arguments
-    logger.info("Training arguments:")
-    for arg, value in vars(args).items():
-        logger.info(f"{arg}: {value}")
-    logger.info("-" * 120)

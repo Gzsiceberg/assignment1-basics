@@ -1,5 +1,7 @@
 import os
-from cs336_basics.checkpoints import load_checkpoint, load_model_from
+from cs336_basics.checkpoints import load_model_from
+from cs336_basics.common_data import DataConfig, ExperimentConfig, ModelConfig, OptimizerConfig, load_config_from_file
+from cs336_basics.common_data import load_config_from_file
 from cs336_basics.model.activation import softmax_activation
 from cs336_basics.model.transformer import TransformerLM
 from cs336_basics.model.common import get_device
@@ -17,6 +19,7 @@ class Decoder:
     top_p = 1.0
     end_token_id = 0
     vocab_size = 0
+    max_seq_len = 0
     tokenizer: BPETokenizer
 
     def __init__(
@@ -31,6 +34,7 @@ class Decoder:
         assert 0.0 < self.top_p <= 1.0, "top_p must be in (0.0, 1.0]"
         self.vocab_size = self.llm.vocab_size
         self.end_token_id = self.tokenizer.end_token_id
+        self.max_seq_len = self.llm.max_seq_len
     
     def generate(self, prompts: str, max_token_count: int = -1) -> str:
         prompts_is_empty: bool = False
@@ -39,6 +43,7 @@ class Decoder:
             prompts_is_empty = True
         prompt_tokens = self.tokenizer.encode(prompts)
         output_tokens = self.generate_ids(prompt_tokens, max_token_count=max_token_count)
+        print(f"Prompt tokens len: {len(prompt_tokens)}, Output tokens len: {len(output_tokens)}")
         output_text = self.tokenizer.decode(output_tokens if not prompts_is_empty else output_tokens[1:])
         if prompts_is_empty:
             output_text = output_text.lstrip()
@@ -53,9 +58,9 @@ class Decoder:
         with torch.no_grad():
             while max_token_count == -1 or len(outputs) < max_token_count:
                 seq_len = x.shape[1]
-                if seq_len > self.llm.max_seq_len:
-                    x = x[:, -self.llm.max_seq_len :]
-                    assert x.shape == (1, seq_len), f"x.shape: {x.shape}, seq_len: {seq_len}"
+                if seq_len > self.max_seq_len:
+                    x = x[:, -self.max_seq_len :]
+                    assert x.shape == (1, self.max_seq_len), f"x.shape: {x.shape}, seq_len: {seq_len}"
                     seq_len = x.shape[1]
                 logits = self.llm(x)
                 assert logits.shape == (
@@ -112,36 +117,43 @@ if __name__ == "__main__":
     import argparse
 
     parser = argparse.ArgumentParser()
-    parser.add_argument(
-        "--file",
-        type=str,
-        default="data/TinyStoriesV2-GPT4-train.txt",
-        help="Path to the input text file.",
-    )
-    parser.add_argument("--exp-name", type=str, required=False, help="Experiment name", default=f"")
-    parser.add_argument("--steps", type=int, required=False, help="Number of training steps", default=-1)
-    parser.add_argument(
-        "--checkpoint_path", type=str, required=False, help="Path to save checkpoints", default="checkpoints/"
-    )
+    parser.add_argument("--config", type=str, default="defaul.yaml", help="Path to config file (json or yaml)")
+    parser.add_argument("--steps", type=int, required=False, default=-1, help="Checkpoint step to load, -1 for latest")
     args = parser.parse_args()
+    if not os.path.exists(args.config):
+        print(f"Config file {args.config} does not exist.")
+        exit(1)
+    config = load_config_from_file(args.config)
+    # model_config: ModelConfig = ModelConfig(**config.get("model", {}))
+    data_config: DataConfig = DataConfig(**config.get("data", {}))
+    exp_config: ExperimentConfig = ExperimentConfig(**config.get("experiment", {}))
+    opt_config: OptimizerConfig = OptimizerConfig(**config.get("optimizer", {}))
+    # print(f"Model config: {model_config}")
+    print(f"Data config: {data_config}")
+    print(f"Experiment config: {exp_config}")
+    print(f"Optimizer config: {opt_config}")
 
+    print("-" * 120)
     chp_file_name = "latest.pt" if args.steps == -1 else f"checkpoint_{args.steps}.pt"
-    if args.exp_name:
-        chp_file_name = f"{args.exp_name}_{chp_file_name}"
-    chp_file_path = os.path.join(args.checkpoint_path, chp_file_name)
+    if exp_config.name:
+        chp_file_name = f"{exp_config.name}_{chp_file_name}"
+    chp_file_path = os.path.join(exp_config.checkpoints_path, chp_file_name)
     found_chp = os.path.exists(chp_file_path)
     if not found_chp:
         print(f"No checkpoint found at {chp_file_path}")
         exit(1)
     device = get_device()
     print(f"Loading checkpoint from {chp_file_path}")
-    llm, model_config = load_model_from(chp_file_path, device=device)
+    llm, model_config_dict = load_model_from(chp_file_path, device=device)
     llm.eval()
 
-    file_prefix = args.file.replace("train.txt", "train")
-    file_prefix = file_prefix.replace("valid.txt", "train")
+    # convert TinyStoriesV2-GPT4-train-bpe-merged.npy to TinyStoriesV2-GPT4-train
+    # convert TinyStoriesV2-GPT4-train-bpe.npy to TinyStoriesV2-GPT4-train
+    # use regex to remove -bpe(-merged)?\.npy$
+    import regex as re
+    file_prefix = re.sub(r"-bpe(-merged)?\.npy$", "", data_config.train_data)
     tokenizer: BPETokenizer = load_tokenizer(file_prefix)
 
     decoder = Decoder(llm, device=str(device), tokenizer=tokenizer, temperature=1.0, top_p=1.0)
-    output_str = decoder.generate("", max_token_count=model_config["max_seq_len"])
+    output_str = decoder.generate("", max_token_count=1000)
     print(f"Output: {output_str}")
