@@ -144,7 +144,7 @@ if is_main_file:
         max_seq_len=model_config.max_seq_len,
         theta=model_config.theta,
         ffn_type=model_config.ffn_type,
-        dtype=torch.float32 if model_config.dtype == "float32" else torch.bfloat16,
+        dtype=torch.float32,
         device=get_device(),
     )
 
@@ -154,6 +154,13 @@ if is_main_file:
         betas = opt_config.betas,
         weight_decay=opt_config.weight_decay,
     )
+
+    # Enable torch compile if available (PyTorch 2.0+)
+    if use_compile:
+        llm = torch.compile(llm)
+        print_and_log(f"Torch version: {torch.__version__} model compiled with torch.compile")
+        torch.set_float32_matmul_precision('high')
+        print_and_log(f"Float32 matmul precision set to high")
     
     if args.restore and found_latest:
         print_and_log(f"Loading checkpoint from {latest_file_path}")
@@ -186,13 +193,9 @@ if is_main_file:
     last_batch_count = 0
     start_time = time()
     region_timer: RegionTimer = RegionTimer()
-
-    # Enable torch compile if available (PyTorch 2.0+)
-    if use_compile:
-        llm = torch.compile(llm)
-        print_and_log(f"Torch version: {torch.__version__} model compiled with torch.compile")
-        torch.set_float32_matmul_precision('high')
-        print_and_log(f"Float32 matmul precision set to high")
+    
+    use_bf16 = torch.cuda.is_bf16_supported() and device.type == "cuda"
+    print_and_log(f"BF16 support: {use_bf16}, device type: {device.type}, device name: {torch.cuda.get_device_name(device) if device.type == 'cuda' else str(device)}")
 
     with Progress() as progress:
         task = progress.add_task(f"[green]Training loss", total=exp_config.steps - iteration)
@@ -213,8 +216,13 @@ if is_main_file:
                 https://docs.pytorch.org/docs/stable/amp.html
                 https://docs.nvidia.com/deeplearning/performance/mixed-precision-training/
                 """
-                logits = llm(x)  # Forward pass to get logits.
-                loss = cross_entropy(logits, y)  # Compute the cross-entropy loss.
+                if use_bf16:
+                    with torch.autocast(device_type=device.type, dtype=torch.bfloat16):
+                        logits = llm(x)  # Forward pass to get logits.
+                        loss = cross_entropy(logits, y)  # Compute the cross-entropy loss.
+                else:
+                    logits = llm(x)  # Forward pass to get logits.
+                    loss = cross_entropy(logits, y)  # Compute the cross-entropy loss.
 
 
             now = time()

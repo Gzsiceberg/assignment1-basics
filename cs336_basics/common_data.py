@@ -14,7 +14,6 @@ class ModelConfig(BaseModel):
     max_seq_len: int
     theta: float = 100000.0
     ffn_type: str = "silu"
-    dtype: str = "float32"
 
 
 class ExperimentConfig(BaseModel):
