@@ -21,6 +21,7 @@ dependencies = [
     "ty>=0.0.1a16",
     "rich>=14.1.0",
     "beartype>=0.21.0",
+    "matplotlib>=3.10.6",
 ]
 
 [build-system]
