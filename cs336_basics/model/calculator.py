@@ -112,6 +112,7 @@ def calc_llm_memory(
         block_activations + lmfinal_rmsnorm_activation + lmhead_params_activations + cross_entropy_loss_activation
     )
 
+    print_and_log(f"for batch size: {batch_size}")
     print_and_log(f"Total parameters: {total_params:,}")
     print_and_log(f"Total activations: {total_activations:,}")
     print_and_log(f"params + gradients + states: {(total_params + total_gradients + total_adammw_states) * 4:,}")
@@ -120,7 +121,7 @@ def calc_llm_memory(
     gradients_memory = total_gradients * 4 / (1024**3)
     adammw_states_memory = total_adammw_states * 4 / (1024**3)
     activations_memory = batch_size * total_activations * 4 / (1024**3)
-    total_memory = (total_params + total_gradients + total_activations) * 4 / (1024**3)
+    total_memory = params_memory + gradients_memory + adammw_states_memory + activations_memory
     print_and_log(f"Parameters memory (GB): {params_memory:.2f}")
     print_and_log(f"Gradients memory (GB): {gradients_memory:.2f}")
     print_and_log(f"AdamW states memory (GB): {adammw_states_memory:.2f}")

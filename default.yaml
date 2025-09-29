@@ -2,8 +2,10 @@ experiment:
   name: ""
   checkpoint_dir: "checkpoints"
   log_dir: "logs"
-  batch_size: 16
-  steps: 100000
+  # total tokens processed = steps * batch_size * max_seq_len
+  # 327,680,000
+  batch_size: 64
+  steps: 20000
   eval_step: 100
   checkpoints_interval: 1
   checkpoints_path: "checkpoints"
@@ -14,13 +16,13 @@ data:
 
 model:
   vocab_size: 10000
-  num_layers: 2
-  d_model: 128
-  num_heads: 8
-  d_ff: 512
-  max_seq_len: 64
-  theta: 100000.0
-  ffn_type: "silu"
+  num_layers: 4
+  d_model: 512
+  num_heads: 16
+  d_ff: 1344
+  max_seq_len: 256
+  theta: 10000
+  ffn_type: "swiglu"
 
 optimizer:
   learning_rate: 0.001
