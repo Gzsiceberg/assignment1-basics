@@ -27,11 +27,6 @@ class ExperimentConfig(BaseModel):
     checkpoints_path: str = "checkpoints"
     eval_steps: int = 100
 
-    lr_schedule: str = "constant"  # Options: "constant", "linear", "cosine"
-    lr_min: float = 0
-    lr_max: float = 0.001
-    warmup_ratio: float = 0.1
-    cosine_cycle_ratio: float = 1.0
 
 
 class DataConfig(BaseModel):
@@ -39,17 +34,17 @@ class DataConfig(BaseModel):
     valid_data: str
 
 
-# optimizer:
-#   learning_rate: 0.001
-#   weight_decay: 0.01
-#   betas: [0.9, 0.999]
-#   grad_clip: 0
 class OptimizerConfig(BaseModel):
     learning_rate: float = 0.001
     weight_decay: float = 0.01
     betas: typing.List[float] = [0.9, 0.999]
     grad_clip: float = 0.0
 
+    lr_schedule: str = "constant"  # Options: "constant", "linear", "cosine"
+    lr_min: float = 0
+    lr_max: float = 0.001
+    warmup_ratio: float = 0.1
+    cosine_cycle_ratio: float = 1.0
 
 def load_config_from_file(config_path: str) -> dict:
     """Load configuration from a file and return as a dictionary"""

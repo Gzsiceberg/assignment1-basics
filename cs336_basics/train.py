@@ -142,10 +142,10 @@ if is_main_file:
     with Progress() as progress:
         task = progress.add_task(f"[green]Training loss", total=exp_config.steps - iteration)
 
-        warmup_steps: int = int(exp_config.warmup_ratio * exp_config.steps)
-        cosine_cycle_steps: int = round(exp_config.cosine_cycle_ratio * exp_config.steps)
-        if exp_config.lr_schedule == "cosine":
-            print_and_log(f"Using cosine learning rate schedule with min {exp_config.lr_min}, max {exp_config.lr_max}, "
+        warmup_steps: int = int(opt_config.warmup_ratio * exp_config.steps)
+        cosine_cycle_steps: int = round(opt_config.cosine_cycle_ratio * exp_config.steps)
+        if opt_config.lr_schedule == "cosine":
+            print_and_log(f"Using cosine learning rate schedule with min {opt_config.lr_min}, max {opt_config.lr_max}, "
                           f"warmup steps {warmup_steps}, cosine cycle steps {cosine_cycle_steps}")
         for t in range(iteration, exp_config.steps):
             x, y = get_batch(data, exp_config.batch_size, model_config.max_seq_len, device_str)
@@ -165,8 +165,8 @@ if is_main_file:
 
 
             lr: float = opt_config.learning_rate
-            if exp_config.lr_schedule == "cosine":
-                lr: float = get_lr_cosine_schedule(t, exp_config.lr_max, exp_config.lr_min,
+            if opt_config.lr_schedule == "cosine":
+                lr: float = get_lr_cosine_schedule(t, opt_config.lr_max, opt_config.lr_min,
                                                    warmup_steps, cosine_cycle_steps)
             for param_group in opt.param_groups:
                 param_group["lr"] = lr
