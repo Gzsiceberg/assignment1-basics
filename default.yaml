@@ -3,12 +3,12 @@ experiment:
   checkpoint_dir: "checkpoints"
   log_dir: "logs"
   batch_size: 16
-  steps: 1000
+  steps: 100000
   eval_step: 100
   checkpoints_interval: 1
   checkpoints_path: "checkpoints"
 
-  lr_schedule: "constant"
+  lr_schedule: "cosine"
   lr_min: 0
   lr_max: 0.006
   warmup_ratio: 0.01
