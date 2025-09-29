@@ -6,6 +6,7 @@ import torch
 from torch import nn
 import numpy as np
 import random
+from cs336_basics.checkpoints import load_checkpoint, save_checkpoint
 from cs336_basics.data_loader import get_batch
 from cs336_basics.logger import setup_logging
 from cs336_basics.model import calculator
@@ -28,29 +29,6 @@ np.random.seed(seed)
 random.seed(seed)
 
 
-def save_checkpoint(
-    model: nn.Module,
-    optimizer: torch.optim.Optimizer,
-    iteration: int,
-    out: str | os.PathLike | typing.BinaryIO | typing.IO[bytes],
-) -> None:
-    checkpoint = {
-        "model_state_dict": model.state_dict(),
-        "optimizer_state_dict": optimizer.state_dict(),
-        "iteration": iteration,
-    }
-    torch.save(checkpoint, out)
-
-
-def load_checkpoint(
-    src: str | os.PathLike | typing.BinaryIO | typing.IO[bytes], model: nn.Module, optimizer: torch.optim.Optimizer
-) -> int:
-    checkpoint = torch.load(src)
-    model.load_state_dict(checkpoint["model_state_dict"])
-    optimizer.load_state_dict(checkpoint["optimizer_state_dict"])
-    return checkpoint["iteration"]
-
-
 def calc_validation_loss(
     llm: TransformerLM,
     data: np.memmap,
@@ -62,7 +40,7 @@ def calc_validation_loss(
     llm.eval()
     avg_loss = 0.0
     with torch.no_grad():
-        for t in track(range(evl_iters)):
+        for t in track(range(evl_iters), description="[green]Evaluating..."):
             x, y = get_batch(data, batch_size, max_seq_len, device_str)
             logits = llm(x)
             loss = cross_entropy(logits, y)
@@ -155,6 +133,15 @@ if is_main_file:
         dtype=torch.float32,
         ffn_type=args.ffn_type,
     )
+    model_config = {}
+    model_config["vocab_size"] = args.vocab_size
+    model_config["num_layers"] = args.num_layers
+    model_config["d_model"] = args.d_model
+    model_config["num_heads"] = args.num_heads
+    model_config["d_ff"] = args.d_ff
+    model_config["max_seq_len"] = args.max_seq_len
+    model_config["theta"] = args.theta
+    model_config["ffn_type"] = args.ffn_type
     opt = AdamW(llm.parameters(), lr=args.lr, beta1=args.betas[0], beta2=args.betas[1], weight_decay=args.weight_decay)
     if not os.path.exists(args.checkpoint_path):
         os.makedirs(args.checkpoint_path)
@@ -222,11 +209,11 @@ if is_main_file:
                     checkpoint_file_name = f"checkpoint_{t+1}.pt"
                 checkpoint_file = os.path.join(args.checkpoint_path, checkpoint_file_name)
                 print(f"Saving checkpoint to {checkpoint_file}")
-                save_checkpoint(llm, opt, t + 1, checkpoint_file)
+                save_checkpoint(llm, opt, t + 1, checkpoint_file, model_config=model_config)
 
                 # Also save a latest checkpoint
                 latest_file = os.path.join(args.checkpoint_path, latest_file_name)
-                save_checkpoint(llm, opt, t + 1, latest_file)
+                save_checkpoint(llm, opt, t + 1, latest_file, model_config=model_config)
 
                 valid_loss = calc_validation_loss(llm, valid_data, args.batch_size, args.max_seq_len, device_str)
                 print(f"Validation loss after step {t+1}: {valid_loss:.4f}")

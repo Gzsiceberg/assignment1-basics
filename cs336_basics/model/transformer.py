@@ -124,12 +124,12 @@ class TransformerLM(nn.Module):
     @jaxtyped(typechecker=typechecker)
     def forward(
         self,
-        token_ids: Int[Tensor, "batch_size ... seq_len"],
-        token_positions: Int[Tensor, "batch_size ... seq_len"] | None = None,
-    ) -> Float[Tensor, "batch_size ... seq_len vocab_size"]:
+        token_ids: Int[Tensor, "batch_size seq_len"],
+        token_positions: Int[Tensor, "batch_size seq_len"] | None = None,
+    ) -> Float[Tensor, "batch_size seq_len vocab_size"]:
         """
-        token_ids: (batch_size, ..., seq_len)
-        token_positions: (batch_size, ..., seq_len) or None
+        token_ids: (batch_size, seq_len)
+        token_positions: (batch_size, seq_len) or None
         FLOPS_BLOCK: num_layers * (4 * seq_len^2 * d_model + 8 * d_model^2 * seq_len + 6 * d_model * d_ff * seq_len) * ... (batch size and other dimensions)
         FLOPS_OUT: 2 * d_model * vocab_size * seq_len * ... (batch size and other dimensions)
         Total FLOPS: FLOPS_BLOCK + FLOPS_OUT
