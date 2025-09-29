@@ -200,15 +200,12 @@ if is_main_file:
             with ContextTimer(region_timer, "forward", True):
                 logits = llm(x)  # Forward pass to get logits.
                 loss = cross_entropy(logits, y)  # Compute the cross-entropy loss.
-                current_loss = loss.item()
-            
-            with ContextTimer(region_timer, "backward", True):
-                loss.backward()  # Run backward pass, which computes gradients.
+
 
             now = time()
             last_batch_count += 1
             if now - last_print_time >= 2 or t == exp_config.steps - 1:
-                last_batch_loss = current_loss
+                last_batch_loss = loss.item()
                 last_train_tokens = exp_config.batch_size * model_config.max_seq_len * last_batch_count
                 tokens_per_sec = int(last_train_tokens / (now - last_print_time))
                 last_tflops = (t_flops * last_batch_count) / 1e12
@@ -217,6 +214,9 @@ if is_main_file:
                 print_and_log(f"Step {t}: loss {last_batch_loss:.4f} tokens/sec {tokens_per_sec:,} Tflops/sec {tflops_per_sec:,.2f}")
                 last_batch_count = 0
                 last_print_time = now
+            
+            with ContextTimer(region_timer, "backward", True):
+                loss.backward()  # Run backward pass, which computes gradients.
 
             with ContextTimer(region_timer, "update_params", True):
                 if opt_config.grad_clip > 0:
@@ -232,7 +232,7 @@ if is_main_file:
 
             # Update progress bar description with current loss
             remain_time_to_checkpoint = int(last_checkpoint_time + exp_config.checkpoints_interval * 60 - now)
-            progress.update(task, description=f"[green]loss {current_loss:.4f} lr {lr:.4f} chp {remain_time_to_checkpoint}s", advance=1)
+            progress.update(task, description=f"[green]lr {lr:.4f} chp {remain_time_to_checkpoint}s", advance=1)
 
             if remain_time_to_checkpoint <= 0 or t == exp_config.steps - 1:
                 with ContextTimer(region_timer, "checkpoint", True):
