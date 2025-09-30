@@ -2,6 +2,7 @@ import math
 from typing import Iterable
 import torch
 from torch import nn
+torch.optim.SGD
 
 def get_lr_cosine_schedule(step: int, a_max: float, a_min: float, t_warmup: int, t_cooldown: int) -> float:
     if step < t_warmup:
@@ -79,6 +80,7 @@ class AdamW(torch.optim.Optimizer):
     def __str__(self) -> str:
         return f"AdamW(lr={self.defaults['lr']}, betas={self.defaults['betas']}, eps={self.defaults['eps']}, weight_decay={self.defaults['weight_decay']})"
 
+    @torch.no_grad()
     def step(self) -> None:  # type: ignore
         """
         Parameters state:
@@ -96,16 +98,17 @@ class AdamW(torch.optim.Optimizer):
                 if param.grad is None:
                     continue
                 state = self.state[param]
-                t = state.get("t", 0) + 1
-                m = state.get("m", torch.zeros_like(param))
-                v = state.get("v", torch.zeros_like(param))
+                t: int = state.get("t", 0) + 1
+                m: torch.Tensor = state.get("m", torch.zeros_like(param))
+                v: torch.Tensor = state.get("v", torch.zeros_like(param))
 
                 m = beta1 * m + (1 - beta1) * param.grad
                 v = beta2 * v + (1 - beta2) * torch.square(param.grad)
 
                 lr_t = lr * math.sqrt(1 - beta2**t) / (1 - beta1**t)
-                param.data -= lr_t * m / (torch.sqrt(v) + eps)
-                param.data -= lr * weight_decay * param.data
+                param.data.addcdiv(m, torch.sqrt(v) + eps, value=-lr_t)
+                if weight_decay > 0:
+                    param.data.add_(param.data, -lr * weight_decay)
 
                 state["t"] = t
                 state["m"] = m
