@@ -1,0 +1,39 @@
+experiment:
+  name: "ts_b128_lr8"
+  checkpoint_dir: "checkpoints"
+  log_dir: "logs"
+  # total tokens processed = steps * batch_size * max_seq_len
+  # 327,680,000
+  batch_size: 128
+  eval_batch_size: 64
+  steps: 10000
+  eval_step: 100
+  checkpoints_interval: 5
+  checkpoints_path: "checkpoints"
+
+data:
+  train_data: "data/TinyStoriesV2-GPT4-train-bpe-merged.npy"
+  valid_data: "data/TinyStoriesV2-GPT4-valid-bpe-merged.npy"
+
+model:
+  vocab_size: 10_000
+  num_layers: 4
+  d_model: 512
+  num_heads: 16
+  d_ff: 1344
+  max_seq_len: 256
+  theta: 10_000
+  ffn_type: "swiglu"
+
+optimizer:
+  learning_rate: 0.001
+  # lr_schedule options: "constant", "cosine"
+  lr_schedule: "cosine"
+  lr_min: 0
+  lr_max: 8e-3
+  warmup_ratio: 0.01
+  cosine_cycle_ratio: 1.0
+  # AdamW parameters
+  weight_decay: 0.01
+  betas: [0.9, 0.95]
+  grad_clip: 1.0

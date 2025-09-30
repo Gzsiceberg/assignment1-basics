@@ -102,7 +102,7 @@ if is_main_file:
     parser.add_argument("-r", "--restore", action="store_true", help="Restore from the latest checkpoint if available")
     args = parser.parse_args()
     if not os.path.exists(args.config):
-        print_and_log(f"Config file {args.config} does not exist.")
+        print(f"Config file {args.config} does not exist.")
         exit(1)
     config = load_config_from_file(args.config)
     model_config: ModelConfig = ModelConfig(**config.get("model", {}))
@@ -183,7 +183,12 @@ if is_main_file:
             f"Warning: Found existing checkpoint at {latest_file_path}. Do you want to overwrite it? (y/n): "
         )
         if response.lower() != "y":
-            print_and_log("Exiting without overwriting the checkpoint.")
+            print("Exiting without overwriting the checkpoint.")
+            log_file = os.path.join(exp_config.log_dir, log_file_name)
+            # delete the log file
+            if os.path.exists(log_file):
+                os.remove(log_file)
+                print(f"Deleted log file {log_file}")
             exit(0)
 
     t_flops = profile_model()
