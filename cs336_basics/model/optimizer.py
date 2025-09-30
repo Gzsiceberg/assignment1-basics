@@ -13,21 +13,24 @@ def get_lr_cosine_schedule(step: int, a_max: float, a_min: float, t_warmup: int,
     return a
 
 
-def gradient_clipping(parameters: Iterable[nn.Parameter], max_l2_norm: float) -> None:
-    sum_norm_squared = 0.0
-    for p in parameters:
-        if p.grad is None:
-            continue
-        param_norm = p.grad.data.square().sum()
-        sum_norm_squared += param_norm.item()
-    total_norm = math.sqrt(sum_norm_squared)
-    if total_norm < max_l2_norm:
-        return
-    clip_coef = max_l2_norm / (total_norm + 1e-6)
-    for p in parameters:
-        if p.grad is None:
-            continue
-        p.grad.data.mul_(clip_coef)
+@torch.no_grad()
+@torch.compile
+def gradient_clipping(parameters: Iterable[nn.Parameter], max_l2_norm: float) -> torch.Tensor:
+    grads = [p.grad for p in parameters if p.grad is not None]
+    if len(grads) == 0:
+        return torch.tensor(0.0)
+
+    device = grads[0].device
+    sum_sq: torch.Tensor = torch.zeros((), device=device, dtype=torch.float32)
+    for g in grads:
+        sum_sq += g.to(torch.float32).square().sum()
+    total_norm: torch.Tensor = sum_sq.sqrt()
+    max_n = torch.as_tensor(max_l2_norm, device=device, dtype=torch.float32)
+    clip_coef: torch.Tensor = max_n / (total_norm + 1e-6)
+    clip_coef = torch.clamp_max(clip_coef, 1.0)
+    for g in grads:
+        g.mul_(clip_coef)
+    return total_norm
 
 
 class SGD(torch.optim.Optimizer):
@@ -106,9 +109,9 @@ class AdamW(torch.optim.Optimizer):
                 v = beta2 * v + (1 - beta2) * torch.square(param.grad)
 
                 lr_t = lr * math.sqrt(1 - beta2**t) / (1 - beta1**t)
-                param.data.addcdiv(m, torch.sqrt(v) + eps, value=-lr_t)
+                param.addcdiv(m, torch.sqrt(v) + eps, value=-lr_t)
                 if weight_decay > 0:
-                    param.data.add_(param.data, -lr * weight_decay)
+                    param.add_(param, alpha=-lr * weight_decay)
 
                 state["t"] = t
                 state["m"] = m
