@@ -284,7 +284,7 @@ if is_main_file:
 
                 with ContextTimer(region_timer, "validation", True):
                     valid_loss = calc_validation_loss(
-                        llm, valid_data, exp_config.batch_size, model_config.max_seq_len, device_str,
+                        llm, valid_data, exp_config.eval_batch_size, model_config.max_seq_len, device_str,
                         evl_iters=exp_config.eval_steps,
                     )
                     print_and_log(f"Validation loss. step {t+1}: {valid_loss:.4f}")
@@ -293,9 +293,3 @@ if is_main_file:
     end_time = time()
     total_time = end_time - start_time
     print(f"Training complete. Time taken: {total_time/60:.2f} minutes")
-
-    valid_loss = calc_validation_loss(
-        llm, valid_data, exp_config.batch_size, model_config.max_seq_len, device_str,
-        evl_iters=exp_config.eval_steps * 2,
-    )
-    print_and_log(f"Final validation loss: {valid_loss:.4f}")

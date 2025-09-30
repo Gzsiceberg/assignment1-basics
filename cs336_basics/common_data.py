@@ -21,6 +21,7 @@ class ExperimentConfig(BaseModel):
     checkpoint_dir: str = "checkpoints"
     log_dir: str = "logs"
     batch_size: int = 16
+    eval_batch_size: int = 16
     steps: int = 1000
     checkpoints_interval: int = 1
     checkpoints_path: str = "checkpoints"
