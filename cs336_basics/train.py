@@ -227,7 +227,6 @@ if is_main_file:
 
             with ContextTimer(region_timer, "forward", True):
                 """
-                TODO: try to implement mixed precision training using torch.autocast
                 https://docs.pytorch.org/docs/stable/amp.html
                 https://docs.nvidia.com/deeplearning/performance/mixed-precision-training/
                 """
