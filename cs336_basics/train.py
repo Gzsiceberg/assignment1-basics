@@ -1,3 +1,4 @@
+import gc
 import logging
 import os
 use_compile = True
@@ -40,16 +41,16 @@ def calc_validation_loss(
     batch_size: int,
     max_seq_len: int,
     device_str: str,
-    evl_iters: int = 500,
+    eval_iters: int = 500,
 ) -> float:
     llm.eval()
     avg_loss = 0.0
     with torch.no_grad():
-        for t in track(range(evl_iters), description="[green]Evaluating..."):
+        for t in track(range(eval_iters), description="[green]Evaluating..."):
             x, y = get_batch(data, batch_size, max_seq_len, device_str)
             logits = llm(x)
             loss = cross_entropy(logits, y)
-            avg_loss += loss.cpu().item() / evl_iters
+            avg_loss += loss.cpu().item() / eval_iters
     llm.train()
     return avg_loss
 
@@ -101,6 +102,7 @@ if is_main_file:
     parser.add_argument("-c", "--config", type=str, required=True, default="default.yaml", help="Path to config file (json or yaml)")
     parser.add_argument("-p", "--profile", action="store_true", help="Enable profiling")
     parser.add_argument("-r", "--restore", action="store_true", help="Restore from the latest checkpoint if available")
+    parser.add_argument("-v", "--validation", action="store_true", help="Run validation only")
     args = parser.parse_args()
     if not os.path.exists(args.config):
         print(f"Config file {args.config} does not exist.")
@@ -200,6 +202,14 @@ if is_main_file:
     valid_data = np.memmap(data_config.valid_data, mode="r", dtype=np.int16)
     print_and_log(f"Validation data has {valid_data.shape[0]} tokens.")
 
+    if args.validation:
+        valid_loss = calc_validation_loss(
+            llm, valid_data, exp_config.eval_batch_size, model_config.max_seq_len, device_str,
+            eval_iters=exp_config.eval_steps * 2,
+        )
+        print_and_log(f"Validation loss at iteration {iteration}: {valid_loss:.4f}")
+        exit(0)
+
 
     last_batch_loss = 0
     last_checkpoint_time = time()
@@ -291,14 +301,17 @@ if is_main_file:
                 with ContextTimer(region_timer, "validation", True):
                     valid_loss = calc_validation_loss(
                         llm, valid_data, exp_config.eval_batch_size, model_config.max_seq_len, device_str,
-                        evl_iters=exp_config.eval_steps,
+                        eval_iters=exp_config.eval_steps,
                     )
                     print_and_log(f"Validation loss. step {t+1}: {valid_loss:.4f}")
 
                 region_timer.report()
+    if device.type == "cuda":
+        torch.cuda.synchronize(device)
     end_time = time()
     total_time = end_time - start_time
     print_and_log(f"Training complete. Time taken: {total_time/60:.2f} minutes")
     logging.shutdown()
     del data
     del valid_data
+    gc.collect()
