@@ -26,6 +26,7 @@ class ExperimentConfig(BaseModel):
     checkpoints_interval: int = 1
     checkpoints_path: str = "checkpoints"
     eval_steps: int = 100
+    use_autocast: bool = False
 
 
 

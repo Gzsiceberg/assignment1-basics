@@ -209,8 +209,8 @@ if is_main_file:
     region_timer: RegionTimer = RegionTimer()
     
     support_bf16 = torch.cuda.is_bf16_supported() and device.type == "cuda"
-    use_bf16 = False
-    print_and_log(f"UseBF16={use_bf16} BF16 support: {support_bf16}, device type: {device.type}, device name: {torch.cuda.get_device_name(device) if device.type == 'cuda' else str(device)}")
+    use_autocast = exp_config.use_autocast
+    print_and_log(f"UseBF16={use_autocast} BF16 support: {support_bf16}, device type: {device.type}, device name: {torch.cuda.get_device_name(device) if device.type == 'cuda' else str(device)}")
 
     with Progress() as progress:
         task = progress.add_task(f"[green]Training loss", total=exp_config.steps - iteration)
@@ -231,7 +231,7 @@ if is_main_file:
                 https://docs.pytorch.org/docs/stable/amp.html
                 https://docs.nvidia.com/deeplearning/performance/mixed-precision-training/
                 """
-                if use_bf16:
+                if use_autocast and support_bf16:
                     with torch.autocast(device_type=device.type, dtype=torch.bfloat16):
                         logits = llm(x)  # Forward pass to get logits.
                         loss = cross_entropy(logits, y)  # Compute the cross-entropy loss.
