@@ -15,8 +15,8 @@ from cs336_basics.model.swiglu import SwiGLU
 
 class TransformerBlock(nn.Module):
     multi_head_attention: MultiHeadAttention
-    rms_norm1: RMSNorm
-    rms_norm2: RMSNorm
+    rms_norm1: RMSNorm | None
+    rms_norm2: RMSNorm | None
     ffn: nn.Module
 
     def __init__(
@@ -43,10 +43,14 @@ class TransformerBlock(nn.Module):
             rope = RoPE(theta=theta, d_k=d_k, max_seq_len=max_seq_len, device=device)
         if use_layernorm:
             self.rms_norm1 = RMSNorm(d_model, device=device, dtype=dtype)
+        else:
+            self.rms_norm1 = None
         self.multi_head_attention = MultiHeadAttention(d_model, num_heads, rope=rope, device=device, dtype=dtype)
 
         if use_layernorm:
             self.rms_norm2 = RMSNorm(d_model, device=device, dtype=dtype)
+        else:
+            self.rms_norm2 = None
         if ffn_type == "swiglu":
             self.ffn = SwiGLU(d_model, d_ff, device=device, dtype=dtype)
         elif ffn_type == "silu":
@@ -80,7 +84,7 @@ class TransformerBlock(nn.Module):
 class TransformerLM(nn.Module):
     vocab_size: int
     max_seq_len: int
-    rms_norm: RMSNorm
+    rms_norm: RMSNorm | None
 
     def __init__(
         self,
@@ -129,6 +133,8 @@ class TransformerLM(nn.Module):
         )
         if use_layernorm:
             self.rms_norm = RMSNorm(d_model, device=device, dtype=dtype)
+        else:
+            self.rms_norm = None
         self.lm_head = Linear(d_model, vocab_size, device=device, dtype=dtype)
 
     @jaxtyped(typechecker=typechecker)

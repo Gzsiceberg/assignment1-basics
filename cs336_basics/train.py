@@ -129,6 +129,7 @@ if is_main_file:
         log_file_name = model_config_dict.get("log_file", None)
 
     log_file_name = setup_logging(exp_config, log_file_name)
+    print_and_log(f"Using config file: {args.config}")
     print_and_log(f"Model config: {model_config}")
     print_and_log(f"Data config: {data_config}")
     print_and_log(f"Experiment config: {exp_config}")
