@@ -71,9 +71,13 @@ class AdaGrad(torch.optim.Optimizer):
 
 
 class AdamW(torch.optim.Optimizer):
+    defaults: dict
     def __init__(self, params: Iterable[nn.Parameter], lr=1e-3, betas=(0.9, 0.999), eps=1e-8, weight_decay=0.01):
-        defaults = dict(lr=lr, betas=betas, eps=eps, weight_decay=weight_decay)
-        super().__init__(params, defaults)
+        self.defaults = dict(lr=lr, betas=betas, eps=eps, weight_decay=weight_decay)
+        super().__init__(params, self.defaults)
+    
+    def __str__(self) -> str:
+        return f"AdamW(lr={self.defaults['lr']}, betas={self.defaults['betas']}, eps={self.defaults['eps']}, weight_decay={self.defaults['weight_decay']})"
 
     def step(self) -> None:  # type: ignore
         """

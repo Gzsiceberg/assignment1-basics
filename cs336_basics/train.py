@@ -154,6 +154,7 @@ if is_main_file:
         betas = opt_config.betas,
         weight_decay=opt_config.weight_decay,
     )
+    print_and_log(f"optimizer: {opt}")
 
     device = get_device()
     device_str = str(device)
