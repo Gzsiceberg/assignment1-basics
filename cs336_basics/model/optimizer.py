@@ -109,9 +109,10 @@ class AdamW(torch.optim.Optimizer):
                 v = beta2 * v + (1 - beta2) * torch.square(param.grad)
 
                 lr_t = lr * math.sqrt(1 - beta2**t) / (1 - beta1**t)
-                param.addcdiv(m, torch.sqrt(v) + eps, value=-lr_t)
-                if weight_decay > 0:
-                    param.add_(param, alpha=-lr * weight_decay)
+                param.addcdiv_(m, torch.sqrt(v) + eps, value=-lr_t)
+                param.mul_(1 - lr * weight_decay)
+                # param.data -= lr_t * m / (torch.sqrt(v) + eps)
+                # param.data -= lr * weight_decay * param.data
 
                 state["t"] = t
                 state["m"] = m
