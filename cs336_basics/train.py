@@ -149,6 +149,7 @@ if is_main_file:
         ffn_type=model_config.ffn_type,
         dtype=torch.float32,
         device=get_device(),
+        use_layernorm=model_config.use_layernorm,
     )
 
     opt = AdamW(

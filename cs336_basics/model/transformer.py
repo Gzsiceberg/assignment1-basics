@@ -30,6 +30,7 @@ class TransformerBlock(nn.Module):
         device: torch.device | None = None,
         dtype: torch.dtype | None = None,
         ffn_type: str = "swiglu",
+        use_layernorm: bool = True,
     ) -> None:
         super().__init__()
         """
@@ -40,10 +41,12 @@ class TransformerBlock(nn.Module):
             assert rope.d_k == d_k, f"RoPE d_k {rope.d_k} must match model d_model/num_heads {d_k}"
         else:
             rope = RoPE(theta=theta, d_k=d_k, max_seq_len=max_seq_len, device=device)
-        self.rms_norm1 = RMSNorm(d_model, device=device, dtype=dtype)
+        if use_layernorm:
+            self.rms_norm1 = RMSNorm(d_model, device=device, dtype=dtype)
         self.multi_head_attention = MultiHeadAttention(d_model, num_heads, rope=rope, device=device, dtype=dtype)
 
-        self.rms_norm2 = RMSNorm(d_model, device=device, dtype=dtype)
+        if use_layernorm:
+            self.rms_norm2 = RMSNorm(d_model, device=device, dtype=dtype)
         if ffn_type == "swiglu":
             self.ffn = SwiGLU(d_model, d_ff, device=device, dtype=dtype)
         elif ffn_type == "silu":
@@ -62,10 +65,10 @@ class TransformerBlock(nn.Module):
         FLOPS_FFN: 6 * d_model * d_ff * seq_len * ... (batch size and other dimensions)
         FLOPS: FLOPS_MHA + FLOPS_FFN
         """
-        norm_x = self.rms_norm1(x)
+        norm_x = self.rms_norm1(x) if self.rms_norm1 is not None else x
         atten_x = self.multi_head_attention(norm_x, token_positions=token_positions)
         y0 = x + atten_x
-        norm_y0 = self.rms_norm2(y0)
+        norm_y0 = self.rms_norm2(y0) if self.rms_norm2 is not None else y0
         ffn_y = self.ffn(norm_y0)
         y = y0 + ffn_y
         return y
@@ -77,6 +80,8 @@ class TransformerBlock(nn.Module):
 class TransformerLM(nn.Module):
     vocab_size: int
     max_seq_len: int
+    rms_norm: RMSNorm
+
     def __init__(
         self,
         vocab_size: int,
@@ -89,6 +94,7 @@ class TransformerLM(nn.Module):
         device: torch.device | None = None,
         dtype: torch.dtype | None = None,
         ffn_type: str = "swiglu",
+        use_layernorm: bool = True,
     ) -> None:
         super().__init__()
         """
@@ -116,11 +122,13 @@ class TransformerLM(nn.Module):
                     device=device,
                     dtype=dtype,
                     ffn_type=ffn_type,
+                    use_layernorm=use_layernorm,
                 )
                 for _ in range(num_layers)
             ]
         )
-        self.rms_norm = RMSNorm(d_model, device=device, dtype=dtype)
+        if use_layernorm:
+            self.rms_norm = RMSNorm(d_model, device=device, dtype=dtype)
         self.lm_head = Linear(d_model, vocab_size, device=device, dtype=dtype)
 
     @jaxtyped(typechecker=typechecker)
@@ -139,7 +147,7 @@ class TransformerLM(nn.Module):
         x = self.token_embedding(token_ids)
         for layer in self.layers:
             x = layer(x, token_positions=token_positions)
-        x = self.rms_norm(x)
+        x = self.rms_norm(x) if self.rms_norm is not None else x
         logits = self.lm_head(x)
         return logits
 
