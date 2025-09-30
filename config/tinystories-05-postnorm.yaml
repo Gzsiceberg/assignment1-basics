@@ -1,5 +1,5 @@
 experiment:
-  name: "ts_b128_autocast-nolayernorm-lr"
+  name: "ts_b128_autocast"
   checkpoint_dir: "checkpoints"
   log_dir: "logs"
   # total tokens processed = steps * batch_size * max_seq_len
@@ -25,14 +25,14 @@ model:
   max_seq_len: 256
   theta: 10_000
   ffn_type: "swiglu"
-  layernorm_type: ""  # options: "", "prenorm", "postnorm" 
+  layernorm_type: "postnorm"  # options: "", "prenorm", "postnorm" 
 
 optimizer:
   learning_rate: 0.001
   # lr_schedule options: "constant", "cosine"
   lr_schedule: "cosine"
   lr_min: 0
-  lr_max: 0.0003
+  lr_max: 0.003
   warmup_ratio: 0.01
   cosine_cycle_ratio: 1.0
   # AdamW parameters

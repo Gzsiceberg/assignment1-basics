@@ -18,6 +18,7 @@ class TransformerBlock(nn.Module):
     rms_norm1: RMSNorm | None
     rms_norm2: RMSNorm | None
     ffn: nn.Module
+    layernorm_type: str
 
     def __init__(
         self,
@@ -30,24 +31,25 @@ class TransformerBlock(nn.Module):
         device: torch.device | None = None,
         dtype: torch.dtype | None = None,
         ffn_type: str = "swiglu",
-        use_layernorm: bool = True,
+        layernorm_type: str = "prenorm",
     ) -> None:
         super().__init__()
         """
         Parameters: 4 * d_model^2 (MHA) + 3 * d_model * d_ff (SwiGLU) + 2 * d_model (RMSNorms)
         """
         d_k: int = d_model // num_heads
+        self.layernorm_type = layernorm_type
         if rope is not None:
             assert rope.d_k == d_k, f"RoPE d_k {rope.d_k} must match model d_model/num_heads {d_k}"
         else:
             rope = RoPE(theta=theta, d_k=d_k, max_seq_len=max_seq_len, device=device)
-        if use_layernorm:
+        if layernorm_type:
             self.rms_norm1 = RMSNorm(d_model, device=device, dtype=dtype)
         else:
             self.rms_norm1 = None
         self.multi_head_attention = MultiHeadAttention(d_model, num_heads, rope=rope, device=device, dtype=dtype)
 
-        if use_layernorm:
+        if layernorm_type:
             self.rms_norm2 = RMSNorm(d_model, device=device, dtype=dtype)
         else:
             self.rms_norm2 = None
@@ -69,12 +71,23 @@ class TransformerBlock(nn.Module):
         FLOPS_FFN: 6 * d_model * d_ff * seq_len * ... (batch size and other dimensions)
         FLOPS: FLOPS_MHA + FLOPS_FFN
         """
-        norm_x = self.rms_norm1(x) if self.rms_norm1 is not None else x
+        if self.layernorm_type == "prenorm" and self.rms_norm1 is not None:
+            norm_x = self.rms_norm1(x)
+        else:
+            norm_x = x
         atten_x = self.multi_head_attention(norm_x, token_positions=token_positions)
         y0 = x + atten_x
-        norm_y0 = self.rms_norm2(y0) if self.rms_norm2 is not None else y0
+        if self.layernorm_type == "postnorm" and self.rms_norm1 is not None:
+            y0 = self.rms_norm1(y0)
+        
+        if self.layernorm_type == "prenorm" and self.rms_norm2 is not None:
+            norm_y0 = self.rms_norm2(y0) if self.rms_norm2 is not None else y0
+        else:
+            norm_y0 = y0
         ffn_y = self.ffn(norm_y0)
         y = y0 + ffn_y
+        if self.layernorm_type == "postnorm" and self.rms_norm2 is not None:
+            y = self.rms_norm2(y)
         return y
 
     def extra_repr(self) -> str:
@@ -84,7 +97,7 @@ class TransformerBlock(nn.Module):
 class TransformerLM(nn.Module):
     vocab_size: int
     max_seq_len: int
-    rms_norm: RMSNorm | None
+    rms_norm: RMSNorm
 
     def __init__(
         self,
@@ -98,7 +111,7 @@ class TransformerLM(nn.Module):
         device: torch.device | None = None,
         dtype: torch.dtype | None = None,
         ffn_type: str = "swiglu",
-        use_layernorm: bool = True,
+        layernorm_type: str = "prenorm",
     ) -> None:
         super().__init__()
         """
@@ -126,15 +139,12 @@ class TransformerLM(nn.Module):
                     device=device,
                     dtype=dtype,
                     ffn_type=ffn_type,
-                    use_layernorm=use_layernorm,
+                    layernorm_type=layernorm_type,
                 )
                 for _ in range(num_layers)
             ]
         )
-        if use_layernorm:
-            self.rms_norm = RMSNorm(d_model, device=device, dtype=dtype)
-        else:
-            self.rms_norm = None
+        self.rms_norm = RMSNorm(d_model, device=device, dtype=dtype)
         self.lm_head = Linear(d_model, vocab_size, device=device, dtype=dtype)
 
     @jaxtyped(typechecker=typechecker)
@@ -153,7 +163,7 @@ class TransformerLM(nn.Module):
         x = self.token_embedding(token_ids)
         for layer in self.layers:
             x = layer(x, token_positions=token_positions)
-        x = self.rms_norm(x) if self.rms_norm is not None else x
+        x = self.rms_norm(x)
         logits = self.lm_head(x)
         return logits
 

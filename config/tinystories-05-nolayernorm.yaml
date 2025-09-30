@@ -25,7 +25,7 @@ model:
   max_seq_len: 256
   theta: 10_000
   ffn_type: "swiglu"
-  use_layernorm: false
+  layernorm_type: ""  # options: "", "prenorm", "postnorm" 
 
 optimizer:
   learning_rate: 0.001

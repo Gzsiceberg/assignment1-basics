@@ -14,7 +14,7 @@ class ModelConfig(BaseModel):
     max_seq_len: int
     theta: float = 100000.0
     ffn_type: str = "silu"
-    use_layernorm: bool = True
+    layernorm_type: str = "prenorm"
 
 
 class ExperimentConfig(BaseModel):
