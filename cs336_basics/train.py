@@ -1,3 +1,4 @@
+import logging
 import os
 use_compile = True
 if use_compile:
@@ -298,4 +299,7 @@ if is_main_file:
                 region_timer.report()
     end_time = time()
     total_time = end_time - start_time
-    print(f"Training complete. Time taken: {total_time/60:.2f} minutes")
+    print_and_log(f"Training complete. Time taken: {total_time/60:.2f} minutes")
+    logging.shutdown()
+    del data
+    del valid_data
