@@ -1,4 +1,5 @@
 import os
+os.environ["JAXTYPING_DISABLE"] = "1"
 from cs336_basics.checkpoints import load_model_from
 from cs336_basics.common_data import DataConfig, ExperimentConfig, ModelConfig, OptimizerConfig, load_config_from_file
 from cs336_basics.common_data import load_config_from_file
@@ -119,6 +120,8 @@ if __name__ == "__main__":
     parser = argparse.ArgumentParser()
     parser.add_argument("--config", type=str, default="defaul.yaml", help="Path to config file (json or yaml)")
     parser.add_argument("--steps", type=int, required=False, default=-1, help="Checkpoint step to load, -1 for latest")
+    parser.add_argument("-p", "--top-p", type=float, required=False, default=1.0, help="top-p sampling value")
+    parser.add_argument("-t", "--temperature", type=float, required=False, default=1.0, help="Sampling temperature")
     args = parser.parse_args()
     if not os.path.exists(args.config):
         print(f"Config file {args.config} does not exist.")
@@ -143,6 +146,7 @@ if __name__ == "__main__":
         print(f"No checkpoint found at {chp_file_path}")
         exit(1)
     device = get_device()
+    torch.set_float32_matmul_precision('high')
     print(f"Loading checkpoint from {chp_file_path}")
     llm, model_config_dict = load_model_from(chp_file_path, device=device)
     llm.eval()
@@ -155,6 +159,6 @@ if __name__ == "__main__":
     file_prefix = re.sub(r"-bpe(-merged)?\.npy$", "", data_config.train_data)
     tokenizer: BPETokenizer = load_tokenizer(file_prefix)
 
-    decoder = Decoder(llm, device=str(device), tokenizer=tokenizer, temperature=1.0, top_p=1.0)
+    decoder = Decoder(llm, device=str(device), tokenizer=tokenizer, temperature=args.temperature, top_p=args.top_p)
     output_str = decoder.generate("", max_token_count=1000)
     print(f"Output: {output_str}")

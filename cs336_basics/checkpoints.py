@@ -49,6 +49,7 @@ def load_model_from(
     model_config = checkpoint.get("model_config", None)
     if model_config is None:
         raise ValueError("No model_config found in the checkpoint.")
+    use_compile = model_config.get("use_compile", True)
     llm = TransformerLM(
         vocab_size=model_config["vocab_size"],
         num_layers=model_config["num_layers"],
@@ -61,5 +62,8 @@ def load_model_from(
         ffn_type=model_config["ffn_type"],
         device=torch.device(device),
     )
+    if use_compile:
+        print("Using torch.compile for loading model")
+        llm = torch.compile(llm)
     llm.load_state_dict(checkpoint["model_state_dict"])
     return llm, model_config

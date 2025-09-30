@@ -292,6 +292,7 @@ if is_main_file:
                     print_and_log(f"Saving checkpoint to {checkpoint_file}")
                     model_config_dict = model_config.model_dump()
                     model_config_dict["log_file"] = log_file_name
+                    model_config_dict["use_compile"] = use_compile
                     save_checkpoint(llm, opt, t + 1, checkpoint_file, model_config=model_config_dict) # type: ignore
 
                     # Also save a latest checkpoint
