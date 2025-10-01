@@ -1,0 +1,419 @@
+2025-10-01 00:35:25,539 - Using config file: config/tinystories-05-postnorm.yaml
+2025-10-01 00:35:25,540 - Model config: vocab_size=10000 num_layers=4 d_model=512 num_heads=16 d_ff=1344 max_seq_len=256 theta=10000.0 ffn_type='swiglu' layernorm_type='postnorm'
+2025-10-01 00:35:25,540 - Data config: train_data='data/TinyStoriesV2-GPT4-train-bpe-merged.npy' valid_data='data/TinyStoriesV2-GPT4-valid-bpe-merged.npy'
+2025-10-01 00:35:25,540 - Experiment config: name='ts_b128_autocast_postnorm' checkpoint_dir='checkpoints' log_dir='logs' batch_size=128 eval_batch_size=64 steps=10000 checkpoints_interval=5 checkpoints_path='checkpoints' eval_steps=100 use_autocast=True
+2025-10-01 00:35:25,540 - Optimizer config: learning_rate=0.001 weight_decay=0.01 betas=[0.9, 0.95] grad_clip=1.0 lr_schedule='cosine' lr_min=0.0 lr_max=0.003 warmup_ratio=0.01 cosine_cycle_ratio=1.0
+2025-10-01 00:35:26,114 - optimizer: AdamW(lr=0.001, betas=[0.9, 0.95], eps=1e-08, weight_decay=0.01)
+2025-10-01 00:35:26,115 - Training on device cuda:0
+2025-10-01 00:35:26,115 - Torch version: 2.6.0+cu124 model compiled with torch.compile
+2025-10-01 00:35:26,116 - matmul allow_tf32: True
+2025-10-01 00:35:26,116 - cudnn allow_tf32: True
+2025-10-01 00:35:26,116 - matmul precision: high
+2025-10-01 00:35:26,116 - for batch size: 128
+2025-10-01 00:35:26,116 - Total parameters: 14,438,915
+2025-10-01 00:35:26,116 - Total activations: 21,565,696
+2025-10-01 00:35:26,116 - params + gradients + states: 231,022,640
+2025-10-01 00:35:26,116 - activations per batch size: 86,262,784
+2025-10-01 00:35:26,116 - Parameters memory (GB): 0.05
+2025-10-01 00:35:26,117 - Gradients memory (GB): 0.05
+2025-10-01 00:35:26,117 - AdamW states memory (GB): 0.11
+2025-10-01 00:35:26,117 - Activations memory (GB): 10.28
+2025-10-01 00:35:26,117 - Total memory (GB): 10.50
+2025-10-01 00:35:26,117 - FLOPS for attention: 0.34 TFLOPS 343,597,383,680 FLOPS Percent: 33.04%
+2025-10-01 00:35:26,118 - FLOPS for FFN: 0.36 TFLOPS 360,777,252,864 FLOPS, Percent: 34.69%
+2025-10-01 00:35:26,118 - FLOPS per Transformer block: 0.70 TFLOPS 704,374,636,544 FLOPS, Percent: 67.73%
+2025-10-01 00:35:26,118 - FLOPS for output layer: 0.34 TFLOPS 335,544,320,000 FLOPS, Percent: 32.27%
+2025-10-01 00:35:26,118 - Total FLOPS: 1.04 TFLOPS 1,039,918,956,544 FLOPS
+2025-10-01 00:35:26,118 - Embedding params: 5,120,000 Percent: 35.46%
+2025-10-01 00:35:26,118 - MHA params: 4,194,304 Percent: 29.05%
+2025-10-01 00:35:26,118 - FFN params: 3 Percent: 0.00%
+2025-10-01 00:35:26,119 - rmsnorm params: 512 Percent: 0.00%
+2025-10-01 00:35:26,119 - Block params: 4,198,403 Percent: 29.08%
+2025-10-01 00:35:26,119 - RMSNorm params: 512 Percent: 0.00%
+2025-10-01 00:35:26,119 - LM Head params: 5,120,000 Percent: 35.46%
+2025-10-01 00:35:26,119 - Total params: 14,438,915 (0.05 GB)
+2025-10-01 00:35:26,119 - ------------------------------------------------------------------------------------------------------------------------
+2025-10-01 00:35:26,119 - FLOPs per step: 3,119,756.87 MFLOPs. FLOPs per token: 95.21 MFLOPs
+2025-10-01 00:35:26,119 - model parameters: 14.44 M, estimated FLOPs per token: 86.63 MFLOPs
+2025-10-01 00:35:26,119 - Total training: 31,197.57 TFLOPs
+2025-10-01 00:35:26,120 - ------------------------------------------------------------------------------------------------------------------------
+2025-10-01 00:35:26,120 - Training data has 541229347 tokens.
+2025-10-01 00:35:26,120 - Validation data has 5465883 tokens.
+2025-10-01 00:35:26,120 - UseBF16=True BF16 support: True, device type: cuda, device name: NVIDIA GeForce RTX 4070 Ti
+2025-10-01 00:35:26,122 - Using cosine learning rate schedule with min 0.0, max 0.003, warmup steps 100, cosine cycle steps 10000
+2025-10-01 00:35:42,820 - Step 0: loss 9.2403 tokens/sec 1,962 Tflops/sec 0.19
+2025-10-01 00:36:06,594 - Step 1: loss 9.2397 tokens/sec 1,381 Tflops/sec 0.13
+2025-10-01 00:36:19,008 - Step 2: loss 9.1996 tokens/sec 2,640 Tflops/sec 0.25
+2025-10-01 00:36:24,028 - Step 31: loss 4.5441 tokens/sec 188,920 Tflops/sec 17.99
+2025-10-01 00:36:29,043 - Step 61: loss 3.4724 tokens/sec 196,177 Tflops/sec 18.68
+2025-10-01 00:36:34,113 - Step 91: loss 2.9141 tokens/sec 193,685 Tflops/sec 18.44
+2025-10-01 00:36:39,144 - Step 120: loss 2.7238 tokens/sec 188,906 Tflops/sec 17.99
+2025-10-01 00:36:44,277 - Step 150: loss 2.5655 tokens/sec 191,517 Tflops/sec 18.23
+2025-10-01 00:36:50,113 - Step 170: loss 2.4468 tokens/sec 112,302 Tflops/sec 10.69
+2025-10-01 00:36:55,124 - Step 198: loss 2.3823 tokens/sec 183,233 Tflops/sec 17.45
+2025-10-01 00:37:00,213 - Step 228: loss 2.3729 tokens/sec 193,133 Tflops/sec 18.39
+2025-10-01 00:37:05,244 - Step 258: loss 2.2876 tokens/sec 195,475 Tflops/sec 18.61
+2025-10-01 00:37:10,271 - Step 288: loss 2.2093 tokens/sec 195,528 Tflops/sec 18.62
+2025-10-01 00:37:15,288 - Step 318: loss 2.2294 tokens/sec 195,949 Tflops/sec 18.66
+2025-10-01 00:37:20,319 - Step 348: loss 2.1679 tokens/sec 195,346 Tflops/sec 18.60
+2025-10-01 00:37:25,338 - Step 362: loss 2.1550 tokens/sec 91,530 Tflops/sec 8.71
+2025-10-01 00:37:30,496 - Step 390: loss 2.0875 tokens/sec 177,667 Tflops/sec 16.92
+2025-10-01 00:37:35,542 - Step 420: loss 2.1040 tokens/sec 194,679 Tflops/sec 18.53
+2025-10-01 00:37:40,572 - Step 450: loss 2.0426 tokens/sec 195,569 Tflops/sec 18.62
+2025-10-01 00:37:45,608 - Step 480: loss 2.0645 tokens/sec 195,012 Tflops/sec 18.57
+2025-10-01 00:37:50,669 - Step 510: loss 2.0501 tokens/sec 194,274 Tflops/sec 18.50
+2025-10-01 00:37:55,682 - Step 540: loss 2.0912 tokens/sec 196,086 Tflops/sec 18.67
+2025-10-01 00:38:00,718 - Step 555: loss 2.0297 tokens/sec 97,632 Tflops/sec 9.30
+2025-10-01 00:38:05,739 - Step 583: loss 2.0015 tokens/sec 182,853 Tflops/sec 17.41
+2025-10-01 00:38:10,770 - Step 613: loss 2.0115 tokens/sec 195,316 Tflops/sec 18.60
+2025-10-01 00:38:15,810 - Step 643: loss 1.9880 tokens/sec 195,146 Tflops/sec 18.58
+2025-10-01 00:38:20,842 - Step 673: loss 1.9459 tokens/sec 195,344 Tflops/sec 18.60
+2025-10-01 00:38:25,859 - Step 703: loss 1.9516 tokens/sec 195,879 Tflops/sec 18.65
+2025-10-01 00:38:31,037 - Step 733: loss 1.9956 tokens/sec 190,005 Tflops/sec 18.09
+2025-10-01 00:38:36,039 - Step 761: loss 1.9439 tokens/sec 183,333 Tflops/sec 17.45
+2025-10-01 00:38:41,144 - Step 789: loss 1.8683 tokens/sec 179,783 Tflops/sec 17.12
+2025-10-01 00:38:46,208 - Step 816: loss 1.8632 tokens/sec 174,954 Tflops/sec 16.66
+2025-10-01 00:38:51,302 - Step 831: loss 1.9443 tokens/sec 96,411 Tflops/sec 9.18
+2025-10-01 00:38:56,330 - Step 859: loss 1.8738 tokens/sec 182,224 Tflops/sec 17.35
+2025-10-01 00:39:01,479 - Step 890: loss 1.8429 tokens/sec 197,172 Tflops/sec 18.77
+2025-10-01 00:39:06,646 - Step 921: loss 1.8860 tokens/sec 196,800 Tflops/sec 18.74
+2025-10-01 00:39:11,648 - Step 951: loss 1.9117 tokens/sec 196,327 Tflops/sec 18.69
+2025-10-01 00:39:16,671 - Step 981: loss 1.8028 tokens/sec 195,811 Tflops/sec 18.64
+2025-10-01 00:39:21,683 - Step 1010: loss 1.8487 tokens/sec 189,677 Tflops/sec 18.06
+2025-10-01 00:39:26,692 - Step 1025: loss 1.8462 tokens/sec 98,105 Tflops/sec 9.34
+2025-10-01 00:39:31,694 - Step 1053: loss 1.8611 tokens/sec 183,464 Tflops/sec 17.47
+2025-10-01 00:39:36,773 - Step 1082: loss 1.7880 tokens/sec 187,176 Tflops/sec 17.82
+2025-10-01 00:39:41,824 - Step 1111: loss 1.8479 tokens/sec 187,983 Tflops/sec 17.90
+2025-10-01 00:39:46,880 - Step 1140: loss 1.7965 tokens/sec 188,076 Tflops/sec 17.91
+2025-10-01 00:39:51,917 - Step 1169: loss 1.8215 tokens/sec 188,527 Tflops/sec 17.95
+2025-10-01 00:39:56,933 - Step 1198: loss 1.7607 tokens/sec 189,616 Tflops/sec 18.05
+2025-10-01 00:40:02,089 - Step 1219: loss 1.8498 tokens/sec 133,353 Tflops/sec 12.70
+2025-10-01 00:40:07,111 - Step 1249: loss 1.7899 tokens/sec 195,777 Tflops/sec 18.64
+2025-10-01 00:40:12,138 - Step 1279: loss 1.7698 tokens/sec 195,571 Tflops/sec 18.62
+2025-10-01 00:40:17,301 - Step 1310: loss 1.8166 tokens/sec 196,578 Tflops/sec 18.72
+2025-10-01 00:40:22,335 - Step 1340: loss 1.7781 tokens/sec 195,290 Tflops/sec 18.59
+2025-10-01 00:40:25,299 - Saving checkpoint to checkpoints/ts_b128_autocast_postnorm_checkpoint_1358.pt
+2025-10-01 00:40:44,826 - Validation loss. step 1358: 1.7911
+2025-10-01 00:40:44,901 - Step 1358: loss 1.7960 tokens/sec 26,157 Tflops/sec 2.49
+2025-10-01 00:40:49,975 - Step 1386: loss 1.8304 tokens/sec 180,523 Tflops/sec 17.19
+2025-10-01 00:40:55,033 - Step 1414: loss 1.8232 tokens/sec 181,142 Tflops/sec 17.25
+2025-10-01 00:41:00,168 - Step 1443: loss 1.7431 tokens/sec 185,047 Tflops/sec 17.62
+2025-10-01 00:41:05,264 - Step 1472: loss 1.7379 tokens/sec 186,733 Tflops/sec 17.78
+2025-10-01 00:41:10,270 - Step 1490: loss 1.7841 tokens/sec 117,923 Tflops/sec 11.23
+2025-10-01 00:41:15,409 - Step 1519: loss 1.7471 tokens/sec 184,738 Tflops/sec 17.59
+2025-10-01 00:41:20,415 - Step 1548: loss 1.6772 tokens/sec 189,801 Tflops/sec 18.07
+2025-10-01 00:41:25,471 - Step 1577: loss 1.7543 tokens/sec 187,971 Tflops/sec 17.90
+2025-10-01 00:41:30,562 - Step 1606: loss 1.7280 tokens/sec 186,751 Tflops/sec 17.78
+2025-10-01 00:41:35,659 - Step 1635: loss 1.7514 tokens/sec 186,096 Tflops/sec 17.72
+2025-10-01 00:41:43,152 - Step 1662: loss 1.7218 tokens/sec 118,165 Tflops/sec 11.25
+2025-10-01 00:41:48,233 - Step 1689: loss 1.7008 tokens/sec 173,883 Tflops/sec 16.55
+2025-10-01 00:41:53,278 - Step 1718: loss 1.7729 tokens/sec 188,395 Tflops/sec 17.94
+2025-10-01 00:41:58,357 - Step 1747: loss 1.7420 tokens/sec 187,362 Tflops/sec 17.84
+2025-10-01 00:42:03,439 - Step 1776: loss 1.7546 tokens/sec 186,692 Tflops/sec 17.77
+2025-10-01 00:42:08,464 - Step 1805: loss 1.6963 tokens/sec 189,115 Tflops/sec 18.01
+2025-10-01 00:42:13,509 - Step 1834: loss 1.7376 tokens/sec 188,387 Tflops/sec 17.94
+2025-10-01 00:42:18,617 - Step 1848: loss 1.7479 tokens/sec 89,875 Tflops/sec 8.56
+2025-10-01 00:42:23,734 - Step 1876: loss 1.7214 tokens/sec 179,156 Tflops/sec 17.06
+2025-10-01 00:42:28,817 - Step 1905: loss 1.7845 tokens/sec 187,267 Tflops/sec 17.83
+2025-10-01 00:42:33,903 - Step 1934: loss 1.6663 tokens/sec 186,549 Tflops/sec 17.76
+2025-10-01 00:42:39,007 - Step 1963: loss 1.6728 tokens/sec 186,534 Tflops/sec 17.76
+2025-10-01 00:42:44,078 - Step 1992: loss 1.7230 tokens/sec 187,042 Tflops/sec 17.81
+2025-10-01 00:42:49,167 - Step 2021: loss 1.7763 tokens/sec 187,003 Tflops/sec 17.80
+2025-10-01 00:42:54,205 - Step 2034: loss 1.6608 tokens/sec 84,639 Tflops/sec 8.06
+2025-10-01 00:42:59,232 - Step 2062: loss 1.7098 tokens/sec 182,573 Tflops/sec 17.38
+2025-10-01 00:43:04,296 - Step 2091: loss 1.7717 tokens/sec 187,101 Tflops/sec 17.81
+2025-10-01 00:43:09,337 - Step 2120: loss 1.6714 tokens/sec 188,528 Tflops/sec 17.95
+2025-10-01 00:43:14,405 - Step 2149: loss 1.6804 tokens/sec 187,979 Tflops/sec 17.90
+2025-10-01 00:43:19,455 - Step 2178: loss 1.6896 tokens/sec 188,019 Tflops/sec 17.90
+2025-10-01 00:43:24,486 - Step 2207: loss 1.7268 tokens/sec 188,755 Tflops/sec 17.97
+2025-10-01 00:43:29,556 - Step 2220: loss 1.6331 tokens/sec 84,009 Tflops/sec 8.00
+2025-10-01 00:43:34,580 - Step 2248: loss 1.7096 tokens/sec 182,439 Tflops/sec 17.37
+2025-10-01 00:43:39,638 - Step 2277: loss 1.6379 tokens/sec 188,230 Tflops/sec 17.92
+2025-10-01 00:43:44,770 - Step 2306: loss 1.6827 tokens/sec 185,087 Tflops/sec 17.62
+2025-10-01 00:43:49,818 - Step 2335: loss 1.7453 tokens/sec 188,249 Tflops/sec 17.92
+2025-10-01 00:43:54,876 - Step 2364: loss 1.6413 tokens/sec 187,601 Tflops/sec 17.86
+2025-10-01 00:43:59,947 - Step 2393: loss 1.6880 tokens/sec 187,380 Tflops/sec 17.84
+2025-10-01 00:44:05,005 - Step 2405: loss 1.6971 tokens/sec 77,954 Tflops/sec 7.42
+2025-10-01 00:44:10,108 - Step 2434: loss 1.6767 tokens/sec 185,955 Tflops/sec 17.70
+2025-10-01 00:44:15,155 - Step 2463: loss 1.6925 tokens/sec 188,324 Tflops/sec 17.93
+2025-10-01 00:44:20,202 - Step 2492: loss 1.6723 tokens/sec 188,299 Tflops/sec 17.93
+2025-10-01 00:44:25,208 - Step 2521: loss 1.6903 tokens/sec 189,871 Tflops/sec 18.08
+2025-10-01 00:44:30,377 - Step 2551: loss 1.6911 tokens/sec 190,179 Tflops/sec 18.11
+2025-10-01 00:44:35,406 - Step 2580: loss 1.6877 tokens/sec 188,691 Tflops/sec 17.96
+2025-10-01 00:44:40,511 - Step 2593: loss 1.6441 tokens/sec 83,412 Tflops/sec 7.94
+2025-10-01 00:44:45,593 - Step 2622: loss 1.6414 tokens/sec 187,252 Tflops/sec 17.83
+2025-10-01 00:44:50,642 - Step 2651: loss 1.6293 tokens/sec 187,966 Tflops/sec 17.90
+2025-10-01 00:44:55,705 - Step 2680: loss 1.6372 tokens/sec 187,654 Tflops/sec 17.87
+2025-10-01 00:45:00,748 - Step 2709: loss 1.6469 tokens/sec 188,455 Tflops/sec 17.94
+2025-10-01 00:45:05,793 - Step 2738: loss 1.6163 tokens/sec 188,686 Tflops/sec 17.96
+2025-10-01 00:45:10,826 - Step 2767: loss 1.6321 tokens/sec 188,867 Tflops/sec 17.98
+2025-10-01 00:45:15,838 - Step 2779: loss 1.6804 tokens/sec 78,285 Tflops/sec 7.45
+2025-10-01 00:45:20,871 - Step 2808: loss 1.6391 tokens/sec 188,821 Tflops/sec 17.98
+2025-10-01 00:45:24,318 - Saving checkpoint to checkpoints/ts_b128_autocast_postnorm_checkpoint_2828.pt
+2025-10-01 00:45:29,213 - Validation loss. step 2828: 1.6416
+2025-10-01 00:45:29,289 - Step 2828: loss 1.6676 tokens/sec 78,025 Tflops/sec 7.43
+2025-10-01 00:45:34,363 - Step 2857: loss 1.6462 tokens/sec 186,600 Tflops/sec 17.77
+2025-10-01 00:45:39,410 - Step 2886: loss 1.6024 tokens/sec 188,268 Tflops/sec 17.92
+2025-10-01 00:45:44,472 - Step 2915: loss 1.6207 tokens/sec 187,964 Tflops/sec 17.90
+2025-10-01 00:45:49,504 - Step 2927: loss 1.6548 tokens/sec 78,230 Tflops/sec 7.45
+2025-10-01 00:45:54,609 - Step 2956: loss 1.6252 tokens/sec 185,705 Tflops/sec 17.68
+2025-10-01 00:45:59,650 - Step 2985: loss 1.6655 tokens/sec 188,515 Tflops/sec 17.95
+2025-10-01 00:46:04,721 - Step 3014: loss 1.6662 tokens/sec 187,692 Tflops/sec 17.87
+2025-10-01 00:46:09,803 - Step 3043: loss 1.6154 tokens/sec 186,713 Tflops/sec 17.78
+2025-10-01 00:46:14,934 - Step 3072: loss 1.6438 tokens/sec 185,166 Tflops/sec 17.63
+2025-10-01 00:46:20,004 - Step 3101: loss 1.6154 tokens/sec 187,776 Tflops/sec 17.88
+2025-10-01 00:46:25,037 - Step 3113: loss 1.6062 tokens/sec 78,199 Tflops/sec 7.45
+2025-10-01 00:46:30,060 - Step 3142: loss 1.6533 tokens/sec 188,949 Tflops/sec 17.99
+2025-10-01 00:46:35,116 - Step 3171: loss 1.5986 tokens/sec 187,691 Tflops/sec 17.87
+2025-10-01 00:46:40,166 - Step 3200: loss 1.5944 tokens/sec 188,171 Tflops/sec 17.92
+2025-10-01 00:46:45,219 - Step 3229: loss 1.6178 tokens/sec 188,065 Tflops/sec 17.91
+2025-10-01 00:46:50,369 - Step 3258: loss 1.6492 tokens/sec 184,826 Tflops/sec 17.60
+2025-10-01 00:46:55,411 - Step 3287: loss 1.5776 tokens/sec 188,466 Tflops/sec 17.94
+2025-10-01 00:47:00,541 - Step 3300: loss 1.6315 tokens/sec 83,020 Tflops/sec 7.90
+2025-10-01 00:47:05,638 - Step 3328: loss 1.5814 tokens/sec 179,903 Tflops/sec 17.13
+2025-10-01 00:47:10,669 - Step 3356: loss 1.6283 tokens/sec 182,197 Tflops/sec 17.35
+2025-10-01 00:47:15,706 - Step 3385: loss 1.6466 tokens/sec 188,666 Tflops/sec 17.96
+2025-10-01 00:47:20,791 - Step 3414: loss 1.6139 tokens/sec 187,106 Tflops/sec 17.81
+2025-10-01 00:47:25,881 - Step 3443: loss 1.6215 tokens/sec 186,803 Tflops/sec 17.79
+2025-10-01 00:47:31,017 - Step 3472: loss 1.5796 tokens/sec 185,185 Tflops/sec 17.63
+2025-10-01 00:47:36,081 - Step 3486: loss 1.5824 tokens/sec 90,664 Tflops/sec 8.63
+2025-10-01 00:47:41,094 - Step 3513: loss 1.6580 tokens/sec 176,376 Tflops/sec 16.79
+2025-10-01 00:47:46,255 - Step 3542: loss 1.5825 tokens/sec 183,967 Tflops/sec 17.52
+2025-10-01 00:47:51,362 - Step 3571: loss 1.5981 tokens/sec 186,062 Tflops/sec 17.71
+2025-10-01 00:47:56,408 - Step 3600: loss 1.6289 tokens/sec 188,242 Tflops/sec 17.92
+2025-10-01 00:48:01,444 - Step 3629: loss 1.5704 tokens/sec 188,665 Tflops/sec 17.96
+2025-10-01 00:48:06,518 - Step 3658: loss 1.5794 tokens/sec 187,018 Tflops/sec 17.81
+2025-10-01 00:48:11,564 - Step 3672: loss 1.5812 tokens/sec 91,098 Tflops/sec 8.67
+2025-10-01 00:48:16,586 - Step 3699: loss 1.6660 tokens/sec 176,314 Tflops/sec 16.79
+2025-10-01 00:48:21,620 - Step 3728: loss 1.5637 tokens/sec 188,500 Tflops/sec 17.95
+2025-10-01 00:48:26,713 - Step 3757: loss 1.6015 tokens/sec 186,337 Tflops/sec 17.74
+2025-10-01 00:48:31,771 - Step 3786: loss 1.5869 tokens/sec 188,213 Tflops/sec 17.92
+2025-10-01 00:48:36,823 - Step 3815: loss 1.5647 tokens/sec 188,023 Tflops/sec 17.90
+2025-10-01 00:48:41,930 - Step 3844: loss 1.5566 tokens/sec 185,974 Tflops/sec 17.71
+2025-10-01 00:48:47,083 - Step 3858: loss 1.5833 tokens/sec 89,023 Tflops/sec 8.48
+2025-10-01 00:48:52,237 - Step 3886: loss 1.5513 tokens/sec 177,859 Tflops/sec 16.93
+2025-10-01 00:48:57,269 - Step 3915: loss 1.5621 tokens/sec 188,843 Tflops/sec 17.98
+2025-10-01 00:49:02,297 - Step 3944: loss 1.5645 tokens/sec 188,997 Tflops/sec 17.99
+2025-10-01 00:49:07,328 - Step 3973: loss 1.5794 tokens/sec 188,872 Tflops/sec 17.98
+2025-10-01 00:49:12,359 - Step 4002: loss 1.5784 tokens/sec 188,873 Tflops/sec 17.98
+2025-10-01 00:49:19,874 - Step 4030: loss 1.5612 tokens/sec 122,101 Tflops/sec 11.62
+2025-10-01 00:49:25,001 - Step 4058: loss 1.5576 tokens/sec 179,123 Tflops/sec 17.05
+2025-10-01 00:49:30,122 - Step 4087: loss 1.5622 tokens/sec 185,403 Tflops/sec 17.65
+2025-10-01 00:49:35,226 - Step 4116: loss 1.5788 tokens/sec 186,466 Tflops/sec 17.75
+2025-10-01 00:49:40,258 - Step 4145: loss 1.5751 tokens/sec 188,929 Tflops/sec 17.99
+2025-10-01 00:49:45,305 - Step 4174: loss 1.5534 tokens/sec 187,884 Tflops/sec 17.89
+2025-10-01 00:49:50,369 - Step 4203: loss 1.5530 tokens/sec 187,674 Tflops/sec 17.87
+2025-10-01 00:49:55,382 - Step 4217: loss 1.5354 tokens/sec 91,578 Tflops/sec 8.72
+2025-10-01 00:50:00,540 - Step 4245: loss 1.5396 tokens/sec 177,748 Tflops/sec 16.92
+2025-10-01 00:50:05,622 - Step 4274: loss 1.5894 tokens/sec 187,271 Tflops/sec 17.83
+2025-10-01 00:50:10,659 - Step 4303: loss 1.5612 tokens/sec 188,651 Tflops/sec 17.96
+2025-10-01 00:50:15,728 - Step 4332: loss 1.5284 tokens/sec 187,170 Tflops/sec 17.82
+2025-10-01 00:50:20,804 - Step 4361: loss 1.5327 tokens/sec 187,532 Tflops/sec 17.85
+2025-10-01 00:50:23,366 - Saving checkpoint to checkpoints/ts_b128_autocast_postnorm_checkpoint_4376.pt
+2025-10-01 00:50:28,246 - Validation loss. step 4376: 1.5508
+2025-10-01 00:50:28,311 - Step 4376: loss 1.5699 tokens/sec 65,471 Tflops/sec 6.23
+2025-10-01 00:50:33,425 - Step 4404: loss 1.4875 tokens/sec 179,200 Tflops/sec 17.06
+2025-10-01 00:50:38,512 - Step 4432: loss 1.5576 tokens/sec 180,294 Tflops/sec 17.17
+2025-10-01 00:50:46,431 - Step 4456: loss 1.5156 tokens/sec 99,285 Tflops/sec 9.45
+2025-10-01 00:50:51,510 - Step 4485: loss 1.5596 tokens/sec 187,411 Tflops/sec 17.84
+2025-10-01 00:50:56,558 - Step 4516: loss 1.5171 tokens/sec 201,064 Tflops/sec 19.14
+2025-10-01 00:51:01,706 - Step 4548: loss 1.5149 tokens/sec 203,523 Tflops/sec 19.38
+2025-10-01 00:51:06,712 - Step 4579: loss 1.5506 tokens/sec 203,125 Tflops/sec 19.34
+2025-10-01 00:51:11,872 - Step 4611: loss 1.5246 tokens/sec 202,991 Tflops/sec 19.33
+2025-10-01 00:51:17,003 - Step 4643: loss 1.5324 tokens/sec 204,382 Tflops/sec 19.46
+2025-10-01 00:51:22,130 - Step 4659: loss 1.5517 tokens/sec 102,338 Tflops/sec 9.74
+2025-10-01 00:51:27,167 - Step 4689: loss 1.4913 tokens/sec 195,102 Tflops/sec 18.58
+2025-10-01 00:51:32,177 - Step 4720: loss 1.5796 tokens/sec 202,678 Tflops/sec 19.30
+2025-10-01 00:51:37,332 - Step 4752: loss 1.5057 tokens/sec 203,489 Tflops/sec 19.37
+2025-10-01 00:51:42,344 - Step 4783: loss 1.5439 tokens/sec 202,552 Tflops/sec 19.28
+2025-10-01 00:51:47,363 - Step 4814: loss 1.5244 tokens/sec 202,372 Tflops/sec 19.27
+2025-10-01 00:51:52,370 - Step 4845: loss 1.4961 tokens/sec 202,919 Tflops/sec 19.32
+2025-10-01 00:51:57,409 - Step 4859: loss 1.4987 tokens/sec 91,118 Tflops/sec 8.68
+2025-10-01 00:52:02,460 - Step 4888: loss 1.5354 tokens/sec 188,060 Tflops/sec 17.90
+2025-10-01 00:52:07,620 - Step 4920: loss 1.4662 tokens/sec 203,311 Tflops/sec 19.36
+2025-10-01 00:52:12,626 - Step 4951: loss 1.5074 tokens/sec 202,828 Tflops/sec 19.31
+2025-10-01 00:52:17,655 - Step 4982: loss 1.4955 tokens/sec 201,964 Tflops/sec 19.23
+2025-10-01 00:52:22,670 - Step 5013: loss 1.5099 tokens/sec 202,474 Tflops/sec 19.28
+2025-10-01 00:52:27,674 - Step 5044: loss 1.5389 tokens/sec 202,980 Tflops/sec 19.33
+2025-10-01 00:52:32,783 - Step 5060: loss 1.5369 tokens/sec 102,619 Tflops/sec 9.77
+2025-10-01 00:52:37,951 - Step 5091: loss 1.4639 tokens/sec 196,693 Tflops/sec 18.73
+2025-10-01 00:52:42,972 - Step 5122: loss 1.4634 tokens/sec 202,331 Tflops/sec 19.26
+2025-10-01 00:52:47,989 - Step 5153: loss 1.5233 tokens/sec 202,486 Tflops/sec 19.28
+2025-10-01 00:52:52,990 - Step 5184: loss 1.5543 tokens/sec 202,942 Tflops/sec 19.32
+2025-10-01 00:52:58,140 - Step 5216: loss 1.5310 tokens/sec 203,786 Tflops/sec 19.40
+2025-10-01 00:53:06,061 - Step 5248: loss 1.4816 tokens/sec 132,351 Tflops/sec 12.60
+2025-10-01 00:53:11,128 - Step 5277: loss 1.5329 tokens/sec 187,444 Tflops/sec 17.85
+2025-10-01 00:53:16,279 - Step 5309: loss 1.4711 tokens/sec 203,676 Tflops/sec 19.39
+2025-10-01 00:53:21,430 - Step 5341: loss 1.5132 tokens/sec 203,639 Tflops/sec 19.39
+2025-10-01 00:53:26,445 - Step 5372: loss 1.4912 tokens/sec 202,557 Tflops/sec 19.28
+2025-10-01 00:53:31,463 - Step 5403: loss 1.4971 tokens/sec 202,425 Tflops/sec 19.27
+2025-10-01 00:53:36,551 - Step 5434: loss 1.4807 tokens/sec 199,482 Tflops/sec 18.99
+2025-10-01 00:53:41,672 - Step 5450: loss 1.5201 tokens/sec 102,368 Tflops/sec 9.75
+2025-10-01 00:53:46,832 - Step 5481: loss 1.4992 tokens/sec 197,015 Tflops/sec 18.76
+2025-10-01 00:53:51,841 - Step 5512: loss 1.4941 tokens/sec 202,657 Tflops/sec 19.29
+2025-10-01 00:53:56,847 - Step 5543: loss 1.4553 tokens/sec 202,895 Tflops/sec 19.32
+2025-10-01 00:54:01,856 - Step 5574: loss 1.4690 tokens/sec 203,005 Tflops/sec 19.33
+2025-10-01 00:54:06,859 - Step 5605: loss 1.5066 tokens/sec 203,004 Tflops/sec 19.33
+2025-10-01 00:54:12,005 - Step 5636: loss 1.4738 tokens/sec 197,550 Tflops/sec 18.81
+2025-10-01 00:54:17,016 - Step 5650: loss 1.5171 tokens/sec 91,521 Tflops/sec 8.71
+2025-10-01 00:54:22,060 - Step 5680: loss 1.4703 tokens/sec 194,773 Tflops/sec 18.54
+2025-10-01 00:54:27,077 - Step 5711: loss 1.4586 tokens/sec 202,503 Tflops/sec 19.28
+2025-10-01 00:54:32,118 - Step 5742: loss 1.5188 tokens/sec 201,502 Tflops/sec 19.18
+2025-10-01 00:54:37,143 - Step 5773: loss 1.5035 tokens/sec 202,134 Tflops/sec 19.24
+2025-10-01 00:54:42,149 - Step 5804: loss 1.4647 tokens/sec 202,776 Tflops/sec 19.31
+2025-10-01 00:54:47,173 - Step 5835: loss 1.5180 tokens/sec 202,164 Tflops/sec 19.25
+2025-10-01 00:54:52,192 - Step 5849: loss 1.5421 tokens/sec 91,494 Tflops/sec 8.71
+2025-10-01 00:54:57,284 - Step 5879: loss 1.4985 tokens/sec 193,023 Tflops/sec 18.38
+2025-10-01 00:55:02,428 - Step 5911: loss 1.4621 tokens/sec 203,886 Tflops/sec 19.41
+2025-10-01 00:55:07,575 - Step 5943: loss 1.5081 tokens/sec 203,691 Tflops/sec 19.39
+2025-10-01 00:55:12,596 - Step 5974: loss 1.4613 tokens/sec 202,312 Tflops/sec 19.26
+2025-10-01 00:55:17,753 - Step 6006: loss 1.4870 tokens/sec 203,186 Tflops/sec 19.34
+2025-10-01 00:55:22,387 - Saving checkpoint to checkpoints/ts_b128_autocast_postnorm_checkpoint_6035.pt
+2025-10-01 00:55:29,812 - Validation loss. step 6035: 1.4785
+2025-10-01 00:55:29,875 - Step 6035: loss 1.4954 tokens/sec 78,441 Tflops/sec 7.47
+2025-10-01 00:55:34,894 - Step 6066: loss 1.4021 tokens/sec 202,077 Tflops/sec 19.24
+2025-10-01 00:55:39,927 - Step 6097: loss 1.4904 tokens/sec 201,828 Tflops/sec 19.22
+2025-10-01 00:55:45,078 - Step 6129: loss 1.5193 tokens/sec 203,751 Tflops/sec 19.40
+2025-10-01 00:55:50,087 - Step 6160: loss 1.4696 tokens/sec 202,594 Tflops/sec 19.29
+2025-10-01 00:55:55,113 - Step 6191: loss 1.4354 tokens/sec 202,129 Tflops/sec 19.24
+2025-10-01 00:56:00,120 - Step 6222: loss 1.4565 tokens/sec 202,878 Tflops/sec 19.32
+2025-10-01 00:56:05,304 - Step 6251: loss 1.5045 tokens/sec 183,667 Tflops/sec 17.49
+2025-10-01 00:56:10,422 - Step 6279: loss 1.4285 tokens/sec 179,397 Tflops/sec 17.08
+2025-10-01 00:56:16,292 - Step 6297: loss 1.4442 tokens/sec 100,493 Tflops/sec 9.57
+2025-10-01 00:56:21,383 - Step 6326: loss 1.4762 tokens/sec 186,098 Tflops/sec 17.72
+2025-10-01 00:56:26,417 - Step 6357: loss 1.4718 tokens/sec 201,818 Tflops/sec 19.21
+2025-10-01 00:56:31,430 - Step 6388: loss 1.4463 tokens/sec 202,646 Tflops/sec 19.29
+2025-10-01 00:56:36,436 - Step 6419: loss 1.4177 tokens/sec 203,009 Tflops/sec 19.33
+2025-10-01 00:56:41,441 - Step 6450: loss 1.4692 tokens/sec 203,004 Tflops/sec 19.33
+2025-10-01 00:56:46,461 - Step 6481: loss 1.4803 tokens/sec 202,478 Tflops/sec 19.28
+2025-10-01 00:56:51,542 - Step 6497: loss 1.4700 tokens/sec 103,158 Tflops/sec 9.82
+2025-10-01 00:56:56,661 - Step 6527: loss 1.5163 tokens/sec 191,848 Tflops/sec 18.27
+2025-10-01 00:57:01,825 - Step 6559: loss 1.4683 tokens/sec 203,206 Tflops/sec 19.35
+2025-10-01 00:57:06,976 - Step 6591: loss 1.4939 tokens/sec 203,548 Tflops/sec 19.38
+2025-10-01 00:57:12,120 - Step 6623: loss 1.4756 tokens/sec 203,785 Tflops/sec 19.40
+2025-10-01 00:57:17,272 - Step 6655: loss 1.4478 tokens/sec 203,422 Tflops/sec 19.37
+2025-10-01 00:57:22,333 - Step 6686: loss 1.4781 tokens/sec 200,946 Tflops/sec 19.13
+2025-10-01 00:57:27,477 - Step 6701: loss 1.4722 tokens/sec 95,613 Tflops/sec 9.10
+2025-10-01 00:57:32,527 - Step 6731: loss 1.5230 tokens/sec 194,329 Tflops/sec 18.50
+2025-10-01 00:57:37,561 - Step 6762: loss 1.4879 tokens/sec 201,749 Tflops/sec 19.21
+2025-10-01 00:57:42,604 - Step 6793: loss 1.4369 tokens/sec 201,453 Tflops/sec 19.18
+2025-10-01 00:57:47,636 - Step 6824: loss 1.5033 tokens/sec 201,870 Tflops/sec 19.22
+2025-10-01 00:57:52,668 - Step 6855: loss 1.4753 tokens/sec 201,849 Tflops/sec 19.22
+2025-10-01 00:57:57,736 - Step 6886: loss 1.4733 tokens/sec 200,635 Tflops/sec 19.10
+2025-10-01 00:58:02,748 - Step 6900: loss 1.4273 tokens/sec 91,591 Tflops/sec 8.72
+2025-10-01 00:58:07,888 - Step 6931: loss 1.4659 tokens/sec 197,522 Tflops/sec 18.81
+2025-10-01 00:58:12,896 - Step 6962: loss 1.4320 tokens/sec 202,739 Tflops/sec 19.30
+2025-10-01 00:58:17,939 - Step 6993: loss 1.4258 tokens/sec 201,458 Tflops/sec 19.18
+2025-10-01 00:58:22,979 - Step 7024: loss 1.4316 tokens/sec 201,584 Tflops/sec 19.19
+2025-10-01 00:58:28,015 - Step 7055: loss 1.4435 tokens/sec 201,717 Tflops/sec 19.20
+2025-10-01 00:58:33,129 - Step 7086: loss 1.4445 tokens/sec 198,678 Tflops/sec 18.92
+2025-10-01 00:58:38,272 - Step 7101: loss 1.4126 tokens/sec 95,671 Tflops/sec 9.11
+2025-10-01 00:58:43,301 - Step 7132: loss 1.4702 tokens/sec 201,633 Tflops/sec 19.20
+2025-10-01 00:58:48,300 - Step 7163: loss 1.4247 tokens/sec 203,125 Tflops/sec 19.34
+2025-10-01 00:58:53,341 - Step 7194: loss 1.4723 tokens/sec 201,508 Tflops/sec 19.19
+2025-10-01 00:58:58,487 - Step 7226: loss 1.4619 tokens/sec 203,938 Tflops/sec 19.42
+2025-10-01 00:59:03,536 - Step 7257: loss 1.3935 tokens/sec 201,330 Tflops/sec 19.17
+2025-10-01 00:59:08,690 - Step 7287: loss 1.3985 tokens/sec 190,711 Tflops/sec 18.16
+2025-10-01 00:59:13,792 - Step 7316: loss 1.4250 tokens/sec 186,178 Tflops/sec 17.73
+2025-10-01 00:59:18,824 - Step 7344: loss 1.4514 tokens/sec 182,588 Tflops/sec 17.38
+2025-10-01 00:59:23,921 - Step 7372: loss 1.3972 tokens/sec 179,915 Tflops/sec 17.13
+2025-10-01 00:59:28,926 - Step 7388: loss 1.4252 tokens/sec 104,645 Tflops/sec 9.96
+2025-10-01 00:59:34,100 - Step 7417: loss 1.3716 tokens/sec 183,807 Tflops/sec 17.50
+2025-10-01 00:59:39,231 - Step 7446: loss 1.4705 tokens/sec 185,221 Tflops/sec 17.63
+2025-10-01 00:59:44,380 - Step 7475: loss 1.4572 tokens/sec 184,544 Tflops/sec 17.57
+2025-10-01 00:59:49,527 - Step 7504: loss 1.4092 tokens/sec 184,634 Tflops/sec 17.58
+2025-10-01 00:59:54,675 - Step 7533: loss 1.3871 tokens/sec 184,425 Tflops/sec 17.56
+2025-10-01 00:59:59,800 - Step 7562: loss 1.3717 tokens/sec 185,420 Tflops/sec 17.65
+2025-10-01 01:00:04,900 - Step 7593: loss 1.4337 tokens/sec 199,130 Tflops/sec 18.96
+2025-10-01 01:00:09,902 - Step 7624: loss 1.3834 tokens/sec 203,121 Tflops/sec 19.34
+2025-10-01 01:00:15,049 - Step 7656: loss 1.4617 tokens/sec 203,586 Tflops/sec 19.38
+2025-10-01 01:00:20,203 - Step 7688: loss 1.4828 tokens/sec 203,539 Tflops/sec 19.38
+2025-10-01 01:00:21,451 - Saving checkpoint to checkpoints/ts_b128_autocast_postnorm_checkpoint_7696.pt
+2025-10-01 01:00:26,232 - Validation loss. step 7696: 1.4257
+2025-10-01 01:00:26,296 - Step 7696: loss 1.4405 tokens/sec 43,062 Tflops/sec 4.10
+2025-10-01 01:00:31,432 - Step 7725: loss 1.4436 tokens/sec 184,881 Tflops/sec 17.60
+2025-10-01 01:00:36,591 - Step 7754: loss 1.4098 tokens/sec 184,385 Tflops/sec 17.55
+2025-10-01 01:00:41,741 - Step 7783: loss 1.4543 tokens/sec 184,475 Tflops/sec 17.56
+2025-10-01 01:00:46,915 - Step 7812: loss 1.4380 tokens/sec 183,503 Tflops/sec 17.47
+2025-10-01 01:00:52,062 - Step 7841: loss 1.4237 tokens/sec 184,620 Tflops/sec 17.58
+2025-10-01 01:00:57,176 - Step 7870: loss 1.3791 tokens/sec 186,031 Tflops/sec 17.71
+2025-10-01 01:01:02,283 - Step 7899: loss 1.4755 tokens/sec 186,041 Tflops/sec 17.71
+2025-10-01 01:01:07,396 - Step 7928: loss 1.4026 tokens/sec 185,781 Tflops/sec 17.69
+2025-10-01 01:01:12,501 - Step 7957: loss 1.3727 tokens/sec 186,039 Tflops/sec 17.71
+2025-10-01 01:01:17,607 - Step 7986: loss 1.3829 tokens/sec 186,135 Tflops/sec 17.72
+2025-10-01 01:01:22,652 - Step 8002: loss 1.3904 tokens/sec 104,004 Tflops/sec 9.90
+2025-10-01 01:01:27,779 - Step 8031: loss 1.3972 tokens/sec 185,336 Tflops/sec 17.65
+2025-10-01 01:01:32,925 - Step 8060: loss 1.4288 tokens/sec 184,527 Tflops/sec 17.57
+2025-10-01 01:01:38,071 - Step 8089: loss 1.3438 tokens/sec 184,659 Tflops/sec 17.58
+2025-10-01 01:01:43,119 - Step 8118: loss 1.3985 tokens/sec 188,183 Tflops/sec 17.92
+2025-10-01 01:01:48,206 - Step 8148: loss 1.4128 tokens/sec 193,305 Tflops/sec 18.40
+2025-10-01 01:01:54,031 - Step 8179: loss 1.4527 tokens/sec 174,256 Tflops/sec 16.59
+2025-10-01 01:01:59,041 - Step 8210: loss 1.4392 tokens/sec 202,746 Tflops/sec 19.30
+2025-10-01 01:02:04,074 - Step 8241: loss 1.4059 tokens/sec 201,810 Tflops/sec 19.21
+2025-10-01 01:02:09,122 - Step 8272: loss 1.4168 tokens/sec 201,267 Tflops/sec 19.16
+2025-10-01 01:02:14,134 - Step 8303: loss 1.4147 tokens/sec 202,655 Tflops/sec 19.29
+2025-10-01 01:02:19,164 - Step 8334: loss 1.4246 tokens/sec 201,966 Tflops/sec 19.23
+2025-10-01 01:02:24,234 - Step 8363: loss 1.4262 tokens/sec 187,703 Tflops/sec 17.87
+2025-10-01 01:02:29,410 - Step 8379: loss 1.4033 tokens/sec 101,226 Tflops/sec 9.64
+2025-10-01 01:02:34,446 - Step 8408: loss 1.3880 tokens/sec 188,654 Tflops/sec 17.96
+2025-10-01 01:02:39,550 - Step 8438: loss 1.3950 tokens/sec 192,449 Tflops/sec 18.32
+2025-10-01 01:02:44,582 - Step 8469: loss 1.4272 tokens/sec 201,866 Tflops/sec 19.22
+2025-10-01 01:02:49,629 - Step 8500: loss 1.4031 tokens/sec 201,292 Tflops/sec 19.16
+2025-10-01 01:02:54,633 - Step 8531: loss 1.4370 tokens/sec 203,034 Tflops/sec 19.33
+2025-10-01 01:02:59,717 - Step 8562: loss 1.4022 tokens/sec 199,948 Tflops/sec 19.04
+2025-10-01 01:03:04,771 - Step 8579: loss 1.3931 tokens/sec 110,180 Tflops/sec 10.49
+2025-10-01 01:03:09,883 - Step 8609: loss 1.4065 tokens/sec 192,498 Tflops/sec 18.33
+2025-10-01 01:03:15,010 - Step 8640: loss 1.4415 tokens/sec 198,002 Tflops/sec 18.85
+2025-10-01 01:03:20,156 - Step 8672: loss 1.4002 tokens/sec 203,557 Tflops/sec 19.38
+2025-10-01 01:03:25,169 - Step 8703: loss 1.4365 tokens/sec 202,650 Tflops/sec 19.29
+2025-10-01 01:03:30,213 - Step 8734: loss 1.4600 tokens/sec 201,402 Tflops/sec 19.17
+2025-10-01 01:03:37,714 - Step 8766: loss 1.4145 tokens/sec 139,875 Tflops/sec 13.32
+2025-10-01 01:03:42,724 - Step 8795: loss 1.3307 tokens/sec 189,815 Tflops/sec 18.07
+2025-10-01 01:03:47,764 - Step 8824: loss 1.3994 tokens/sec 188,364 Tflops/sec 17.93
+2025-10-01 01:03:52,823 - Step 8855: loss 1.4327 tokens/sec 200,661 Tflops/sec 19.10
+2025-10-01 01:03:57,837 - Step 8886: loss 1.4029 tokens/sec 202,586 Tflops/sec 19.29
+2025-10-01 01:04:02,850 - Step 8917: loss 1.4327 tokens/sec 202,805 Tflops/sec 19.31
+2025-10-01 01:04:07,878 - Step 8948: loss 1.4185 tokens/sec 202,074 Tflops/sec 19.24
+2025-10-01 01:04:12,894 - Step 8965: loss 1.3574 tokens/sec 111,033 Tflops/sec 10.57
+2025-10-01 01:04:17,956 - Step 8995: loss 1.4323 tokens/sec 194,271 Tflops/sec 18.50
+2025-10-01 01:04:22,958 - Step 9025: loss 1.3211 tokens/sec 196,433 Tflops/sec 18.70
+2025-10-01 01:04:27,973 - Step 9056: loss 1.4316 tokens/sec 202,569 Tflops/sec 19.29
+2025-10-01 01:04:32,978 - Step 9087: loss 1.4191 tokens/sec 202,818 Tflops/sec 19.31
+2025-10-01 01:04:37,980 - Step 9118: loss 1.3668 tokens/sec 203,060 Tflops/sec 19.33
+2025-10-01 01:04:43,020 - Step 9149: loss 1.4040 tokens/sec 201,559 Tflops/sec 19.19
+2025-10-01 01:04:48,131 - Step 9165: loss 1.3518 tokens/sec 102,764 Tflops/sec 9.78
+2025-10-01 01:04:53,236 - Step 9194: loss 1.4147 tokens/sec 185,966 Tflops/sec 17.71
+2025-10-01 01:04:58,256 - Step 9224: loss 1.3823 tokens/sec 195,628 Tflops/sec 18.63
+2025-10-01 01:05:03,402 - Step 9256: loss 1.4121 tokens/sec 203,799 Tflops/sec 19.40
+2025-10-01 01:05:08,564 - Step 9288: loss 1.3883 tokens/sec 203,251 Tflops/sec 19.35
+2025-10-01 01:05:13,719 - Step 9320: loss 1.3910 tokens/sec 203,445 Tflops/sec 19.37
+2025-10-01 01:05:18,865 - Step 9352: loss 1.4291 tokens/sec 203,588 Tflops/sec 19.38
+2025-10-01 01:05:21,965 - Saving checkpoint to checkpoints/ts_b128_autocast_postnorm_checkpoint_9357.pt
+2025-10-01 01:05:26,668 - Validation loss. step 9357: 1.3964
+2025-10-01 01:05:26,729 - Step 9357: loss 1.4100 tokens/sec 20,849 Tflops/sec 1.99
+2025-10-01 01:05:31,745 - Step 9387: loss 1.4343 tokens/sec 195,779 Tflops/sec 18.64
+2025-10-01 01:05:36,778 - Step 9418: loss 1.3500 tokens/sec 201,986 Tflops/sec 19.23
+2025-10-01 01:05:41,815 - Step 9449: loss 1.4291 tokens/sec 201,677 Tflops/sec 19.20
+2025-10-01 01:05:46,878 - Step 9480: loss 1.3998 tokens/sec 200,433 Tflops/sec 19.08
+2025-10-01 01:05:51,911 - Step 9511: loss 1.3882 tokens/sec 201,861 Tflops/sec 19.22
+2025-10-01 01:05:57,047 - Step 9526: loss 1.3897 tokens/sec 95,872 Tflops/sec 9.13
+2025-10-01 01:06:02,140 - Step 9555: loss 1.4055 tokens/sec 186,386 Tflops/sec 17.75
+2025-10-01 01:06:07,195 - Step 9585: loss 1.3829 tokens/sec 194,323 Tflops/sec 18.50
+2025-10-01 01:06:12,233 - Step 9616: loss 1.3520 tokens/sec 201,800 Tflops/sec 19.21
+2025-10-01 01:06:17,267 - Step 9647: loss 1.3880 tokens/sec 201,816 Tflops/sec 19.21
+2025-10-01 01:06:22,278 - Step 9678: loss 1.3838 tokens/sec 202,511 Tflops/sec 19.28
+2025-10-01 01:06:27,307 - Step 9709: loss 1.3938 tokens/sec 201,975 Tflops/sec 19.23
+2025-10-01 01:06:32,337 - Step 9726: loss 1.3856 tokens/sec 110,795 Tflops/sec 10.55
+2025-10-01 01:06:37,431 - Step 9757: loss 1.4161 tokens/sec 199,533 Tflops/sec 19.00
+2025-10-01 01:06:42,576 - Step 9788: loss 1.4300 tokens/sec 197,237 Tflops/sec 18.78
+2025-10-01 01:06:47,636 - Step 9819: loss 1.3356 tokens/sec 200,915 Tflops/sec 19.13
+2025-10-01 01:06:52,790 - Step 9851: loss 1.4266 tokens/sec 203,439 Tflops/sec 19.37
+2025-10-01 01:06:57,944 - Step 9883: loss 1.4088 tokens/sec 203,306 Tflops/sec 19.36
+2025-10-01 01:07:03,096 - Step 9915: loss 1.3829 tokens/sec 203,530 Tflops/sec 19.38
+2025-10-01 01:07:08,231 - Step 9929: loss 1.3829 tokens/sec 89,480 Tflops/sec 8.52
+2025-10-01 01:07:13,296 - Step 9958: loss 1.4160 tokens/sec 187,445 Tflops/sec 17.85
+2025-10-01 01:07:18,343 - Step 9989: loss 1.3591 tokens/sec 201,155 Tflops/sec 19.15
+2025-10-01 01:07:19,946 - Step 9999: loss 1.4001 tokens/sec 204,217 Tflops/sec 19.44
+2025-10-01 01:07:20,054 - Saving checkpoint to checkpoints/ts_b128_autocast_postnorm_checkpoint_10000.pt
+2025-10-01 01:07:24,647 - Validation loss. step 10000: 1.3904
+2025-10-01 01:07:24,649 - Training complete. Time taken: 31.98 minutes
