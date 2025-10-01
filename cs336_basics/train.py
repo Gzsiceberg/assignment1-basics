@@ -10,7 +10,7 @@ import torch
 from torch import nn
 import numpy as np
 import random
-
+from typing import Iterable
 from cs336_basics.checkpoints import load_checkpoint, load_model_config, save_checkpoint
 from cs336_basics.common_data import DataConfig, ExperimentConfig, ModelConfig, OptimizerConfig, load_config_from_file
 from cs336_basics.data_loader import get_batch
@@ -37,6 +37,10 @@ random.seed(seed)
 @torch.compile
 def loss_compiled(logits: torch.Tensor, targets: torch.Tensor):
     return cross_entropy(logits, targets)
+
+@torch.compile
+def gradient_clipping_compiled(parameters: Iterable[nn.Parameter], max_l2_norm: float) -> torch.Tensor:
+    return gradient_clipping(parameters, max_l2_norm)
 
 
 def calc_validation_loss(
@@ -263,7 +267,10 @@ if is_main_file:
                 loss.backward()  # Run backward pass, which computes gradients.
 
             with ContextTimer(region_timer, "update_params", True):
-                grad_norm: torch.Tensor = gradient_clipping(llm.parameters(), opt_config.grad_clip) # type: ignore
+                if use_compile:
+                    grad_norm: torch.Tensor = gradient_clipping_compiled(llm.parameters(), opt_config.grad_clip) # type: ignore
+                else:
+                    grad_norm: torch.Tensor = gradient_clipping(llm.parameters(), opt_config.grad_clip) # type: ignore
                 lr: float = opt_config.learning_rate
                 if opt_config.lr_schedule == "cosine":
                     lr: float = get_lr_cosine_schedule(t, opt_config.lr_max, opt_config.lr_min,

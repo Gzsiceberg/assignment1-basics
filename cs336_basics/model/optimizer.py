@@ -14,7 +14,6 @@ def get_lr_cosine_schedule(step: int, a_max: float, a_min: float, t_warmup: int,
 
 
 @torch.no_grad()
-@torch.compile
 def gradient_clipping(parameters: Iterable[nn.Parameter], max_l2_norm: float) -> torch.Tensor:
     if max_l2_norm <= 0:
         return torch.tensor(0.0)
