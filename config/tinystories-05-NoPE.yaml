@@ -25,6 +25,7 @@ model:
   max_seq_len: 256
   theta: 10_000
   ffn_type: "swiglu"
+  position_embedding: "none"  # options: "none", "rotary"
 
 optimizer:
   learning_rate: 0.001

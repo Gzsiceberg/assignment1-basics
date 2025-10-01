@@ -305,18 +305,23 @@ def run_transformer_block(
     """
     from cs336_basics.model.transformer import TransformerBlock
     from cs336_basics.model.swiglu import SwiGLU
-    transformer_block = TransformerBlock(d_model, num_heads, d_ff, max_seq_len, theta, device=in_features.device, dtype=in_features.dtype)
+    from cs336_basics.model.rope import RoPE
+    d_k = d_model // num_heads
+    rope = RoPE(theta=theta, d_k=d_k, max_seq_len=max_seq_len, device=in_features.device)
+    transformer_block = TransformerBlock(d_model, num_heads, d_ff, max_seq_len, rope=rope, device=in_features.device, dtype=in_features.dtype)
     transformer_block.multi_head_attention.wq.weight.data = weights["attn.q_proj.weight"]
     transformer_block.multi_head_attention.wk.weight.data = weights["attn.k_proj.weight"]
     transformer_block.multi_head_attention.wv.weight.data = weights["attn.v_proj.weight"]
     transformer_block.multi_head_attention.wo.weight.data = weights["attn.output_proj.weight"]
-    transformer_block.rms_norm1.scale.data = weights["ln1.weight"]
+    if transformer_block.rms_norm1 is not None:
+        transformer_block.rms_norm1.scale.data = weights["ln1.weight"]
 
     assert isinstance(transformer_block.ffn, SwiGLU), "Expected SwiGLU instance in TransformerBlock ffn"
     transformer_block.ffn.fc1.weight.data = weights["ffn.w1.weight"]
     transformer_block.ffn.fc2.weight.data = weights["ffn.w2.weight"]
     transformer_block.ffn.fc3.weight.data = weights["ffn.w3.weight"]
-    transformer_block.rms_norm2.scale.data = weights["ln2.weight"]
+    if transformer_block.rms_norm2 is not None:
+        transformer_block.rms_norm2.scale.data = weights["ln2.weight"]
 
     return transformer_block(in_features)
 

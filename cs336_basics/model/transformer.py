@@ -26,7 +26,6 @@ class TransformerBlock(nn.Module):
         num_heads: int,
         d_ff: int,
         max_seq_len: int,
-        theta: float,
         rope: RoPE | None = None,
         device: torch.device | None = None,
         dtype: torch.dtype | None = None,
@@ -37,12 +36,7 @@ class TransformerBlock(nn.Module):
         """
         Parameters: 4 * d_model^2 (MHA) + 3 * d_model * d_ff (SwiGLU) + 2 * d_model (RMSNorms)
         """
-        d_k: int = d_model // num_heads
         self.layernorm_type = layernorm_type
-        if rope is not None:
-            assert rope.d_k == d_k, f"RoPE d_k {rope.d_k} must match model d_model/num_heads {d_k}"
-        else:
-            rope = RoPE(theta=theta, d_k=d_k, max_seq_len=max_seq_len, device=device)
         if layernorm_type:
             self.rms_norm1 = RMSNorm(d_model, device=device, dtype=dtype)
         else:
@@ -138,7 +132,6 @@ class TransformerLM(nn.Module):
                     num_heads=num_heads,
                     d_ff=d_ff,
                     max_seq_len=max_seq_len,
-                    theta=theta,
                     rope=self.rope,
                     device=device,
                     dtype=dtype,
