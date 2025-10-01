@@ -202,7 +202,6 @@ if is_main_file:
         )
         if response.lower() != "y":
             print("Exiting without overwriting the checkpoint.")
-            log_file = os.path.join(exp_config.log_dir, log_file_name)
             exit(0)
 
     t_flops = profile_model()
