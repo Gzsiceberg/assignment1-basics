@@ -34,6 +34,10 @@ np.random.seed(seed)
 # Python
 random.seed(seed)
 
+@torch.compile
+def loss_compiled(logits: torch.Tensor, targets: torch.Tensor):
+    return cross_entropy(logits, targets)
+
 
 def calc_validation_loss(
     llm: TransformerLM,
@@ -50,8 +54,8 @@ def calc_validation_loss(
             x, y = get_batch(data, batch_size, max_seq_len, device_str)
             with torch.autocast(device_type=device.type, dtype=torch.bfloat16):
                 logits = llm(x)
-            loss = cross_entropy(logits, y)
-            avg_loss += loss.cpu().item() / eval_iters
+            loss = cross_entropy(logits, y) if not use_compile else loss_compiled(logits, y)
+            avg_loss += loss.item() / eval_iters
     llm.train()
     return avg_loss
 
@@ -182,7 +186,7 @@ if is_main_file:
         print_and_log(f"matmul allow_tf32: {torch.backends.cuda.matmul.allow_tf32}")
         print_and_log(f"cudnn allow_tf32: {torch.backends.cudnn.allow_tf32}")
         print_and_log(f"matmul precision: {torch.get_float32_matmul_precision()}")
-    
+
     if args.restore and found_latest:
         print_and_log(f"Loading checkpoint from {latest_file_path}")
         iteration = load_checkpoint(latest_file_path, llm, optimizer=opt) # type: ignore
@@ -227,6 +231,7 @@ if is_main_file:
     support_bf16 = torch.cuda.is_bf16_supported() and device.type == "cuda"
     use_autocast = exp_config.use_autocast
     print_and_log(f"UseBF16={use_autocast} BF16 support: {support_bf16}, device type: {device.type}, device name: {torch.cuda.get_device_name(device) if device.type == 'cuda' else str(device)}")
+    print_and_log(f"torch version: {torch.__version__}")
 
     with Progress() as progress:
         task = progress.add_task(f"[green]Training loss", total=exp_config.steps - iteration)
@@ -249,10 +254,10 @@ if is_main_file:
                 if use_autocast and support_bf16:
                     with torch.autocast(device_type=device.type, dtype=torch.bfloat16):
                         logits = llm(x)  # Forward pass to get logits.
-                    loss = cross_entropy(logits, y)  # Compute the cross-entropy loss.
+                    loss = cross_entropy(logits, y) if not use_compile else loss_compiled(logits, y)  # Compute the cross-entropy loss.
                 else:
                     logits = llm(x)  # Forward pass to get logits.
-                    loss = cross_entropy(logits, y)  # Compute the cross-entropy loss.
+                    loss = cross_entropy(logits, y) if not use_compile else loss_compiled(logits, y)  # Compute the cross-entropy loss.
             
             with ContextTimer(region_timer, "backward", True):
                 loss.backward()  # Run backward pass, which computes gradients.
