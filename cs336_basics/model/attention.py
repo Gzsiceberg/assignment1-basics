@@ -1,9 +1,10 @@
+import math
 import torch
 from torch import nn, Tensor
 from einops import rearrange, einsum
-import numpy as np
 from jaxtyping import Float, Int, jaxtyped, Bool
 from beartype import beartype as typechecker
+from cs336_basics.model.activation import softmax_activation
 from cs336_basics.model.linear import Linear
 from cs336_basics.model.rope import RoPE
 
@@ -11,7 +12,6 @@ from cs336_basics.model.rope import RoPE
 class Attention(nn.Module):
     def __init__(self):
         super().__init__()
-        self.softmax = nn.Softmax(dim=-1)
 
     @jaxtyped(typechecker=typechecker)
     def forward(
@@ -34,11 +34,12 @@ class Attention(nn.Module):
         assert value.shape[-2] == key.shape[-2], f"Value shape {value.shape} must match key shape {key.shape}"
 
         attention_scores = einsum(query, key, "batch ... n d_k, batch ... m d_k -> batch ... n m")
-        attention_scores = attention_scores / np.sqrt(d_k)
+        attention_scores = attention_scores / math.sqrt(d_k)
         if mask is not None:
             assert attention_scores.shape == mask.shape if mask is not None else attention_scores.shape, f"Attention scores shape {attention_scores.shape} must match mask shape {mask.shape if mask is not None else 'N/A'}"
-            attention_scores = attention_scores.masked_fill(mask == 0, float("-inf"))
-        attention_weights = self.softmax(attention_scores)
+            assert mask.dtype == torch.bool, f"Mask dtype {mask.dtype} must be torch.bool"
+            attention_scores = attention_scores.masked_fill(mask == False, float("-inf"))
+        attention_weights = softmax_activation(attention_scores)
         value = einsum(attention_weights, value, "batch ... n m, batch ... m d_v -> batch ... n d_v")
         return value
 
@@ -66,10 +67,10 @@ class MultiHeadAttention(nn.Module):
         """
         d_k = d_v = d_model // num_heads
         self.rope = rope
-        self.wq = Linear(d_model, num_heads * d_k, device=device, dtype=dtype)
-        self.wk = Linear(d_model, num_heads * d_k, device=device, dtype=dtype)
-        self.wv = Linear(d_model, num_heads * d_v, device=device, dtype=dtype)
-        self.wo = Linear(num_heads * d_v, d_model, device=device, dtype=dtype)
+        self.wq = Linear(d_model, d_model, device=device, dtype=dtype)
+        self.wk = Linear(d_model, d_model, device=device, dtype=dtype)
+        self.wv = Linear(d_model, d_model, device=device, dtype=dtype)
+        self.wo = Linear(d_model, d_model, device=device, dtype=dtype)
         self.attention = Attention()
         self.d_model = d_model
         self.num_heads = num_heads
@@ -133,11 +134,10 @@ class MultiHeadAttention(nn.Module):
         query = rearrange(
             query, "... seq_len (heads d_k) -> ... heads seq_len d_k", heads=self.num_heads, seq_len=seq_len
         )
+        key = rearrange(key, "... seq_len (heads d_k) -> ... heads seq_len d_k", heads=self.num_heads, seq_len=seq_len)
+
         if self.rope is not None:
             query = self.rope(query, token_positions)
-
-        key = rearrange(key, "... seq_len (heads d_k) -> ... heads seq_len d_k", heads=self.num_heads, seq_len=seq_len)
-        if self.rope is not None:
             key = self.rope(key, token_positions)
 
         value = rearrange(
