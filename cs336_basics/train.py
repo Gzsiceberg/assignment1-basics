@@ -48,7 +48,8 @@ def calc_validation_loss(
     with torch.no_grad():
         for t in track(range(eval_iters), description="[green]Evaluating..."):
             x, y = get_batch(data, batch_size, max_seq_len, device_str)
-            logits = llm(x)
+            with torch.autocast(device_type=device.type, dtype=torch.bfloat16):
+                logits = llm(x)
             loss = cross_entropy(logits, y)
             avg_loss += loss.cpu().item() / eval_iters
     llm.train()
@@ -248,7 +249,7 @@ if is_main_file:
                 if use_autocast and support_bf16:
                     with torch.autocast(device_type=device.type, dtype=torch.bfloat16):
                         logits = llm(x)  # Forward pass to get logits.
-                        loss = cross_entropy(logits, y)  # Compute the cross-entropy loss.
+                    loss = cross_entropy(logits, y)  # Compute the cross-entropy loss.
                 else:
                     logits = llm(x)  # Forward pass to get logits.
                     loss = cross_entropy(logits, y)  # Compute the cross-entropy loss.
