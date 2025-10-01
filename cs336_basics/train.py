@@ -203,10 +203,6 @@ if is_main_file:
         if response.lower() != "y":
             print("Exiting without overwriting the checkpoint.")
             log_file = os.path.join(exp_config.log_dir, log_file_name)
-            # delete the log file
-            if os.path.exists(log_file):
-                os.remove(log_file)
-                print(f"Deleted log file {log_file}")
             exit(0)
 
     t_flops = profile_model()
