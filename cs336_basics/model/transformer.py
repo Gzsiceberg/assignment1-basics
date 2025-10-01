@@ -75,7 +75,7 @@ class TransformerBlock(nn.Module):
             y0 = self.rms_norm1(y0)
         
         if self.layernorm_type == "prenorm" and self.rms_norm2 is not None:
-            norm_y0 = self.rms_norm2(y0) if self.rms_norm2 is not None else y0
+            norm_y0 = self.rms_norm2(y0)
         else:
             norm_y0 = y0
         ffn_y = self.ffn(norm_y0)

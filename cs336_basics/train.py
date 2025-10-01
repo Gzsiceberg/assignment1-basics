@@ -252,27 +252,12 @@ if is_main_file:
                 else:
                     logits = llm(x)  # Forward pass to get logits.
                     loss = cross_entropy(logits, y)  # Compute the cross-entropy loss.
-
-
-            now = time()
-            last_batch_count += 1
-            if now - last_print_time >= 5 or t == exp_config.steps - 1:
-                last_batch_loss = loss.item()
-                last_train_tokens = exp_config.batch_size * model_config.max_seq_len * last_batch_count
-                tokens_per_sec = int(last_train_tokens / (now - last_print_time))
-                last_tflops = (t_flops * last_batch_count) / 1e12
-                tflops_per_sec = last_tflops / (now - last_print_time)
-                delta_time = now - last_print_time
-                print_and_log(f"Step {t}: loss {last_batch_loss:.4f} tokens/sec {tokens_per_sec:,} Tflops/sec {tflops_per_sec:,.2f}")
-                last_batch_count = 0
-                last_print_time = now
             
             with ContextTimer(region_timer, "backward", True):
                 loss.backward()  # Run backward pass, which computes gradients.
 
             with ContextTimer(region_timer, "update_params", True):
-                if opt_config.grad_clip > 0:
-                    gradient_clipping(llm.parameters(), opt_config.grad_clip) # type: ignore
+                grad_norm: torch.Tensor = gradient_clipping(llm.parameters(), opt_config.grad_clip) # type: ignore
                 lr: float = opt_config.learning_rate
                 if opt_config.lr_schedule == "cosine":
                     lr: float = get_lr_cosine_schedule(t, opt_config.lr_max, opt_config.lr_min,
@@ -281,6 +266,20 @@ if is_main_file:
                     param_group["lr"] = lr
                 opt.step()  # Update parameters based on computed gradients.
                 opt.zero_grad(set_to_none=True)  # Reset the gradients for all learnable parameters.
+            
+            now = time()
+            last_batch_count += 1
+            if now - last_print_time >= 5 or t == exp_config.steps - 1:
+                last_batch_loss = loss.item()
+                grad_norm_value = grad_norm.item()
+                last_train_tokens = exp_config.batch_size * model_config.max_seq_len * last_batch_count
+                tokens_per_sec = int(last_train_tokens / (now - last_print_time))
+                last_tflops = (t_flops * last_batch_count) / 1e12
+                tflops_per_sec = last_tflops / (now - last_print_time)
+                delta_time = now - last_print_time
+                print_and_log(f"Step {t}: loss {last_batch_loss:.4f} grad_norm {grad_norm_value:.3f} Tflops/sec {tflops_per_sec:,.2f}")
+                last_batch_count = 0
+                last_print_time = now
 
             # Update progress bar description with current loss
             remain_time_to_checkpoint = int(last_checkpoint_time + exp_config.checkpoints_interval * 60 - now)
