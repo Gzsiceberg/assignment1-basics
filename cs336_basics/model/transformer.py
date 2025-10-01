@@ -112,6 +112,7 @@ class TransformerLM(nn.Module):
         dtype: torch.dtype | None = None,
         ffn_type: str = "swiglu",
         layernorm_type: str = "prenorm",
+        position_embedding: str = "rope",
     ) -> None:
         super().__init__()
         """
@@ -125,7 +126,10 @@ class TransformerLM(nn.Module):
         self.max_seq_len = max_seq_len
         self.vocab_size = vocab_size
         d_k: int = d_model // num_heads
-        self.rope = RoPE(theta=theta, d_k=d_k, max_seq_len=max_seq_len, device=device)
+        if position_embedding == "rope":
+            self.rope = RoPE(theta=theta, d_k=d_k, max_seq_len=max_seq_len, device=device)
+        else:
+            self.rope = None
         self.token_embedding = Embedding(vocab_size, d_model, device=device, dtype=dtype)
         self.layers = nn.ModuleList(
             [

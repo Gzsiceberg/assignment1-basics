@@ -111,6 +111,8 @@ if is_main_file:
     model_config: ModelConfig = ModelConfig(**config.get("model", {}))
     data_config: DataConfig = DataConfig(**config.get("data", {}))
     exp_config: ExperimentConfig = ExperimentConfig(**config.get("experiment", {}))
+    if exp_config.name is None or exp_config.name == "":
+        exp_config.name = os.path.splitext(os.path.basename(args.config))[0]
     opt_config: OptimizerConfig = OptimizerConfig(**config.get("optimizer", {}))
 
     if not os.path.exists(exp_config.checkpoints_path):
@@ -151,6 +153,7 @@ if is_main_file:
         dtype=torch.float32,
         device=get_device(),
         layernorm_type=model_config.layernorm_type,
+        position_embedding=model_config.position_embedding,
     )
 
     opt = AdamW(

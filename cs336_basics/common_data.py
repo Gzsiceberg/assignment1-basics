@@ -15,6 +15,7 @@ class ModelConfig(BaseModel):
     theta: float = 100000.0
     ffn_type: str = "silu"
     layernorm_type: str = "prenorm"
+    position_embedding: str = "rope"  # Options: "rope", "none"
 
 
 class ExperimentConfig(BaseModel):
