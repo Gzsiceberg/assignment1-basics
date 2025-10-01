@@ -1,0 +1,805 @@
+2025-10-01 21:16:51,242 - Using config file: config/tinystories-05-NoPE.yaml
+2025-10-01 21:16:51,243 - Model config: vocab_size=10000 num_layers=4 d_model=512 num_heads=16 d_ff=1344 max_seq_len=256 theta=10000.0 ffn_type='swiglu' layernorm_type='prenorm' position_embedding='none'
+2025-10-01 21:16:51,243 - Data config: train_data='data/TinyStoriesV2-GPT4-train-bpe-merged.npy' valid_data='data/TinyStoriesV2-GPT4-valid-bpe-merged.npy'
+2025-10-01 21:16:51,243 - Experiment config: name='tinystories-05-NoPE' checkpoint_dir='checkpoints' log_dir='logs' batch_size=128 eval_batch_size=64 steps=10000 checkpoints_interval=5 checkpoints_path='checkpoints' eval_steps=100 use_autocast=True
+2025-10-01 21:16:51,243 - Optimizer config: learning_rate=0.001 weight_decay=0.01 betas=[0.9, 0.95] grad_clip=0.5 lr_schedule='cosine' lr_min=0.0 lr_max=0.003 warmup_ratio=0.01 cosine_cycle_ratio=1.0
+2025-10-01 21:16:51,518 - optimizer: AdamW(lr=0.001, betas=[0.9, 0.95], eps=1e-08, weight_decay=0.01)
+2025-10-01 21:16:51,519 - Training on device cuda:0
+2025-10-01 21:16:51,519 - Torch version: 2.6.0+cu124 model compiled with torch.compile
+2025-10-01 21:16:51,520 - matmul allow_tf32: True
+2025-10-01 21:16:51,520 - cudnn allow_tf32: True
+2025-10-01 21:16:51,520 - matmul precision: high
+2025-10-01 21:16:52,939 - for batch size: 128
+2025-10-01 21:16:52,939 - Total parameters: 14,438,915
+2025-10-01 21:16:52,940 - Total activations: 21,565,696
+2025-10-01 21:16:52,940 - params + gradients + states: 231,022,640
+2025-10-01 21:16:52,940 - activations per batch size: 86,262,784
+2025-10-01 21:16:52,940 - Parameters memory (GB): 0.05
+2025-10-01 21:16:52,940 - Gradients memory (GB): 0.05
+2025-10-01 21:16:52,940 - AdamW states memory (GB): 0.11
+2025-10-01 21:16:52,941 - Activations memory (GB): 10.28
+2025-10-01 21:16:52,941 - Total memory (GB): 10.50
+2025-10-01 21:16:52,941 - FLOPS for attention: 0.34 TFLOPS 343,597,383,680 FLOPS Percent: 33.04%
+2025-10-01 21:16:52,941 - FLOPS for FFN: 0.36 TFLOPS 360,777,252,864 FLOPS, Percent: 34.69%
+2025-10-01 21:16:52,941 - FLOPS per Transformer block: 0.70 TFLOPS 704,374,636,544 FLOPS, Percent: 67.73%
+2025-10-01 21:16:52,941 - FLOPS for output layer: 0.34 TFLOPS 335,544,320,000 FLOPS, Percent: 32.27%
+2025-10-01 21:16:52,942 - Total FLOPS: 1.04 TFLOPS 1,039,918,956,544 FLOPS
+2025-10-01 21:16:52,942 - Embedding params: 5,120,000 Percent: 35.46%
+2025-10-01 21:16:52,942 - MHA params: 4,194,304 Percent: 29.05%
+2025-10-01 21:16:52,942 - FFN params: 3 Percent: 0.00%
+2025-10-01 21:16:52,942 - rmsnorm params: 512 Percent: 0.00%
+2025-10-01 21:16:52,942 - Block params: 4,198,403 Percent: 29.08%
+2025-10-01 21:16:52,942 - RMSNorm params: 512 Percent: 0.00%
+2025-10-01 21:16:52,942 - LM Head params: 5,120,000 Percent: 35.46%
+2025-10-01 21:16:52,943 - Total params: 14,438,915 (0.05 GB)
+2025-10-01 21:16:52,943 - ------------------------------------------------------------------------------------------------------------------------
+2025-10-01 21:16:52,943 - FLOPs per step: 3,119,756.87 MFLOPs. FLOPs per token: 95.21 MFLOPs
+2025-10-01 21:16:52,943 - model parameters: 14.44 M, estimated FLOPs per token: 86.63 MFLOPs
+2025-10-01 21:16:52,943 - Total training: 31,197.57 TFLOPs
+2025-10-01 21:16:52,943 - ------------------------------------------------------------------------------------------------------------------------
+2025-10-01 21:16:52,943 - Training data has 541229347 tokens.
+2025-10-01 21:16:52,944 - Validation data has 5465883 tokens.
+2025-10-01 21:16:52,944 - UseBF16=True BF16 support: True, device type: cuda, device name: NVIDIA GeForce RTX 4070 Ti
+2025-10-01 21:16:52,945 - Using cosine learning rate schedule with min 0.0, max 0.003, warmup steps 100, cosine cycle steps 10000
+2025-10-01 21:17:12,298 - Step 0: loss 9.2344 grad_norm 1.108 Tflops/sec 0.16
+2025-10-01 21:17:23,701 - Step 1: loss 9.2335 grad_norm 1.115 Tflops/sec 0.27
+2025-10-01 21:17:28,801 - Step 19: loss 6.0077 grad_norm 1.838 Tflops/sec 11.01
+2025-10-01 21:17:34,007 - Step 26: loss 4.9201 grad_norm 0.549 Tflops/sec 4.19
+2025-10-01 21:17:39,011 - Step 43: loss 4.0559 grad_norm 0.294 Tflops/sec 10.60
+2025-10-01 21:17:44,036 - Step 62: loss 3.7179 grad_norm 0.400 Tflops/sec 11.80
+2025-10-01 21:17:49,088 - Step 78: loss 3.5613 grad_norm 0.321 Tflops/sec 9.88
+2025-10-01 21:17:54,264 - Step 101: loss 3.4230 grad_norm 0.626 Tflops/sec 13.86
+2025-10-01 21:17:59,335 - Step 115: loss 3.3000 grad_norm 0.429 Tflops/sec 8.61
+2025-10-01 21:18:04,409 - Step 131: loss 3.2154 grad_norm 0.420 Tflops/sec 9.85
+2025-10-01 21:18:09,624 - Step 139: loss 3.0075 grad_norm 0.331 Tflops/sec 4.78
+2025-10-01 21:18:14,919 - Step 158: loss 3.0029 grad_norm 0.331 Tflops/sec 11.18
+2025-10-01 21:18:19,924 - Step 169: loss 2.9030 grad_norm 0.335 Tflops/sec 6.86
+2025-10-01 21:18:25,052 - Step 180: loss 2.8374 grad_norm 0.332 Tflops/sec 6.69
+2025-10-01 21:18:30,225 - Step 203: loss 2.7485 grad_norm 0.354 Tflops/sec 13.90
+2025-10-01 21:18:35,843 - Step 221: loss 2.6958 grad_norm 0.333 Tflops/sec 9.98
+2025-10-01 21:18:43,289 - Step 241: loss 2.5692 grad_norm 0.347 Tflops/sec 8.38
+2025-10-01 21:18:48,313 - Step 266: loss 2.4750 grad_norm 0.405 Tflops/sec 15.52
+2025-10-01 21:18:53,451 - Step 291: loss 2.4571 grad_norm 0.464 Tflops/sec 15.18
+2025-10-01 21:18:58,636 - Step 317: loss 2.3678 grad_norm 0.279 Tflops/sec 15.64
+2025-10-01 21:19:03,866 - Step 338: loss 2.4000 grad_norm 0.290 Tflops/sec 12.53
+2025-10-01 21:19:08,987 - Step 357: loss 2.4335 grad_norm 0.292 Tflops/sec 11.57
+2025-10-01 21:19:14,055 - Step 376: loss 2.3266 grad_norm 0.272 Tflops/sec 11.70
+2025-10-01 21:19:19,174 - Step 387: loss 2.2246 grad_norm 0.306 Tflops/sec 6.70
+2025-10-01 21:19:24,318 - Step 412: loss 2.3045 grad_norm 0.308 Tflops/sec 15.16
+2025-10-01 21:19:29,349 - Step 438: loss 2.2155 grad_norm 0.272 Tflops/sec 16.12
+2025-10-01 21:19:34,470 - Step 456: loss 2.1922 grad_norm 0.239 Tflops/sec 10.96
+2025-10-01 21:19:39,483 - Step 474: loss 2.2229 grad_norm 0.291 Tflops/sec 11.20
+2025-10-01 21:19:44,736 - Step 493: loss 2.1397 grad_norm 0.250 Tflops/sec 11.29
+2025-10-01 21:19:49,946 - Step 514: loss 2.1608 grad_norm 0.231 Tflops/sec 12.57
+2025-10-01 21:19:55,043 - Step 523: loss 2.1651 grad_norm 0.806 Tflops/sec 5.51
+2025-10-01 21:20:00,372 - Step 533: loss 2.1771 grad_norm 0.252 Tflops/sec 5.86
+2025-10-01 21:20:05,778 - Step 545: loss 2.1143 grad_norm 0.275 Tflops/sec 6.92
+2025-10-01 21:20:10,883 - Step 569: loss 2.1525 grad_norm 0.291 Tflops/sec 14.66
+2025-10-01 21:20:15,927 - Step 596: loss 2.0693 grad_norm 0.293 Tflops/sec 16.71
+2025-10-01 21:20:21,092 - Step 624: loss 2.0907 grad_norm 0.254 Tflops/sec 16.91
+2025-10-01 21:20:28,348 - Step 648: loss 2.1128 grad_norm 0.224 Tflops/sec 10.32
+2025-10-01 21:20:33,416 - Step 674: loss 2.0205 grad_norm 0.238 Tflops/sec 16.00
+2025-10-01 21:20:38,538 - Step 699: loss 2.0382 grad_norm 0.280 Tflops/sec 15.23
+2025-10-01 21:20:43,542 - Step 722: loss 2.0122 grad_norm 0.246 Tflops/sec 14.34
+2025-10-01 21:20:48,708 - Step 750: loss 1.9579 grad_norm 0.341 Tflops/sec 16.91
+2025-10-01 21:20:53,858 - Step 778: loss 2.0371 grad_norm 0.351 Tflops/sec 16.96
+2025-10-01 21:20:59,796 - Step 803: loss 1.9156 grad_norm 0.223 Tflops/sec 13.14
+2025-10-01 21:21:04,845 - Step 809: loss 1.9879 grad_norm 0.219 Tflops/sec 3.71
+2025-10-01 21:21:09,879 - Step 828: loss 1.9280 grad_norm 0.224 Tflops/sec 11.78
+2025-10-01 21:21:14,952 - Step 850: loss 1.9321 grad_norm 0.208 Tflops/sec 13.55
+2025-10-01 21:21:20,107 - Step 871: loss 1.9562 grad_norm 0.192 Tflops/sec 12.69
+2025-10-01 21:21:25,189 - Step 895: loss 1.9961 grad_norm 0.299 Tflops/sec 14.73
+2025-10-01 21:21:30,201 - Step 922: loss 1.9347 grad_norm 0.216 Tflops/sec 16.81
+2025-10-01 21:21:35,238 - Step 949: loss 1.8992 grad_norm 0.200 Tflops/sec 16.72
+2025-10-01 21:21:40,304 - Step 960: loss 1.9343 grad_norm 0.239 Tflops/sec 6.77
+2025-10-01 21:21:45,414 - Step 986: loss 2.0098 grad_norm 0.224 Tflops/sec 15.88
+2025-10-01 21:21:50,488 - Step 1013: loss 1.8911 grad_norm 0.221 Tflops/sec 16.60
+2025-10-01 21:21:52,430 - Saving checkpoint to checkpoints/tinystories-05-NoPE_checkpoint_1020.pt
+2025-10-01 21:22:09,940 - Validation loss. step 1020: 1.9072
+2025-10-01 21:22:10,163 - Step 1020: loss 1.9205 grad_norm 0.239 Tflops/sec 1.11
+2025-10-01 21:22:15,538 - Step 1026: loss 1.9399 grad_norm 0.240 Tflops/sec 3.49
+2025-10-01 21:22:20,691 - Step 1038: loss 1.9038 grad_norm 0.196 Tflops/sec 7.25
+2025-10-01 21:22:25,830 - Step 1064: loss 1.8570 grad_norm 0.225 Tflops/sec 15.78
+2025-10-01 21:22:31,053 - Step 1079: loss 1.8724 grad_norm 0.248 Tflops/sec 8.96
+2025-10-01 21:22:36,151 - Step 1091: loss 1.8712 grad_norm 0.212 Tflops/sec 7.34
+2025-10-01 21:22:41,331 - Step 1102: loss 1.8399 grad_norm 0.209 Tflops/sec 6.62
+2025-10-01 21:22:49,512 - Step 1116: loss 1.8729 grad_norm 0.216 Tflops/sec 5.34
+2025-10-01 21:22:54,868 - Step 1125: loss 1.8289 grad_norm 0.231 Tflops/sec 5.24
+2025-10-01 21:22:59,882 - Step 1138: loss 1.8301 grad_norm 0.201 Tflops/sec 8.09
+2025-10-01 21:23:05,046 - Step 1145: loss 1.8755 grad_norm 0.194 Tflops/sec 4.23
+2025-10-01 21:23:10,159 - Step 1160: loss 1.8193 grad_norm 0.192 Tflops/sec 9.15
+2025-10-01 21:23:15,416 - Step 1177: loss 1.8940 grad_norm 0.196 Tflops/sec 10.09
+2025-10-01 21:23:20,587 - Step 1195: loss 1.8713 grad_norm 0.192 Tflops/sec 10.86
+2025-10-01 21:23:25,699 - Step 1201: loss 1.8705 grad_norm 0.221 Tflops/sec 3.66
+2025-10-01 21:23:30,849 - Step 1217: loss 1.8249 grad_norm 0.214 Tflops/sec 9.70
+2025-10-01 21:23:36,078 - Step 1234: loss 1.8438 grad_norm 0.210 Tflops/sec 10.14
+2025-10-01 21:23:41,347 - Step 1250: loss 1.7876 grad_norm 0.195 Tflops/sec 9.47
+2025-10-01 21:23:46,465 - Step 1269: loss 1.7887 grad_norm 0.248 Tflops/sec 11.58
+2025-10-01 21:23:51,484 - Step 1293: loss 1.8231 grad_norm 0.171 Tflops/sec 14.91
+2025-10-01 21:23:58,994 - Step 1314: loss 1.7872 grad_norm 0.185 Tflops/sec 8.72
+2025-10-01 21:24:04,136 - Step 1340: loss 1.8010 grad_norm 0.211 Tflops/sec 15.77
+2025-10-01 21:24:09,156 - Step 1364: loss 1.8154 grad_norm 0.199 Tflops/sec 14.92
+2025-10-01 21:24:14,254 - Step 1390: loss 1.8014 grad_norm 0.229 Tflops/sec 15.91
+2025-10-01 21:24:19,306 - Step 1416: loss 1.7714 grad_norm 0.196 Tflops/sec 16.05
+2025-10-01 21:24:25,344 - Step 1434: loss 1.7962 grad_norm 0.221 Tflops/sec 9.32
+2025-10-01 21:24:30,589 - Step 1447: loss 1.7814 grad_norm 0.248 Tflops/sec 7.71
+2025-10-01 21:24:36,256 - Step 1453: loss 1.7816 grad_norm 0.186 Tflops/sec 3.30
+2025-10-01 21:24:41,542 - Step 1472: loss 1.7731 grad_norm 0.179 Tflops/sec 11.21
+2025-10-01 21:24:46,876 - Step 1488: loss 1.8158 grad_norm 0.187 Tflops/sec 9.36
+2025-10-01 21:24:52,047 - Step 1503: loss 1.7815 grad_norm 0.197 Tflops/sec 9.05
+2025-10-01 21:24:57,208 - Step 1524: loss 1.7488 grad_norm 0.165 Tflops/sec 12.69
+2025-10-01 21:25:02,591 - Step 1539: loss 1.8003 grad_norm 0.181 Tflops/sec 8.69
+2025-10-01 21:25:09,493 - Step 1548: loss 1.7294 grad_norm 0.195 Tflops/sec 4.07
+2025-10-01 21:25:14,496 - Step 1553: loss 1.7859 grad_norm 0.209 Tflops/sec 3.12
+2025-10-01 21:25:19,627 - Step 1566: loss 1.7662 grad_norm 0.188 Tflops/sec 7.90
+2025-10-01 21:25:24,654 - Step 1585: loss 1.7503 grad_norm 0.187 Tflops/sec 11.79
+2025-10-01 21:25:30,009 - Step 1599: loss 1.7570 grad_norm 0.213 Tflops/sec 8.16
+2025-10-01 21:25:35,286 - Step 1611: loss 1.7332 grad_norm 0.192 Tflops/sec 7.09
+2025-10-01 21:25:41,248 - Step 1624: loss 1.8436 grad_norm 0.183 Tflops/sec 6.83
+2025-10-01 21:25:46,801 - Step 1626: loss 1.7497 grad_norm 0.180 Tflops/sec 1.12
+2025-10-01 21:25:52,516 - Step 1629: loss 1.8337 grad_norm 0.188 Tflops/sec 1.64
+2025-10-01 21:25:57,624 - Step 1637: loss 1.8039 grad_norm 0.172 Tflops/sec 4.87
+2025-10-01 21:26:03,043 - Step 1643: loss 1.7506 grad_norm 0.204 Tflops/sec 3.46
+2025-10-01 21:26:08,160 - Step 1649: loss 1.7369 grad_norm 0.177 Tflops/sec 3.66
+2025-10-01 21:26:13,383 - Step 1657: loss 1.7776 grad_norm 0.203 Tflops/sec 4.78
+2025-10-01 21:26:19,614 - Step 1664: loss 1.7820 grad_norm 0.196 Tflops/sec 3.52
+2025-10-01 21:26:24,675 - Step 1673: loss 1.7179 grad_norm 0.182 Tflops/sec 5.54
+2025-10-01 21:26:29,916 - Step 1681: loss 1.7486 grad_norm 0.190 Tflops/sec 4.75
+2025-10-01 21:26:35,521 - Step 1688: loss 1.7644 grad_norm 0.176 Tflops/sec 3.90
+2025-10-01 21:26:40,660 - Step 1694: loss 1.7302 grad_norm 0.175 Tflops/sec 3.65
+2025-10-01 21:26:45,932 - Step 1698: loss 1.7460 grad_norm 0.187 Tflops/sec 2.36
+2025-10-01 21:26:54,896 - Step 1701: loss 1.7432 grad_norm 0.174 Tflops/sec 1.05
+2025-10-01 21:26:54,897 - Saving checkpoint to checkpoints/tinystories-05-NoPE_checkpoint_1702.pt
+2025-10-01 21:27:25,708 - Validation loss. step 1702: 1.7610
+2025-10-01 21:27:26,290 - Step 1702: loss 1.7065 grad_norm 0.203 Tflops/sec 0.10
+2025-10-01 21:27:35,135 - Step 1706: loss 1.7491 grad_norm 0.202 Tflops/sec 1.41
+2025-10-01 21:27:40,798 - Step 1715: loss 1.7795 grad_norm 0.198 Tflops/sec 4.96
+2025-10-01 21:27:46,141 - Step 1725: loss 1.7449 grad_norm 0.189 Tflops/sec 5.84
+2025-10-01 21:27:51,530 - Step 1736: loss 1.7918 grad_norm 0.194 Tflops/sec 6.37
+2025-10-01 21:27:56,618 - Step 1746: loss 1.7209 grad_norm 0.214 Tflops/sec 6.13
+2025-10-01 21:28:04,591 - Step 1757: loss 1.7258 grad_norm 0.198 Tflops/sec 4.30
+2025-10-01 21:28:12,929 - Step 1764: loss 1.7386 grad_norm 0.166 Tflops/sec 2.62
+2025-10-01 21:28:17,930 - Step 1778: loss 1.6849 grad_norm 0.207 Tflops/sec 8.73
+2025-10-01 21:28:23,233 - Step 1794: loss 1.7758 grad_norm 0.172 Tflops/sec 9.41
+2025-10-01 21:28:28,567 - Step 1810: loss 1.7313 grad_norm 0.218 Tflops/sec 9.36
+2025-10-01 21:28:33,629 - Step 1825: loss 1.6859 grad_norm 0.183 Tflops/sec 9.24
+2025-10-01 21:28:39,839 - Step 1835: loss 1.7562 grad_norm 0.193 Tflops/sec 5.02
+2025-10-01 21:28:44,895 - Step 1850: loss 1.7218 grad_norm 0.182 Tflops/sec 9.26
+2025-10-01 21:28:50,020 - Step 1865: loss 1.7369 grad_norm 0.157 Tflops/sec 9.13
+2025-10-01 21:28:55,306 - Step 1881: loss 1.7212 grad_norm 0.176 Tflops/sec 9.44
+2025-10-01 21:29:00,592 - Step 1897: loss 1.7690 grad_norm 0.170 Tflops/sec 9.44
+2025-10-01 21:29:05,667 - Step 1912: loss 1.7832 grad_norm 0.184 Tflops/sec 9.22
+2025-10-01 21:29:10,929 - Step 1926: loss 1.7951 grad_norm 0.197 Tflops/sec 8.31
+2025-10-01 21:29:16,103 - Step 1930: loss 1.7555 grad_norm 0.233 Tflops/sec 2.41
+2025-10-01 21:29:21,342 - Step 1945: loss 1.7416 grad_norm 0.187 Tflops/sec 8.93
+2025-10-01 21:29:26,640 - Step 1960: loss 1.7136 grad_norm 0.178 Tflops/sec 8.85
+2025-10-01 21:29:32,310 - Step 1970: loss 1.7084 grad_norm 0.186 Tflops/sec 5.49
+2025-10-01 21:29:37,439 - Step 1978: loss 1.6779 grad_norm 0.182 Tflops/sec 4.88
+2025-10-01 21:29:42,518 - Step 1992: loss 1.7342 grad_norm 0.167 Tflops/sec 8.58
+2025-10-01 21:29:49,811 - Step 2004: loss 1.7436 grad_norm 0.182 Tflops/sec 5.15
+2025-10-01 21:29:54,985 - Step 2020: loss 1.6744 grad_norm 0.158 Tflops/sec 9.61
+2025-10-01 21:30:00,026 - Step 2035: loss 1.6505 grad_norm 0.186 Tflops/sec 9.28
+2025-10-01 21:30:05,348 - Step 2051: loss 1.6952 grad_norm 0.164 Tflops/sec 9.39
+2025-10-01 21:30:10,392 - Step 2066: loss 1.6990 grad_norm 0.159 Tflops/sec 9.27
+2025-10-01 21:30:15,407 - Step 2081: loss 1.6696 grad_norm 0.171 Tflops/sec 9.34
+2025-10-01 21:30:20,763 - Step 2097: loss 1.7097 grad_norm 0.183 Tflops/sec 9.32
+2025-10-01 21:30:25,923 - Step 2104: loss 1.6755 grad_norm 0.188 Tflops/sec 4.23
+2025-10-01 21:30:31,161 - Step 2119: loss 1.7207 grad_norm 0.176 Tflops/sec 8.92
+2025-10-01 21:30:36,269 - Step 2134: loss 1.7095 grad_norm 0.213 Tflops/sec 9.16
+2025-10-01 21:30:41,497 - Step 2150: loss 1.7437 grad_norm 0.185 Tflops/sec 9.55
+2025-10-01 21:30:46,561 - Step 2165: loss 1.7711 grad_norm 0.181 Tflops/sec 9.24
+2025-10-01 21:30:51,911 - Step 2181: loss 1.6799 grad_norm 0.190 Tflops/sec 9.33
+2025-10-01 21:30:59,885 - Step 2197: loss 1.7622 grad_norm 0.186 Tflops/sec 6.26
+2025-10-01 21:31:04,911 - Step 2212: loss 1.6949 grad_norm 0.177 Tflops/sec 9.31
+2025-10-01 21:31:09,959 - Step 2227: loss 1.7081 grad_norm 0.165 Tflops/sec 9.30
+2025-10-01 21:31:15,278 - Step 2243: loss 1.7116 grad_norm 0.160 Tflops/sec 9.36
+2025-10-01 21:31:20,365 - Step 2258: loss 1.6814 grad_norm 0.178 Tflops/sec 9.21
+2025-10-01 21:31:25,383 - Step 2273: loss 1.6537 grad_norm 0.154 Tflops/sec 9.32
+2025-10-01 21:31:30,596 - Step 2289: loss 1.6846 grad_norm 0.167 Tflops/sec 9.58
+2025-10-01 21:31:35,897 - Step 2297: loss 1.6173 grad_norm 0.163 Tflops/sec 4.71
+2025-10-01 21:31:41,059 - Step 2312: loss 1.6786 grad_norm 0.169 Tflops/sec 9.06
+2025-10-01 21:31:46,180 - Step 2327: loss 1.6279 grad_norm 0.159 Tflops/sec 9.14
+2025-10-01 21:31:51,195 - Step 2342: loss 1.6862 grad_norm 0.198 Tflops/sec 9.33
+2025-10-01 21:31:53,919 - Saving checkpoint to checkpoints/tinystories-05-NoPE_checkpoint_2351.pt
+2025-10-01 21:32:02,358 - Validation loss. step 2351: 1.6735
+2025-10-01 21:32:02,697 - Step 2351: loss 1.6554 grad_norm 0.156 Tflops/sec 2.44
+2025-10-01 21:32:09,775 - Step 2365: loss 1.7045 grad_norm 0.190 Tflops/sec 6.18
+2025-10-01 21:32:14,848 - Step 2380: loss 1.7085 grad_norm 0.160 Tflops/sec 9.21
+2025-10-01 21:32:20,176 - Step 2396: loss 1.6623 grad_norm 0.161 Tflops/sec 9.37
+2025-10-01 21:32:25,239 - Step 2411: loss 1.6460 grad_norm 0.196 Tflops/sec 9.26
+2025-10-01 21:32:30,353 - Step 2426: loss 1.6655 grad_norm 0.172 Tflops/sec 9.13
+2025-10-01 21:32:35,456 - Step 2441: loss 1.6281 grad_norm 0.167 Tflops/sec 9.17
+2025-10-01 21:32:40,675 - Step 2457: loss 1.6289 grad_norm 0.159 Tflops/sec 9.56
+2025-10-01 21:32:46,006 - Step 2464: loss 1.5922 grad_norm 0.158 Tflops/sec 4.10
+2025-10-01 21:32:51,077 - Step 2479: loss 1.6619 grad_norm 0.151 Tflops/sec 9.23
+2025-10-01 21:32:56,336 - Step 2495: loss 1.6117 grad_norm 0.151 Tflops/sec 9.49
+2025-10-01 21:33:01,571 - Step 2511: loss 1.6521 grad_norm 0.161 Tflops/sec 9.54
+2025-10-01 21:33:06,706 - Step 2526: loss 1.6465 grad_norm 0.167 Tflops/sec 9.11
+2025-10-01 21:33:11,877 - Step 2541: loss 1.6560 grad_norm 0.157 Tflops/sec 9.05
+2025-10-01 21:33:16,899 - Step 2556: loss 1.6254 grad_norm 0.173 Tflops/sec 9.32
+2025-10-01 21:33:21,978 - Step 2563: loss 1.6587 grad_norm 0.155 Tflops/sec 4.30
+2025-10-01 21:33:27,044 - Step 2578: loss 1.6419 grad_norm 0.154 Tflops/sec 9.24
+2025-10-01 21:33:32,060 - Step 2593: loss 1.6255 grad_norm 0.178 Tflops/sec 9.32
+2025-10-01 21:33:37,128 - Step 2608: loss 1.6330 grad_norm 0.156 Tflops/sec 9.25
+2025-10-01 21:33:42,268 - Step 2623: loss 1.5983 grad_norm 0.181 Tflops/sec 9.09
+2025-10-01 21:33:47,610 - Step 2639: loss 1.6504 grad_norm 0.177 Tflops/sec 9.35
+2025-10-01 21:33:55,281 - Step 2654: loss 1.6347 grad_norm 0.149 Tflops/sec 6.10
+2025-10-01 21:34:00,552 - Step 2670: loss 1.6549 grad_norm 0.150 Tflops/sec 9.47
+2025-10-01 21:34:05,753 - Step 2686: loss 1.6095 grad_norm 0.158 Tflops/sec 9.60
+2025-10-01 21:34:10,856 - Step 2702: loss 1.6469 grad_norm 0.175 Tflops/sec 9.78
+2025-10-01 21:34:16,120 - Step 2718: loss 1.6699 grad_norm 0.157 Tflops/sec 9.48
+2025-10-01 21:34:21,263 - Step 2734: loss 1.6355 grad_norm 0.151 Tflops/sec 9.71
+2025-10-01 21:34:26,547 - Step 2750: loss 1.6495 grad_norm 0.160 Tflops/sec 9.46
+2025-10-01 21:34:31,713 - Step 2757: loss 1.6222 grad_norm 0.160 Tflops/sec 4.22
+2025-10-01 21:34:37,042 - Step 2773: loss 1.6716 grad_norm 0.170 Tflops/sec 9.37
+2025-10-01 21:34:42,252 - Step 2789: loss 1.6669 grad_norm 0.178 Tflops/sec 9.59
+2025-10-01 21:34:47,342 - Step 2805: loss 1.6841 grad_norm 0.164 Tflops/sec 9.80
+2025-10-01 21:34:52,617 - Step 2821: loss 1.6641 grad_norm 0.154 Tflops/sec 9.47
+2025-10-01 21:34:57,888 - Step 2837: loss 1.6078 grad_norm 0.164 Tflops/sec 9.47
+2025-10-01 21:35:05,640 - Step 2851: loss 1.6523 grad_norm 0.145 Tflops/sec 5.64
+2025-10-01 21:35:10,717 - Step 2867: loss 1.6237 grad_norm 0.174 Tflops/sec 9.83
+2025-10-01 21:35:15,782 - Step 2883: loss 1.6861 grad_norm 0.176 Tflops/sec 9.84
+2025-10-01 21:35:21,037 - Step 2899: loss 1.6734 grad_norm 0.186 Tflops/sec 9.50
+2025-10-01 21:35:26,159 - Step 2915: loss 1.5856 grad_norm 0.152 Tflops/sec 9.75
+2025-10-01 21:35:31,260 - Step 2930: loss 1.6798 grad_norm 0.164 Tflops/sec 9.18
+2025-10-01 21:35:36,444 - Step 2946: loss 1.6618 grad_norm 0.144 Tflops/sec 9.64
+2025-10-01 21:35:41,667 - Step 2953: loss 1.5677 grad_norm 0.154 Tflops/sec 4.18
+2025-10-01 21:35:46,714 - Step 2968: loss 1.6208 grad_norm 0.174 Tflops/sec 9.26
+2025-10-01 21:35:51,814 - Step 2983: loss 1.6580 grad_norm 0.153 Tflops/sec 9.19
+2025-10-01 21:35:56,946 - Step 2998: loss 1.6097 grad_norm 0.161 Tflops/sec 9.10
+2025-10-01 21:36:02,044 - Step 3013: loss 1.5999 grad_norm 0.153 Tflops/sec 9.18
+2025-10-01 21:36:07,221 - Step 3029: loss 1.6232 grad_norm 0.162 Tflops/sec 9.66
+2025-10-01 21:36:12,298 - Step 3044: loss 1.6313 grad_norm 0.149 Tflops/sec 9.20
+2025-10-01 21:36:17,463 - Step 3051: loss 1.5959 grad_norm 0.146 Tflops/sec 4.23
+2025-10-01 21:36:22,562 - Step 3066: loss 1.6244 grad_norm 0.179 Tflops/sec 9.18
+2025-10-01 21:36:27,760 - Step 3081: loss 1.5585 grad_norm 0.157 Tflops/sec 9.00
+2025-10-01 21:36:32,917 - Step 3097: loss 1.6587 grad_norm 0.182 Tflops/sec 9.68
+2025-10-01 21:36:37,959 - Step 3112: loss 1.5911 grad_norm 0.161 Tflops/sec 9.28
+2025-10-01 21:36:43,078 - Step 3127: loss 1.6060 grad_norm 0.160 Tflops/sec 9.14
+2025-10-01 21:36:50,937 - Step 3141: loss 1.5873 grad_norm 0.164 Tflops/sec 5.56
+2025-10-01 21:36:52,996 - Saving checkpoint to checkpoints/tinystories-05-NoPE_checkpoint_3147.pt
+2025-10-01 21:37:09,971 - Validation loss. step 3147: 1.6061
+2025-10-01 21:37:10,464 - Step 3147: loss 1.6237 grad_norm 0.159 Tflops/sec 0.96
+2025-10-01 21:37:17,218 - Step 3156: loss 1.6359 grad_norm 0.153 Tflops/sec 4.16
+2025-10-01 21:37:22,306 - Step 3165: loss 1.6143 grad_norm 0.172 Tflops/sec 5.50
+2025-10-01 21:37:27,452 - Step 3169: loss 1.5968 grad_norm 0.187 Tflops/sec 2.43
+2025-10-01 21:37:32,512 - Step 3177: loss 1.5468 grad_norm 0.150 Tflops/sec 4.93
+2025-10-01 21:37:37,545 - Step 3185: loss 1.5896 grad_norm 0.156 Tflops/sec 4.96
+2025-10-01 21:37:42,700 - Step 3194: loss 1.5845 grad_norm 0.154 Tflops/sec 5.45
+2025-10-01 21:37:47,925 - Step 3203: loss 1.5624 grad_norm 0.137 Tflops/sec 5.37
+2025-10-01 21:37:53,327 - Step 3214: loss 1.5718 grad_norm 0.142 Tflops/sec 6.35
+2025-10-01 21:38:01,423 - Step 3222: loss 1.6201 grad_norm 0.151 Tflops/sec 3.08
+2025-10-01 21:38:09,328 - Step 3223: loss 1.6094 grad_norm 0.152 Tflops/sec 0.39
+2025-10-01 21:38:14,587 - Step 3228: loss 1.5341 grad_norm 0.159 Tflops/sec 2.97
+2025-10-01 21:38:19,688 - Step 3237: loss 1.5686 grad_norm 0.156 Tflops/sec 5.51
+2025-10-01 21:38:24,929 - Step 3246: loss 1.5942 grad_norm 0.150 Tflops/sec 5.35
+2025-10-01 21:38:30,390 - Step 3257: loss 1.6096 grad_norm 0.149 Tflops/sec 6.28
+2025-10-01 21:38:36,200 - Step 3262: loss 1.6044 grad_norm 0.176 Tflops/sec 2.68
+2025-10-01 21:38:41,313 - Step 3273: loss 1.5736 grad_norm 0.156 Tflops/sec 6.74
+2025-10-01 21:38:46,439 - Step 3283: loss 1.6011 grad_norm 0.147 Tflops/sec 6.10
+2025-10-01 21:38:51,729 - Step 3294: loss 1.5649 grad_norm 0.147 Tflops/sec 6.45
+2025-10-01 21:38:56,838 - Step 3305: loss 1.5968 grad_norm 0.155 Tflops/sec 6.74
+2025-10-01 21:39:02,178 - Step 3318: loss 1.6072 grad_norm 0.155 Tflops/sec 7.65
+2025-10-01 21:39:07,393 - Step 3331: loss 1.5961 grad_norm 0.179 Tflops/sec 7.71
+2025-10-01 21:39:12,439 - Step 3336: loss 1.6148 grad_norm 0.148 Tflops/sec 3.09
+2025-10-01 21:39:17,826 - Step 3349: loss 1.5892 grad_norm 0.164 Tflops/sec 7.52
+2025-10-01 21:39:23,061 - Step 3361: loss 1.5367 grad_norm 0.156 Tflops/sec 7.15
+2025-10-01 21:39:28,065 - Step 3373: loss 1.5857 grad_norm 0.167 Tflops/sec 7.48
+2025-10-01 21:39:33,382 - Step 3386: loss 1.6516 grad_norm 0.164 Tflops/sec 7.62
+2025-10-01 21:40:45,149 - Using config file: config/tinystories-05-NoPE.yaml
+2025-10-01 21:40:45,150 - Model config: vocab_size=10000 num_layers=4 d_model=512 num_heads=16 d_ff=1344 max_seq_len=256 theta=10000.0 ffn_type='swiglu' layernorm_type='prenorm' position_embedding='none'
+2025-10-01 21:40:45,150 - Data config: train_data='data/TinyStoriesV2-GPT4-train-bpe-merged.npy' valid_data='data/TinyStoriesV2-GPT4-valid-bpe-merged.npy'
+2025-10-01 21:40:45,150 - Experiment config: name='tinystories-05-NoPE' checkpoint_dir='checkpoints' log_dir='logs' batch_size=128 eval_batch_size=64 steps=10000 checkpoints_interval=5 checkpoints_path='checkpoints' eval_steps=100 use_autocast=True
+2025-10-01 21:40:45,151 - Optimizer config: learning_rate=0.001 weight_decay=0.01 betas=[0.9, 0.95] grad_clip=0.5 lr_schedule='cosine' lr_min=0.0 lr_max=0.003 warmup_ratio=0.01 cosine_cycle_ratio=1.0
+2025-10-01 21:40:45,174 - optimizer: AdamW(lr=0.001, betas=[0.9, 0.95], eps=1e-08, weight_decay=0.01)
+2025-10-01 21:40:45,175 - Training on device cuda:0
+2025-10-01 21:40:45,175 - Torch version: 2.6.0+cu124 model compiled with torch.compile
+2025-10-01 21:40:45,176 - matmul allow_tf32: True
+2025-10-01 21:40:45,176 - cudnn allow_tf32: True
+2025-10-01 21:40:45,176 - matmul precision: high
+2025-10-01 21:40:45,176 - Loading checkpoint from checkpoints/tinystories-05-NoPE_latest.pt
+2025-10-01 21:40:45,253 - Resumed from iteration 3147
+2025-10-01 21:40:45,253 - for batch size: 128
+2025-10-01 21:40:45,253 - Total parameters: 14,438,915
+2025-10-01 21:40:45,253 - Total activations: 21,565,696
+2025-10-01 21:40:45,253 - params + gradients + states: 231,022,640
+2025-10-01 21:40:45,253 - activations per batch size: 86,262,784
+2025-10-01 21:40:45,253 - Parameters memory (GB): 0.05
+2025-10-01 21:40:45,254 - Gradients memory (GB): 0.05
+2025-10-01 21:40:45,254 - AdamW states memory (GB): 0.11
+2025-10-01 21:40:45,254 - Activations memory (GB): 10.28
+2025-10-01 21:40:45,254 - Total memory (GB): 10.50
+2025-10-01 21:40:45,254 - FLOPS for attention: 0.34 TFLOPS 343,597,383,680 FLOPS Percent: 33.04%
+2025-10-01 21:40:45,254 - FLOPS for FFN: 0.36 TFLOPS 360,777,252,864 FLOPS, Percent: 34.69%
+2025-10-01 21:40:45,254 - FLOPS per Transformer block: 0.70 TFLOPS 704,374,636,544 FLOPS, Percent: 67.73%
+2025-10-01 21:40:45,254 - FLOPS for output layer: 0.34 TFLOPS 335,544,320,000 FLOPS, Percent: 32.27%
+2025-10-01 21:40:45,255 - Total FLOPS: 1.04 TFLOPS 1,039,918,956,544 FLOPS
+2025-10-01 21:40:45,255 - Embedding params: 5,120,000 Percent: 35.46%
+2025-10-01 21:40:45,255 - MHA params: 4,194,304 Percent: 29.05%
+2025-10-01 21:40:45,255 - FFN params: 3 Percent: 0.00%
+2025-10-01 21:40:45,255 - rmsnorm params: 512 Percent: 0.00%
+2025-10-01 21:40:45,255 - Block params: 4,198,403 Percent: 29.08%
+2025-10-01 21:40:45,255 - RMSNorm params: 512 Percent: 0.00%
+2025-10-01 21:40:45,255 - LM Head params: 5,120,000 Percent: 35.46%
+2025-10-01 21:40:45,255 - Total params: 14,438,915 (0.05 GB)
+2025-10-01 21:40:45,256 - ------------------------------------------------------------------------------------------------------------------------
+2025-10-01 21:40:45,256 - FLOPs per step: 3,119,756.87 MFLOPs. FLOPs per token: 95.21 MFLOPs
+2025-10-01 21:40:45,256 - model parameters: 14.44 M, estimated FLOPs per token: 86.63 MFLOPs
+2025-10-01 21:40:45,256 - Total training: 31,197.57 TFLOPs
+2025-10-01 21:40:45,256 - ------------------------------------------------------------------------------------------------------------------------
+2025-10-01 21:40:45,256 - Training data has 541229347 tokens.
+2025-10-01 21:40:45,257 - Validation data has 5465883 tokens.
+2025-10-01 21:40:45,257 - UseBF16=True BF16 support: True, device type: cuda, device name: NVIDIA GeForce RTX 4070 Ti
+2025-10-01 21:40:45,258 - Using cosine learning rate schedule with min 0.0, max 0.003, warmup steps 100, cosine cycle steps 10000
+2025-10-01 21:40:50,796 - Step 3148: loss 1.6484 grad_norm 0.160 Tflops/sec 1.13
+2025-10-01 21:40:57,010 - Step 3171: loss 1.6094 grad_norm 0.172 Tflops/sec 11.55
+2025-10-01 21:41:02,023 - Step 3205: loss 1.5625 grad_norm 0.142 Tflops/sec 21.16
+2025-10-01 21:41:07,029 - Step 3240: loss 1.6016 grad_norm 0.211 Tflops/sec 21.81
+2025-10-01 21:41:12,151 - Step 3276: loss 1.6641 grad_norm 0.152 Tflops/sec 21.93
+2025-10-01 21:41:17,279 - Step 3312: loss 1.5781 grad_norm 0.173 Tflops/sec 21.90
+2025-10-01 21:41:22,382 - Step 3348: loss 1.5938 grad_norm 0.193 Tflops/sec 22.01
+2025-10-01 21:41:27,496 - Step 3384: loss 1.6641 grad_norm 0.152 Tflops/sec 21.96
+2025-10-01 21:41:32,634 - Step 3401: loss 1.6562 grad_norm 0.152 Tflops/sec 10.32
+2025-10-01 21:41:37,645 - Step 3435: loss 1.5547 grad_norm 0.141 Tflops/sec 21.17
+2025-10-01 21:41:42,646 - Step 3470: loss 1.6094 grad_norm 0.144 Tflops/sec 21.83
+2025-10-01 21:41:47,765 - Step 3506: loss 1.5312 grad_norm 0.148 Tflops/sec 21.94
+2025-10-01 21:41:52,897 - Step 3542: loss 1.6094 grad_norm 0.147 Tflops/sec 21.88
+2025-10-01 21:41:58,034 - Step 3578: loss 1.6016 grad_norm 0.160 Tflops/sec 21.86
+2025-10-01 21:42:15,463 - Using config file: config/tinystories-05-NoPE.yaml
+2025-10-01 21:42:15,464 - Model config: vocab_size=10000 num_layers=4 d_model=512 num_heads=16 d_ff=1344 max_seq_len=256 theta=10000.0 ffn_type='swiglu' layernorm_type='prenorm' position_embedding='none'
+2025-10-01 21:42:15,464 - Data config: train_data='data/TinyStoriesV2-GPT4-train-bpe-merged.npy' valid_data='data/TinyStoriesV2-GPT4-valid-bpe-merged.npy'
+2025-10-01 21:42:15,464 - Experiment config: name='tinystories-05-NoPE' checkpoint_dir='checkpoints' log_dir='logs' batch_size=128 eval_batch_size=64 steps=10000 checkpoints_interval=5 checkpoints_path='checkpoints' eval_steps=100 use_autocast=True
+2025-10-01 21:42:15,465 - Optimizer config: learning_rate=0.001 weight_decay=0.01 betas=[0.9, 0.95] grad_clip=0.5 lr_schedule='cosine' lr_min=0.0 lr_max=0.003 warmup_ratio=0.01 cosine_cycle_ratio=1.0
+2025-10-01 21:42:15,493 - optimizer: AdamW(lr=0.001, betas=[0.9, 0.95], eps=1e-08, weight_decay=0.01)
+2025-10-01 21:42:15,494 - Training on device cuda:0
+2025-10-01 21:42:15,494 - Torch version: 2.6.0+cu124 model compiled with torch.compile
+2025-10-01 21:42:15,495 - matmul allow_tf32: True
+2025-10-01 21:42:15,495 - cudnn allow_tf32: True
+2025-10-01 21:42:15,495 - matmul precision: high
+2025-10-01 21:42:15,495 - Loading checkpoint from checkpoints/tinystories-05-NoPE_latest.pt
+2025-10-01 21:42:15,566 - Resumed from iteration 3147
+2025-10-01 21:42:15,566 - for batch size: 128
+2025-10-01 21:42:15,566 - Total parameters: 14,438,915
+2025-10-01 21:42:15,566 - Total activations: 21,565,696
+2025-10-01 21:42:15,566 - params + gradients + states: 231,022,640
+2025-10-01 21:42:15,566 - activations per batch size: 86,262,784
+2025-10-01 21:42:15,567 - Parameters memory (GB): 0.05
+2025-10-01 21:42:15,567 - Gradients memory (GB): 0.05
+2025-10-01 21:42:15,567 - AdamW states memory (GB): 0.11
+2025-10-01 21:42:15,567 - Activations memory (GB): 10.28
+2025-10-01 21:42:15,567 - Total memory (GB): 10.50
+2025-10-01 21:42:15,567 - FLOPS for attention: 0.34 TFLOPS 343,597,383,680 FLOPS Percent: 33.04%
+2025-10-01 21:42:15,567 - FLOPS for FFN: 0.36 TFLOPS 360,777,252,864 FLOPS, Percent: 34.69%
+2025-10-01 21:42:15,567 - FLOPS per Transformer block: 0.70 TFLOPS 704,374,636,544 FLOPS, Percent: 67.73%
+2025-10-01 21:42:15,568 - FLOPS for output layer: 0.34 TFLOPS 335,544,320,000 FLOPS, Percent: 32.27%
+2025-10-01 21:42:15,568 - Total FLOPS: 1.04 TFLOPS 1,039,918,956,544 FLOPS
+2025-10-01 21:42:15,568 - Embedding params: 5,120,000 Percent: 35.46%
+2025-10-01 21:42:15,568 - MHA params: 4,194,304 Percent: 29.05%
+2025-10-01 21:42:15,568 - FFN params: 3 Percent: 0.00%
+2025-10-01 21:42:15,568 - rmsnorm params: 512 Percent: 0.00%
+2025-10-01 21:42:15,568 - Block params: 4,198,403 Percent: 29.08%
+2025-10-01 21:42:15,568 - RMSNorm params: 512 Percent: 0.00%
+2025-10-01 21:42:15,568 - LM Head params: 5,120,000 Percent: 35.46%
+2025-10-01 21:42:15,569 - Total params: 14,438,915 (0.05 GB)
+2025-10-01 21:42:15,569 - ------------------------------------------------------------------------------------------------------------------------
+2025-10-01 21:42:15,569 - FLOPs per step: 3,119,756.87 MFLOPs. FLOPs per token: 95.21 MFLOPs
+2025-10-01 21:42:15,569 - model parameters: 14.44 M, estimated FLOPs per token: 86.63 MFLOPs
+2025-10-01 21:42:15,569 - Total training: 31,197.57 TFLOPs
+2025-10-01 21:42:15,569 - ------------------------------------------------------------------------------------------------------------------------
+2025-10-01 21:42:15,570 - Training data has 541229347 tokens.
+2025-10-01 21:42:15,570 - Validation data has 5465883 tokens.
+2025-10-01 21:42:15,570 - UseBF16=True BF16 support: True, device type: cuda, device name: NVIDIA GeForce RTX 4070 Ti
+2025-10-01 21:42:15,572 - Using cosine learning rate schedule with min 0.0, max 0.003, warmup steps 100, cosine cycle steps 10000
+2025-10-01 21:42:21,051 - Step 3148: loss 1.6484 grad_norm 0.160 Tflops/sec 1.14
+2025-10-01 21:42:26,172 - Step 3184: loss 1.5547 grad_norm 0.180 Tflops/sec 21.93
+2025-10-01 21:42:31,289 - Step 3220: loss 1.5625 grad_norm 0.171 Tflops/sec 21.95
+2025-10-01 21:43:34,257 - Using config file: config/tinystories-05-NoPE.yaml
+2025-10-01 21:43:34,258 - Model config: vocab_size=10000 num_layers=4 d_model=512 num_heads=16 d_ff=1344 max_seq_len=256 theta=10000.0 ffn_type='swiglu' layernorm_type='prenorm' position_embedding='none'
+2025-10-01 21:43:34,258 - Data config: train_data='data/TinyStoriesV2-GPT4-train-bpe-merged.npy' valid_data='data/TinyStoriesV2-GPT4-valid-bpe-merged.npy'
+2025-10-01 21:43:34,258 - Experiment config: name='tinystories-05-NoPE' checkpoint_dir='checkpoints' log_dir='logs' batch_size=128 eval_batch_size=64 steps=10000 checkpoints_interval=5 checkpoints_path='checkpoints' eval_steps=100 use_autocast=True
+2025-10-01 21:43:34,259 - Optimizer config: learning_rate=0.001 weight_decay=0.01 betas=[0.9, 0.95] grad_clip=0.5 lr_schedule='cosine' lr_min=0.0 lr_max=0.003 warmup_ratio=0.01 cosine_cycle_ratio=1.0
+2025-10-01 21:43:34,284 - optimizer: AdamW(lr=0.001, betas=[0.9, 0.95], eps=1e-08, weight_decay=0.01)
+2025-10-01 21:43:34,285 - Training on device cuda:0
+2025-10-01 21:43:34,286 - Torch version: 2.6.0+cu124 model compiled with torch.compile
+2025-10-01 21:43:34,286 - matmul allow_tf32: True
+2025-10-01 21:43:34,286 - cudnn allow_tf32: True
+2025-10-01 21:43:34,286 - matmul precision: high
+2025-10-01 21:43:34,286 - Loading checkpoint from checkpoints/tinystories-05-NoPE_latest.pt
+2025-10-01 21:43:34,362 - Resumed from iteration 3147
+2025-10-01 21:43:34,362 - for batch size: 128
+2025-10-01 21:43:34,362 - Total parameters: 14,438,915
+2025-10-01 21:43:34,362 - Total activations: 21,565,696
+2025-10-01 21:43:34,362 - params + gradients + states: 231,022,640
+2025-10-01 21:43:34,362 - activations per batch size: 86,262,784
+2025-10-01 21:43:34,362 - Parameters memory (GB): 0.05
+2025-10-01 21:43:34,362 - Gradients memory (GB): 0.05
+2025-10-01 21:43:34,363 - AdamW states memory (GB): 0.11
+2025-10-01 21:43:34,363 - Activations memory (GB): 10.28
+2025-10-01 21:43:34,363 - Total memory (GB): 10.50
+2025-10-01 21:43:34,363 - FLOPS for attention: 0.34 TFLOPS 343,597,383,680 FLOPS Percent: 33.04%
+2025-10-01 21:43:34,363 - FLOPS for FFN: 0.36 TFLOPS 360,777,252,864 FLOPS, Percent: 34.69%
+2025-10-01 21:43:34,363 - FLOPS per Transformer block: 0.70 TFLOPS 704,374,636,544 FLOPS, Percent: 67.73%
+2025-10-01 21:43:34,364 - FLOPS for output layer: 0.34 TFLOPS 335,544,320,000 FLOPS, Percent: 32.27%
+2025-10-01 21:43:34,364 - Total FLOPS: 1.04 TFLOPS 1,039,918,956,544 FLOPS
+2025-10-01 21:43:34,364 - Embedding params: 5,120,000 Percent: 35.46%
+2025-10-01 21:43:34,364 - MHA params: 4,194,304 Percent: 29.05%
+2025-10-01 21:43:34,365 - FFN params: 3 Percent: 0.00%
+2025-10-01 21:43:34,365 - rmsnorm params: 512 Percent: 0.00%
+2025-10-01 21:43:34,365 - Block params: 4,198,403 Percent: 29.08%
+2025-10-01 21:43:34,365 - RMSNorm params: 512 Percent: 0.00%
+2025-10-01 21:43:34,366 - LM Head params: 5,120,000 Percent: 35.46%
+2025-10-01 21:43:34,366 - Total params: 14,438,915 (0.05 GB)
+2025-10-01 21:43:34,366 - ------------------------------------------------------------------------------------------------------------------------
+2025-10-01 21:43:34,366 - FLOPs per step: 3,119,756.87 MFLOPs. FLOPs per token: 95.21 MFLOPs
+2025-10-01 21:43:34,366 - model parameters: 14.44 M, estimated FLOPs per token: 86.63 MFLOPs
+2025-10-01 21:43:34,366 - Total training: 31,197.57 TFLOPs
+2025-10-01 21:43:34,366 - ------------------------------------------------------------------------------------------------------------------------
+2025-10-01 21:43:34,367 - Training data has 541229347 tokens.
+2025-10-01 21:43:34,367 - Validation data has 5465883 tokens.
+2025-10-01 21:43:34,367 - UseBF16=True BF16 support: True, device type: cuda, device name: NVIDIA GeForce RTX 4070 Ti
+2025-10-01 21:43:34,368 - Using cosine learning rate schedule with min 0.0, max 0.003, warmup steps 100, cosine cycle steps 10000
+2025-10-01 21:43:39,601 - Step 3147: loss 1.6094 grad_norm 0.159 Tflops/sec 0.60
+2025-10-01 21:43:44,630 - Step 3170: loss 1.6641 grad_norm 0.171 Tflops/sec 14.27
+2025-10-01 21:43:49,734 - Step 3212: loss 1.6172 grad_norm 0.147 Tflops/sec 25.67
+2025-10-01 21:43:54,836 - Step 3231: loss 1.6016 grad_norm 0.151 Tflops/sec 11.62
+2025-10-01 21:43:59,906 - Step 3272: loss 1.5703 grad_norm 0.149 Tflops/sec 25.23
+2025-10-01 21:44:05,024 - Step 3314: loss 1.6406 grad_norm 0.161 Tflops/sec 25.60
+2025-10-01 21:44:10,120 - Step 3356: loss 1.6172 grad_norm 0.162 Tflops/sec 25.71
+2025-10-01 21:44:15,211 - Step 3398: loss 1.5859 grad_norm 0.156 Tflops/sec 25.74
+2025-10-01 21:44:20,305 - Step 3440: loss 1.5859 grad_norm 0.150 Tflops/sec 25.72
+2025-10-01 21:44:28,232 - Step 3482: loss 1.5781 grad_norm 0.191 Tflops/sec 16.53
+2025-10-01 21:44:33,233 - Step 3523: loss 1.6094 grad_norm 0.156 Tflops/sec 25.57
+2025-10-01 21:44:38,335 - Step 3565: loss 1.6016 grad_norm 0.179 Tflops/sec 25.69
+2025-10-01 21:44:43,340 - Step 3606: loss 1.5859 grad_norm 0.162 Tflops/sec 25.55
+2025-10-01 21:44:48,350 - Step 3647: loss 1.6094 grad_norm 0.146 Tflops/sec 25.53
+2025-10-01 21:44:53,467 - Step 3689: loss 1.5938 grad_norm 0.145 Tflops/sec 25.61
+2025-10-01 21:44:58,562 - Step 3731: loss 1.5859 grad_norm 0.147 Tflops/sec 25.72
+2025-10-01 21:45:03,693 - Step 3749: loss 1.6094 grad_norm 0.146 Tflops/sec 10.94
+2025-10-01 21:45:08,796 - Step 3790: loss 1.5703 grad_norm 0.162 Tflops/sec 25.07
+2025-10-01 21:45:13,803 - Step 3831: loss 1.6172 grad_norm 0.159 Tflops/sec 25.55
+2025-10-01 21:45:18,818 - Step 3872: loss 1.5859 grad_norm 0.131 Tflops/sec 25.51
+2025-10-01 21:45:23,847 - Step 3913: loss 1.5547 grad_norm 0.147 Tflops/sec 25.43
+2025-10-01 21:45:28,875 - Step 3954: loss 1.6016 grad_norm 0.141 Tflops/sec 25.44
+2025-10-01 21:45:33,881 - Step 3995: loss 1.5469 grad_norm 0.139 Tflops/sec 25.55
+2025-10-01 21:45:38,884 - Step 4013: loss 1.5234 grad_norm 0.140 Tflops/sec 11.22
+2025-10-01 21:45:43,892 - Step 4053: loss 1.5078 grad_norm 0.144 Tflops/sec 24.92
+2025-10-01 21:45:48,943 - Step 4094: loss 1.5703 grad_norm 0.139 Tflops/sec 25.32
+2025-10-01 21:45:53,948 - Step 4135: loss 1.5312 grad_norm 0.152 Tflops/sec 25.56
+2025-10-01 21:45:58,960 - Step 4176: loss 1.5469 grad_norm 0.159 Tflops/sec 25.52
+2025-10-01 21:46:03,981 - Step 4217: loss 1.5547 grad_norm 0.150 Tflops/sec 25.48
+2025-10-01 21:46:09,004 - Step 4258: loss 1.5547 grad_norm 0.156 Tflops/sec 25.46
+2025-10-01 21:46:14,105 - Step 4277: loss 1.5234 grad_norm 0.148 Tflops/sec 11.62
+2025-10-01 21:46:19,214 - Step 4318: loss 1.5391 grad_norm 0.163 Tflops/sec 25.04
+2025-10-01 21:46:24,266 - Step 4359: loss 1.5391 grad_norm 0.163 Tflops/sec 25.32
+2025-10-01 21:46:29,293 - Step 4400: loss 1.5625 grad_norm 0.174 Tflops/sec 25.44
+2025-10-01 21:46:34,300 - Step 4441: loss 1.5859 grad_norm 0.153 Tflops/sec 25.55
+2025-10-01 21:46:39,336 - Step 4482: loss 1.5547 grad_norm 0.171 Tflops/sec 25.40
+2025-10-01 21:46:44,372 - Step 4523: loss 1.5781 grad_norm 0.162 Tflops/sec 25.40
+2025-10-01 21:46:49,417 - Step 4541: loss 1.4922 grad_norm 0.153 Tflops/sec 11.13
+2025-10-01 21:46:54,428 - Step 4581: loss 1.5000 grad_norm 0.137 Tflops/sec 24.90
+2025-10-01 21:46:59,479 - Step 4622: loss 1.5703 grad_norm 0.150 Tflops/sec 25.33
+2025-10-01 21:47:04,596 - Step 4664: loss 1.4922 grad_norm 0.155 Tflops/sec 25.60
+2025-10-01 21:47:09,696 - Step 4706: loss 1.4922 grad_norm 0.143 Tflops/sec 25.69
+2025-10-01 21:47:14,799 - Step 4748: loss 1.5625 grad_norm 0.138 Tflops/sec 25.68
+2025-10-01 21:47:19,896 - Step 4790: loss 1.5234 grad_norm 0.156 Tflops/sec 25.71
+2025-10-01 21:47:24,991 - Step 4809: loss 1.5156 grad_norm 0.151 Tflops/sec 11.63
+2025-10-01 21:47:30,107 - Step 4850: loss 1.5312 grad_norm 0.148 Tflops/sec 25.00
+2025-10-01 21:47:35,194 - Step 4891: loss 1.5234 grad_norm 0.136 Tflops/sec 25.14
+2025-10-01 21:47:40,316 - Step 4932: loss 1.5312 grad_norm 0.150 Tflops/sec 24.97
+2025-10-01 21:47:45,370 - Step 4973: loss 1.5000 grad_norm 0.150 Tflops/sec 25.31
+2025-10-01 21:47:50,475 - Step 5014: loss 1.5469 grad_norm 0.173 Tflops/sec 25.06
+2025-10-01 21:47:55,565 - Step 5053: loss 1.4609 grad_norm 0.146 Tflops/sec 23.90
+2025-10-01 21:48:00,606 - Step 5074: loss 1.4609 grad_norm 0.137 Tflops/sec 13.00
+2025-10-01 21:48:05,606 - Step 5115: loss 1.5156 grad_norm 0.141 Tflops/sec 25.58
+2025-10-01 21:48:10,625 - Step 5156: loss 1.5234 grad_norm 0.145 Tflops/sec 25.49
+2025-10-01 21:48:15,638 - Step 5197: loss 1.5156 grad_norm 0.144 Tflops/sec 25.52
+2025-10-01 21:48:20,757 - Step 5239: loss 1.4844 grad_norm 0.158 Tflops/sec 25.60
+2025-10-01 21:48:25,776 - Step 5280: loss 1.4844 grad_norm 0.140 Tflops/sec 25.49
+2025-10-01 21:48:30,820 - Step 5321: loss 1.4609 grad_norm 0.150 Tflops/sec 25.36
+2025-10-01 21:48:34,047 - Saving checkpoint to checkpoints/tinystories-05-NoPE_checkpoint_5325.pt
+2025-10-01 21:48:45,049 - Validation loss. step 5325: 1.5128
+2025-10-01 21:48:45,175 - Step 5325: loss 1.4922 grad_norm 0.140 Tflops/sec 0.87
+2025-10-01 21:48:50,284 - Step 5367: loss 1.4297 grad_norm 0.152 Tflops/sec 25.65
+2025-10-01 21:48:55,379 - Step 5409: loss 1.5078 grad_norm 0.164 Tflops/sec 25.72
+2025-10-01 21:49:00,483 - Step 5451: loss 1.5234 grad_norm 0.163 Tflops/sec 25.67
+2025-10-01 21:49:05,579 - Step 5493: loss 1.4531 grad_norm 0.159 Tflops/sec 25.72
+2025-10-01 21:49:10,607 - Step 5510: loss 1.4531 grad_norm 0.148 Tflops/sec 10.55
+2025-10-01 21:49:15,626 - Step 5550: loss 1.4922 grad_norm 0.139 Tflops/sec 24.86
+2025-10-01 21:49:20,627 - Step 5591: loss 1.4453 grad_norm 0.150 Tflops/sec 25.58
+2025-10-01 21:49:25,731 - Step 5633: loss 1.4688 grad_norm 0.138 Tflops/sec 25.67
+2025-10-01 21:49:30,848 - Step 5675: loss 1.4531 grad_norm 0.151 Tflops/sec 25.60
+2025-10-01 21:49:35,955 - Step 5717: loss 1.4766 grad_norm 0.168 Tflops/sec 25.66
+2025-10-01 21:49:40,958 - Step 5758: loss 1.4297 grad_norm 0.152 Tflops/sec 25.57
+2025-10-01 21:49:46,030 - Step 5776: loss 1.4922 grad_norm 0.138 Tflops/sec 11.07
+2025-10-01 21:49:51,142 - Step 5818: loss 1.4453 grad_norm 0.156 Tflops/sec 25.63
+2025-10-01 21:49:56,170 - Step 5859: loss 1.4688 grad_norm 0.143 Tflops/sec 25.44
+2025-10-01 21:50:01,273 - Step 5901: loss 1.4297 grad_norm 0.155 Tflops/sec 25.68
+2025-10-01 21:50:06,384 - Step 5943: loss 1.4297 grad_norm 0.139 Tflops/sec 25.64
+2025-10-01 21:50:11,495 - Step 5985: loss 1.4297 grad_norm 0.135 Tflops/sec 25.63
+2025-10-01 21:50:16,612 - Step 6027: loss 1.3984 grad_norm 0.138 Tflops/sec 25.61
+2025-10-01 21:50:21,625 - Step 6044: loss 1.4453 grad_norm 0.144 Tflops/sec 10.58
+2025-10-01 21:50:26,739 - Step 6086: loss 1.4453 grad_norm 0.160 Tflops/sec 25.62
+2025-10-01 21:50:31,802 - Step 6127: loss 1.4062 grad_norm 0.145 Tflops/sec 25.26
+2025-10-01 21:50:36,818 - Step 6168: loss 1.4062 grad_norm 0.137 Tflops/sec 25.51
+2025-10-01 21:50:41,828 - Step 6209: loss 1.4531 grad_norm 0.143 Tflops/sec 25.53
+2025-10-01 21:51:14,141 - Using config file: config/tinystories-05-NoPE.yaml
+2025-10-01 21:51:14,142 - Model config: vocab_size=10000 num_layers=4 d_model=512 num_heads=16 d_ff=1344 max_seq_len=256 theta=10000.0 ffn_type='swiglu' layernorm_type='prenorm' position_embedding='none'
+2025-10-01 21:51:14,142 - Data config: train_data='data/TinyStoriesV2-GPT4-train-bpe-merged.npy' valid_data='data/TinyStoriesV2-GPT4-valid-bpe-merged.npy'
+2025-10-01 21:51:14,142 - Experiment config: name='tinystories-05-NoPE' checkpoint_dir='checkpoints' log_dir='logs' batch_size=128 eval_batch_size=64 steps=10000 checkpoints_interval=5 checkpoints_path='checkpoints' eval_steps=100 use_autocast=True
+2025-10-01 21:51:14,142 - Optimizer config: learning_rate=0.001 weight_decay=0.01 betas=[0.9, 0.95] grad_clip=0.5 lr_schedule='cosine' lr_min=0.0 lr_max=0.003 warmup_ratio=0.01 cosine_cycle_ratio=1.0
+2025-10-01 21:51:14,170 - optimizer: AdamW(lr=0.001, betas=[0.9, 0.95], eps=1e-08, weight_decay=0.01)
+2025-10-01 21:51:14,170 - Training on device cuda:0
+2025-10-01 21:51:14,171 - Torch version: 2.6.0+cu124 model compiled with torch.compile
+2025-10-01 21:51:14,171 - matmul allow_tf32: True
+2025-10-01 21:51:14,171 - cudnn allow_tf32: True
+2025-10-01 21:51:14,171 - matmul precision: high
+2025-10-01 21:51:14,171 - Loading checkpoint from checkpoints/tinystories-05-NoPE_latest.pt
+2025-10-01 21:51:14,247 - Resumed from iteration 5325
+2025-10-01 21:51:14,248 - for batch size: 128
+2025-10-01 21:51:14,248 - Total parameters: 14,438,915
+2025-10-01 21:51:14,248 - Total activations: 21,565,696
+2025-10-01 21:51:14,248 - params + gradients + states: 231,022,640
+2025-10-01 21:51:14,249 - activations per batch size: 86,262,784
+2025-10-01 21:51:14,249 - Parameters memory (GB): 0.05
+2025-10-01 21:51:14,249 - Gradients memory (GB): 0.05
+2025-10-01 21:51:14,249 - AdamW states memory (GB): 0.11
+2025-10-01 21:51:14,249 - Activations memory (GB): 10.28
+2025-10-01 21:51:14,249 - Total memory (GB): 10.50
+2025-10-01 21:51:14,249 - FLOPS for attention: 0.34 TFLOPS 343,597,383,680 FLOPS Percent: 33.04%
+2025-10-01 21:51:14,250 - FLOPS for FFN: 0.36 TFLOPS 360,777,252,864 FLOPS, Percent: 34.69%
+2025-10-01 21:51:14,250 - FLOPS per Transformer block: 0.70 TFLOPS 704,374,636,544 FLOPS, Percent: 67.73%
+2025-10-01 21:51:14,250 - FLOPS for output layer: 0.34 TFLOPS 335,544,320,000 FLOPS, Percent: 32.27%
+2025-10-01 21:51:14,250 - Total FLOPS: 1.04 TFLOPS 1,039,918,956,544 FLOPS
+2025-10-01 21:51:14,250 - Embedding params: 5,120,000 Percent: 35.46%
+2025-10-01 21:51:14,250 - MHA params: 4,194,304 Percent: 29.05%
+2025-10-01 21:51:14,250 - FFN params: 3 Percent: 0.00%
+2025-10-01 21:51:14,251 - rmsnorm params: 512 Percent: 0.00%
+2025-10-01 21:51:14,251 - Block params: 4,198,403 Percent: 29.08%
+2025-10-01 21:51:14,251 - RMSNorm params: 512 Percent: 0.00%
+2025-10-01 21:51:14,251 - LM Head params: 5,120,000 Percent: 35.46%
+2025-10-01 21:51:14,251 - Total params: 14,438,915 (0.05 GB)
+2025-10-01 21:51:14,251 - ------------------------------------------------------------------------------------------------------------------------
+2025-10-01 21:51:14,251 - FLOPs per step: 3,119,756.87 MFLOPs. FLOPs per token: 95.21 MFLOPs
+2025-10-01 21:51:14,251 - model parameters: 14.44 M, estimated FLOPs per token: 86.63 MFLOPs
+2025-10-01 21:51:14,252 - Total training: 31,197.57 TFLOPs
+2025-10-01 21:51:14,252 - ------------------------------------------------------------------------------------------------------------------------
+2025-10-01 21:51:14,252 - Training data has 541229347 tokens.
+2025-10-01 21:51:14,252 - Validation data has 5465883 tokens.
+2025-10-01 21:51:14,252 - UseBF16=True BF16 support: True, device type: cuda, device name: NVIDIA GeForce RTX 4070 Ti
+2025-10-01 21:51:14,253 - Using cosine learning rate schedule with min 0.0, max 0.003, warmup steps 100, cosine cycle steps 10000
+2025-10-01 21:51:19,636 - Step 5326: loss 1.5078 grad_norm 0.144 Tflops/sec 1.16
+2025-10-01 21:51:24,749 - Step 5362: loss 1.4219 grad_norm 0.141 Tflops/sec 21.97
+2025-10-01 21:51:30,285 - Step 5381: loss 1.4922 grad_norm 0.140 Tflops/sec 10.71
+2025-10-01 21:51:35,425 - Step 5417: loss 1.4609 grad_norm 0.142 Tflops/sec 21.85
+2025-10-01 21:55:30,945 - Using config file: config/tinystories-05-NoPE.yaml
+2025-10-01 21:55:30,945 - Model config: vocab_size=10000 num_layers=4 d_model=512 num_heads=16 d_ff=1344 max_seq_len=256 theta=10000.0 ffn_type='swiglu' layernorm_type='prenorm' position_embedding='none'
+2025-10-01 21:55:30,945 - Data config: train_data='data/TinyStoriesV2-GPT4-train-bpe-merged.npy' valid_data='data/TinyStoriesV2-GPT4-valid-bpe-merged.npy'
+2025-10-01 21:55:30,946 - Experiment config: name='tinystories-05-NoPE' checkpoint_dir='checkpoints' log_dir='logs' batch_size=128 eval_batch_size=64 steps=10000 checkpoints_interval=5 checkpoints_path='checkpoints' eval_steps=100 use_autocast=True
+2025-10-01 21:55:30,946 - Optimizer config: learning_rate=0.001 weight_decay=0.01 betas=[0.9, 0.95] grad_clip=0.5 lr_schedule='cosine' lr_min=0.0 lr_max=0.003 warmup_ratio=0.01 cosine_cycle_ratio=1.0
+2025-10-01 21:55:30,972 - optimizer: AdamW(lr=0.001, betas=[0.9, 0.95], eps=1e-08, weight_decay=0.01)
+2025-10-01 21:55:30,972 - Training on device cuda:0
+2025-10-01 21:55:30,973 - Torch version: 2.6.0+cu124 model compiled with torch.compile
+2025-10-01 21:55:30,973 - matmul allow_tf32: True
+2025-10-01 21:55:30,973 - cudnn allow_tf32: True
+2025-10-01 21:55:30,973 - matmul precision: high
+2025-10-01 21:55:30,974 - Loading checkpoint from checkpoints/tinystories-05-NoPE_latest.pt
+2025-10-01 21:55:31,044 - Resumed from iteration 5325
+2025-10-01 21:55:31,044 - for batch size: 128
+2025-10-01 21:55:31,044 - Total parameters: 14,438,915
+2025-10-01 21:55:31,045 - Total activations: 21,565,696
+2025-10-01 21:55:31,045 - params + gradients + states: 231,022,640
+2025-10-01 21:55:31,045 - activations per batch size: 86,262,784
+2025-10-01 21:55:31,045 - Parameters memory (GB): 0.05
+2025-10-01 21:55:31,046 - Gradients memory (GB): 0.05
+2025-10-01 21:55:31,046 - AdamW states memory (GB): 0.11
+2025-10-01 21:55:31,046 - Activations memory (GB): 10.28
+2025-10-01 21:55:31,046 - Total memory (GB): 10.50
+2025-10-01 21:55:31,046 - FLOPS for attention: 0.34 TFLOPS 343,597,383,680 FLOPS Percent: 33.04%
+2025-10-01 21:55:31,047 - FLOPS for FFN: 0.36 TFLOPS 360,777,252,864 FLOPS, Percent: 34.69%
+2025-10-01 21:55:31,047 - FLOPS per Transformer block: 0.70 TFLOPS 704,374,636,544 FLOPS, Percent: 67.73%
+2025-10-01 21:55:31,047 - FLOPS for output layer: 0.34 TFLOPS 335,544,320,000 FLOPS, Percent: 32.27%
+2025-10-01 21:55:31,047 - Total FLOPS: 1.04 TFLOPS 1,039,918,956,544 FLOPS
+2025-10-01 21:55:31,047 - Embedding params: 5,120,000 Percent: 35.46%
+2025-10-01 21:55:31,048 - MHA params: 4,194,304 Percent: 29.05%
+2025-10-01 21:55:31,048 - FFN params: 3 Percent: 0.00%
+2025-10-01 21:55:31,048 - rmsnorm params: 512 Percent: 0.00%
+2025-10-01 21:55:31,048 - Block params: 4,198,403 Percent: 29.08%
+2025-10-01 21:55:31,048 - RMSNorm params: 512 Percent: 0.00%
+2025-10-01 21:55:31,048 - LM Head params: 5,120,000 Percent: 35.46%
+2025-10-01 21:55:31,049 - Total params: 14,438,915 (0.05 GB)
+2025-10-01 21:55:31,049 - ------------------------------------------------------------------------------------------------------------------------
+2025-10-01 21:55:31,049 - FLOPs per step: 3,119,756.87 MFLOPs. FLOPs per token: 95.21 MFLOPs
+2025-10-01 21:55:31,049 - model parameters: 14.44 M, estimated FLOPs per token: 86.63 MFLOPs
+2025-10-01 21:55:31,049 - Total training: 31,197.57 TFLOPs
+2025-10-01 21:55:31,049 - ------------------------------------------------------------------------------------------------------------------------
+2025-10-01 21:55:31,049 - Training data has 541229347 tokens.
+2025-10-01 21:55:31,049 - Validation data has 5465883 tokens.
+2025-10-01 21:55:31,050 - UseBF16=True BF16 support: True, device type: cuda, device name: NVIDIA GeForce RTX 4070 Ti
+2025-10-01 21:55:31,051 - Using cosine learning rate schedule with min 0.0, max 0.003, warmup steps 100, cosine cycle steps 10000
+2025-10-01 21:55:40,031 - Step 5325: loss 1.4766 grad_norm 0.151 Tflops/sec 0.35
+2025-10-01 21:55:46,034 - Step 5326: loss 1.5078 grad_norm 0.144 Tflops/sec 0.52
+2025-10-01 21:55:51,835 - Step 5328: loss 1.4922 grad_norm 0.144 Tflops/sec 1.08
+2025-10-01 21:55:57,427 - Step 5330: loss 1.4766 grad_norm 0.143 Tflops/sec 1.12
+2025-10-01 21:56:03,107 - Step 5332: loss 1.4375 grad_norm 0.141 Tflops/sec 1.10
+2025-10-01 21:56:08,113 - Step 5373: loss 1.4453 grad_norm 0.161 Tflops/sec 25.56
+2025-10-01 21:56:13,114 - Step 5391: loss 1.4375 grad_norm 0.167 Tflops/sec 11.23
+2025-10-01 21:56:18,220 - Step 5432: loss 1.4453 grad_norm 0.152 Tflops/sec 25.05
+2025-10-01 21:56:23,330 - Step 5474: loss 1.4531 grad_norm 0.143 Tflops/sec 25.64
+2025-10-01 21:56:28,335 - Step 5515: loss 1.4141 grad_norm 0.143 Tflops/sec 25.56
+2025-10-01 21:56:33,442 - Step 5557: loss 1.4688 grad_norm 0.146 Tflops/sec 25.65
+2025-10-01 21:58:00,425 - Using config file: config/tinystories-05-NoPE.yaml
+2025-10-01 21:58:00,426 - Model config: vocab_size=10000 num_layers=4 d_model=512 num_heads=16 d_ff=1344 max_seq_len=256 theta=10000.0 ffn_type='swiglu' layernorm_type='prenorm' position_embedding='none'
+2025-10-01 21:58:00,426 - Data config: train_data='data/TinyStoriesV2-GPT4-train-bpe-merged.npy' valid_data='data/TinyStoriesV2-GPT4-valid-bpe-merged.npy'
+2025-10-01 21:58:00,427 - Experiment config: name='tinystories-05-NoPE' checkpoint_dir='checkpoints' log_dir='logs' batch_size=128 eval_batch_size=64 steps=10000 checkpoints_interval=5 checkpoints_path='checkpoints' eval_steps=100 use_autocast=True
+2025-10-01 21:58:00,427 - Optimizer config: learning_rate=0.001 weight_decay=0.01 betas=[0.9, 0.95] grad_clip=0.5 lr_schedule='cosine' lr_min=0.0 lr_max=0.003 warmup_ratio=0.01 cosine_cycle_ratio=1.0
+2025-10-01 21:58:00,457 - optimizer: AdamW(lr=0.001, betas=[0.9, 0.95], eps=1e-08, weight_decay=0.01)
+2025-10-01 21:58:00,458 - Training on device cuda:0
+2025-10-01 21:58:00,459 - Torch version: 2.6.0+cu124 model compiled with torch.compile
+2025-10-01 21:58:00,460 - matmul allow_tf32: True
+2025-10-01 21:58:00,460 - cudnn allow_tf32: True
+2025-10-01 21:58:00,460 - matmul precision: high
+2025-10-01 21:58:00,460 - Loading checkpoint from checkpoints/tinystories-05-NoPE_latest.pt
+2025-10-01 21:58:00,545 - Resumed from iteration 5325
+2025-10-01 21:58:00,545 - for batch size: 128
+2025-10-01 21:58:00,546 - Total parameters: 14,438,915
+2025-10-01 21:58:00,546 - Total activations: 21,565,696
+2025-10-01 21:58:00,546 - params + gradients + states: 231,022,640
+2025-10-01 21:58:00,546 - activations per batch size: 86,262,784
+2025-10-01 21:58:00,546 - Parameters memory (GB): 0.05
+2025-10-01 21:58:00,546 - Gradients memory (GB): 0.05
+2025-10-01 21:58:00,546 - AdamW states memory (GB): 0.11
+2025-10-01 21:58:00,547 - Activations memory (GB): 10.28
+2025-10-01 21:58:00,547 - Total memory (GB): 10.50
+2025-10-01 21:58:00,547 - FLOPS for attention: 0.34 TFLOPS 343,597,383,680 FLOPS Percent: 33.04%
+2025-10-01 21:58:00,547 - FLOPS for FFN: 0.36 TFLOPS 360,777,252,864 FLOPS, Percent: 34.69%
+2025-10-01 21:58:00,547 - FLOPS per Transformer block: 0.70 TFLOPS 704,374,636,544 FLOPS, Percent: 67.73%
+2025-10-01 21:58:00,547 - FLOPS for output layer: 0.34 TFLOPS 335,544,320,000 FLOPS, Percent: 32.27%
+2025-10-01 21:58:00,548 - Total FLOPS: 1.04 TFLOPS 1,039,918,956,544 FLOPS
+2025-10-01 21:58:00,548 - Embedding params: 5,120,000 Percent: 35.46%
+2025-10-01 21:58:00,548 - MHA params: 4,194,304 Percent: 29.05%
+2025-10-01 21:58:00,548 - FFN params: 3 Percent: 0.00%
+2025-10-01 21:58:00,548 - rmsnorm params: 512 Percent: 0.00%
+2025-10-01 21:58:00,548 - Block params: 4,198,403 Percent: 29.08%
+2025-10-01 21:58:00,548 - RMSNorm params: 512 Percent: 0.00%
+2025-10-01 21:58:00,549 - LM Head params: 5,120,000 Percent: 35.46%
+2025-10-01 21:58:00,549 - Total params: 14,438,915 (0.05 GB)
+2025-10-01 21:58:00,549 - ------------------------------------------------------------------------------------------------------------------------
+2025-10-01 21:58:00,549 - FLOPs per step: 3,119,756.87 MFLOPs. FLOPs per token: 95.21 MFLOPs
+2025-10-01 21:58:00,549 - model parameters: 14.44 M, estimated FLOPs per token: 86.63 MFLOPs
+2025-10-01 21:58:00,549 - Total training: 31,197.57 TFLOPs
+2025-10-01 21:58:00,550 - ------------------------------------------------------------------------------------------------------------------------
+2025-10-01 21:58:00,550 - Training data has 541229347 tokens.
+2025-10-01 21:58:00,550 - Validation data has 5465883 tokens.
+2025-10-01 21:58:00,550 - UseBF16=True BF16 support: True, device type: cuda, device name: NVIDIA GeForce RTX 4070 Ti
+2025-10-01 21:58:00,550 - torch version: 2.6.0+cu124
+2025-10-01 21:58:00,552 - Using cosine learning rate schedule with min 0.0, max 0.003, warmup steps 100, cosine cycle steps 10000
+2025-10-01 21:58:06,130 - Step 5326: loss 1.5078 grad_norm 0.144 Tflops/sec 1.12
+2025-10-01 21:58:11,194 - Step 5367: loss 1.5156 grad_norm 0.148 Tflops/sec 25.24
+2025-10-01 21:58:16,312 - Step 5409: loss 1.4688 grad_norm 0.145 Tflops/sec 25.60
+2025-10-01 21:58:21,312 - Step 5450: loss 1.4375 grad_norm 0.140 Tflops/sec 25.58
+2025-10-01 21:58:26,333 - Step 5491: loss 1.4531 grad_norm 0.151 Tflops/sec 25.48
+2025-10-01 21:58:32,689 - Step 5520: loss 1.5391 grad_norm 0.156 Tflops/sec 14.23
+2025-10-01 21:58:37,718 - Step 5561: loss 1.4688 grad_norm 0.143 Tflops/sec 25.43
+2025-10-01 21:58:42,815 - Step 5602: loss 1.3984 grad_norm 0.148 Tflops/sec 25.10
+2025-10-01 21:58:47,828 - Step 5643: loss 1.4766 grad_norm 0.161 Tflops/sec 25.51
+2025-10-01 21:58:52,832 - Step 5684: loss 1.4141 grad_norm 0.147 Tflops/sec 25.56
+2025-10-01 21:58:57,939 - Step 5726: loss 1.4297 grad_norm 0.152 Tflops/sec 25.66
+2025-10-01 21:59:03,030 - Step 5768: loss 1.4844 grad_norm 0.142 Tflops/sec 25.74
+2025-10-01 21:59:08,117 - Step 5787: loss 1.4531 grad_norm 0.153 Tflops/sec 11.65
+2025-10-01 21:59:13,124 - Step 5828: loss 1.4844 grad_norm 0.145 Tflops/sec 25.54
+2025-10-01 21:59:18,173 - Step 5869: loss 1.4453 grad_norm 0.141 Tflops/sec 25.36
+2025-10-01 21:59:23,265 - Step 5911: loss 1.4688 grad_norm 0.163 Tflops/sec 25.71
+2025-10-01 21:59:28,387 - Step 5953: loss 1.4375 grad_norm 0.142 Tflops/sec 25.59
+2025-10-01 21:59:33,501 - Step 5995: loss 1.4141 grad_norm 0.136 Tflops/sec 25.62
+2025-10-01 21:59:38,566 - Step 6036: loss 1.4219 grad_norm 0.159 Tflops/sec 25.25
+2025-10-01 21:59:43,583 - Step 6054: loss 1.4844 grad_norm 0.153 Tflops/sec 11.19
+2025-10-01 21:59:48,644 - Step 6095: loss 1.4844 grad_norm 0.140 Tflops/sec 25.28
+2025-10-01 21:59:53,737 - Step 6136: loss 1.3984 grad_norm 0.145 Tflops/sec 25.11
+2025-10-01 21:59:58,749 - Step 6177: loss 1.4531 grad_norm 0.151 Tflops/sec 25.52
+2025-10-01 22:00:03,758 - Step 6218: loss 1.4219 grad_norm 0.148 Tflops/sec 25.53
+2025-10-01 22:00:08,774 - Step 6259: loss 1.3984 grad_norm 0.156 Tflops/sec 25.50
+2025-10-01 22:00:13,780 - Step 6300: loss 1.4844 grad_norm 0.167 Tflops/sec 25.55
+2025-10-01 22:00:18,889 - Step 6319: loss 1.4297 grad_norm 0.153 Tflops/sec 11.60
+2025-10-01 22:00:23,947 - Step 6360: loss 1.4062 grad_norm 0.163 Tflops/sec 25.29
+2025-10-01 22:00:29,004 - Step 6401: loss 1.4375 grad_norm 0.166 Tflops/sec 25.29
+2025-10-01 22:00:34,109 - Step 6443: loss 1.4297 grad_norm 0.161 Tflops/sec 25.67
+2025-10-01 22:00:39,224 - Step 6485: loss 1.4375 grad_norm 0.164 Tflops/sec 25.62
+2025-10-01 22:00:44,333 - Step 6527: loss 1.5078 grad_norm 0.163 Tflops/sec 25.64
+2025-10-01 22:00:49,437 - Step 6569: loss 1.4453 grad_norm 0.155 Tflops/sec 25.67
+2025-10-01 22:00:54,449 - Step 6587: loss 1.3750 grad_norm 0.152 Tflops/sec 11.20
+2025-10-01 22:00:59,484 - Step 6628: loss 1.3828 grad_norm 0.141 Tflops/sec 25.40
+2025-10-01 22:01:04,516 - Step 6669: loss 1.4141 grad_norm 0.143 Tflops/sec 25.42
+2025-10-01 22:01:09,609 - Step 6711: loss 1.3828 grad_norm 0.145 Tflops/sec 25.73
+2025-10-01 22:01:14,699 - Step 6753: loss 1.4375 grad_norm 0.150 Tflops/sec 25.74
+2025-10-01 22:01:19,801 - Step 6795: loss 1.3906 grad_norm 0.133 Tflops/sec 25.68
+2025-10-01 22:01:24,833 - Step 6836: loss 1.3984 grad_norm 0.147 Tflops/sec 25.42
+2025-10-01 22:01:29,931 - Step 6855: loss 1.4062 grad_norm 0.161 Tflops/sec 11.63
+2025-10-01 22:01:35,029 - Step 6896: loss 1.4141 grad_norm 0.152 Tflops/sec 25.09
+2025-10-01 22:01:40,088 - Step 6937: loss 1.3984 grad_norm 0.154 Tflops/sec 25.28
+2025-10-01 22:01:45,093 - Step 6978: loss 1.3906 grad_norm 0.149 Tflops/sec 25.57
+2025-10-01 22:01:50,121 - Step 7018: loss 1.4219 grad_norm 0.149 Tflops/sec 24.82
+2025-10-01 22:01:55,240 - Step 7059: loss 1.4141 grad_norm 0.153 Tflops/sec 24.98
+2025-10-01 22:02:00,362 - Step 7101: loss 1.4219 grad_norm 0.151 Tflops/sec 25.59
+2025-10-01 22:02:05,482 - Step 7123: loss 1.4141 grad_norm 0.138 Tflops/sec 13.40
+2025-10-01 22:02:10,594 - Step 7165: loss 1.4141 grad_norm 0.148 Tflops/sec 25.63
+2025-10-01 22:02:15,702 - Step 7207: loss 1.3984 grad_norm 0.149 Tflops/sec 25.66
+2025-10-01 22:02:20,822 - Step 7249: loss 1.4219 grad_norm 0.159 Tflops/sec 25.59
+2025-10-01 22:02:25,936 - Step 7291: loss 1.3438 grad_norm 0.139 Tflops/sec 25.63
+2025-10-01 22:02:30,946 - Step 7332: loss 1.4297 grad_norm 0.144 Tflops/sec 25.53
+2025-10-01 22:02:38,903 - Step 7373: loss 1.3750 grad_norm 0.146 Tflops/sec 16.08
+2025-10-01 22:02:43,984 - Step 7414: loss 1.4141 grad_norm 0.143 Tflops/sec 25.21
+2025-10-01 22:02:49,031 - Step 7455: loss 1.4219 grad_norm 0.156 Tflops/sec 25.30
+2025-10-01 22:02:54,042 - Step 7496: loss 1.4141 grad_norm 0.152 Tflops/sec 25.53
+2025-10-01 22:02:59,146 - Step 7538: loss 1.4062 grad_norm 0.138 Tflops/sec 25.67
+2025-10-01 22:02:59,632 - Saving checkpoint to checkpoints/tinystories-05-NoPE_checkpoint_7543.pt
+2025-10-01 22:03:04,721 - Validation loss. step 7543: 1.4542
+2025-10-01 22:03:04,847 - Step 7543: loss 1.4375 grad_norm 0.146 Tflops/sec 2.74
+2025-10-01 22:03:09,941 - Step 7585: loss 1.4219 grad_norm 0.157 Tflops/sec 25.72
+2025-10-01 22:03:14,957 - Step 7603: loss 1.3984 grad_norm 0.140 Tflops/sec 11.20
+2025-10-01 22:03:20,052 - Step 7645: loss 1.4219 grad_norm 0.151 Tflops/sec 25.72
+2025-10-01 22:03:25,148 - Step 7687: loss 1.4219 grad_norm 0.143 Tflops/sec 25.71
+2025-10-01 22:03:30,170 - Step 7728: loss 1.4453 grad_norm 0.138 Tflops/sec 25.47
+2025-10-01 22:03:35,179 - Step 7769: loss 1.4062 grad_norm 0.144 Tflops/sec 25.53
+2025-10-01 22:03:40,223 - Step 7810: loss 1.4219 grad_norm 0.143 Tflops/sec 25.36
+2025-10-01 22:03:45,228 - Step 7851: loss 1.4141 grad_norm 0.145 Tflops/sec 25.56
+2025-10-01 22:03:50,233 - Step 7868: loss 1.4375 grad_norm 0.152 Tflops/sec 10.60
+2025-10-01 22:03:55,237 - Step 7909: loss 1.3828 grad_norm 0.139 Tflops/sec 25.56
+2025-10-01 22:04:00,246 - Step 7950: loss 1.4453 grad_norm 0.141 Tflops/sec 25.54
+2025-10-01 22:04:05,365 - Step 7992: loss 1.4297 grad_norm 0.145 Tflops/sec 25.60
+2025-10-01 22:04:10,379 - Step 8033: loss 1.3906 grad_norm 0.148 Tflops/sec 25.51
+2025-10-01 22:04:15,394 - Step 8074: loss 1.4219 grad_norm 0.143 Tflops/sec 25.51
+2025-10-01 22:04:20,403 - Step 8115: loss 1.4141 grad_norm 0.138 Tflops/sec 25.53
+2025-10-01 22:04:25,406 - Step 8156: loss 1.3906 grad_norm 0.142 Tflops/sec 25.57
+2025-10-01 22:04:30,411 - Step 8197: loss 1.3984 grad_norm 0.146 Tflops/sec 25.56
+2025-10-01 22:04:35,465 - Step 8238: loss 1.3906 grad_norm 0.150 Tflops/sec 25.31
+2025-10-01 22:04:41,204 - Step 8250: loss 1.4141 grad_norm 0.146 Tflops/sec 6.52
+2025-10-01 22:04:46,310 - Step 8289: loss 1.3984 grad_norm 0.142 Tflops/sec 23.83
+2025-10-01 22:04:51,368 - Step 8327: loss 1.4297 grad_norm 0.143 Tflops/sec 23.44
+2025-10-01 22:04:56,421 - Step 8365: loss 1.4297 grad_norm 0.146 Tflops/sec 23.47
+2025-10-01 22:05:01,445 - Step 8403: loss 1.3984 grad_norm 0.148 Tflops/sec 23.59
+2025-10-01 22:05:06,485 - Step 8442: loss 1.3594 grad_norm 0.149 Tflops/sec 24.14
+2025-10-01 22:05:11,576 - Step 8484: loss 1.3672 grad_norm 0.134 Tflops/sec 25.73
+2025-10-01 22:05:16,660 - Step 8519: loss 1.4062 grad_norm 0.145 Tflops/sec 21.48
+2025-10-01 22:05:21,760 - Step 8561: loss 1.4141 grad_norm 0.139 Tflops/sec 25.69
+2025-10-01 22:05:26,869 - Step 8603: loss 1.4609 grad_norm 0.144 Tflops/sec 25.65
+2025-10-01 22:05:31,878 - Step 8644: loss 1.4219 grad_norm 0.142 Tflops/sec 25.53
+2025-10-01 22:05:36,885 - Step 8685: loss 1.4531 grad_norm 0.138 Tflops/sec 25.55
+2025-10-01 22:05:42,006 - Step 8727: loss 1.4141 grad_norm 0.141 Tflops/sec 25.59
+2025-10-01 22:05:49,850 - Step 8767: loss 1.4141 grad_norm 0.142 Tflops/sec 15.91
+2025-10-01 22:05:54,958 - Step 8806: loss 1.4219 grad_norm 0.140 Tflops/sec 23.82
+2025-10-01 22:06:00,041 - Step 8845: loss 1.4219 grad_norm 0.137 Tflops/sec 23.94
+2025-10-01 22:06:05,069 - Step 8884: loss 1.4141 grad_norm 0.138 Tflops/sec 24.20
+2025-10-01 22:06:10,071 - Step 8925: loss 1.4141 grad_norm 0.136 Tflops/sec 25.57
+2025-10-01 22:06:15,076 - Step 8966: loss 1.3984 grad_norm 0.140 Tflops/sec 25.56
+2025-10-01 22:06:20,190 - Step 9008: loss 1.3984 grad_norm 0.136 Tflops/sec 25.62
+2025-10-01 22:06:25,301 - Step 9034: loss 1.3984 grad_norm 0.140 Tflops/sec 15.87
+2025-10-01 22:06:30,306 - Step 9075: loss 1.4375 grad_norm 0.145 Tflops/sec 25.55
+2025-10-01 22:06:35,417 - Step 9117: loss 1.3984 grad_norm 0.138 Tflops/sec 25.64
+2025-10-01 22:06:40,523 - Step 9159: loss 1.4297 grad_norm 0.141 Tflops/sec 25.66
+2025-10-01 22:06:45,636 - Step 9201: loss 1.3828 grad_norm 0.140 Tflops/sec 25.63
+2025-10-01 22:06:50,747 - Step 9243: loss 1.4688 grad_norm 0.164 Tflops/sec 25.64
+2025-10-01 22:06:55,847 - Step 9285: loss 1.4297 grad_norm 0.145 Tflops/sec 25.69
+2025-10-01 22:07:00,957 - Step 9303: loss 1.4219 grad_norm 0.146 Tflops/sec 10.99
+2025-10-01 22:07:06,000 - Step 9343: loss 1.3750 grad_norm 0.137 Tflops/sec 24.74
+2025-10-01 22:07:11,095 - Step 9385: loss 1.3516 grad_norm 0.134 Tflops/sec 25.72
+2025-10-01 22:07:16,201 - Step 9427: loss 1.4688 grad_norm 0.143 Tflops/sec 25.66
+2025-10-01 22:07:21,305 - Step 9469: loss 1.4219 grad_norm 0.140 Tflops/sec 25.67
+2025-10-01 22:07:26,413 - Step 9511: loss 1.3828 grad_norm 0.138 Tflops/sec 25.65
+2025-10-01 22:07:31,526 - Step 9553: loss 1.4141 grad_norm 0.142 Tflops/sec 25.63
+2025-10-01 22:07:36,585 - Step 9572: loss 1.4531 grad_norm 0.140 Tflops/sec 11.72
+2025-10-01 22:07:41,701 - Step 9614: loss 1.3750 grad_norm 0.135 Tflops/sec 25.61
+2025-10-01 22:07:46,806 - Step 9656: loss 1.4141 grad_norm 0.140 Tflops/sec 25.66
+2025-10-01 22:07:51,924 - Step 9698: loss 1.4062 grad_norm 0.139 Tflops/sec 25.60
+2025-10-01 22:07:56,953 - Step 9739: loss 1.3828 grad_norm 0.138 Tflops/sec 25.44
+2025-10-01 22:07:58,660 - Saving checkpoint to checkpoints/tinystories-05-NoPE_checkpoint_9754.pt
+2025-10-01 22:08:00,744 - Validation loss. step 9754: 1.4180
+2025-10-01 22:08:01,970 - Step 9763: loss 1.4141 grad_norm 0.141 Tflops/sec 14.92
+2025-10-01 22:08:07,084 - Step 9804: loss 1.4297 grad_norm 0.138 Tflops/sec 25.01
+2025-10-01 22:08:12,134 - Step 9845: loss 1.4141 grad_norm 0.134 Tflops/sec 25.33
+2025-10-01 22:08:17,229 - Step 9886: loss 1.3750 grad_norm 0.141 Tflops/sec 25.10
+2025-10-01 22:08:26,233 - Step 9927: loss 1.4062 grad_norm 0.136 Tflops/sec 14.21
+2025-10-01 22:08:31,265 - Step 9966: loss 1.4375 grad_norm 0.141 Tflops/sec 24.18
+2025-10-01 22:08:35,399 - Step 9999: loss 1.3906 grad_norm 0.140 Tflops/sec 24.91
+2025-10-01 22:08:35,400 - Saving checkpoint to checkpoints/tinystories-05-NoPE_checkpoint_10000.pt
+2025-10-01 22:08:37,492 - Validation loss. step 10000: 1.4235
+2025-10-01 22:08:37,494 - Training complete. Time taken: 10.62 minutes
