@@ -1,0 +1,481 @@
+2025-10-01 23:41:46,996 - Using config file: config/owt-01.yaml
+2025-10-01 23:41:46,996 - Model config: vocab_size=32000 num_layers=4 d_model=512 num_heads=16 d_ff=1344 max_seq_len=256 theta=10000.0 ffn_type='swiglu' layernorm_type='prenorm' position_embedding='rope'
+2025-10-01 23:41:46,996 - Data config: train_data='data/owt_train-bpe-merged.npy' valid_data='data/owt_valid-bpe-merged.npy'
+2025-10-01 23:41:46,997 - Experiment config: name='owt-01' checkpoint_dir='checkpoints' log_dir='logs' batch_size=64 eval_batch_size=64 steps=20000 checkpoints_interval=5 checkpoints_path='checkpoints' eval_steps=100 use_autocast=True
+2025-10-01 23:41:46,997 - Optimizer config: learning_rate=0.001 weight_decay=0.01 betas=[0.9, 0.95] grad_clip=1.0 lr_schedule='cosine' lr_min=0.0 lr_max=0.003 warmup_ratio=0.01 cosine_cycle_ratio=1.0
+2025-10-01 23:41:47,211 - optimizer: AdamW(lr=0.001, betas=[0.9, 0.95], eps=1e-08, weight_decay=0.01)
+2025-10-01 23:41:47,212 - Training on device cuda:0
+2025-10-01 23:41:47,212 - Torch version: 2.6.0+cu124 model compiled with torch.compile
+2025-10-01 23:41:47,213 - matmul allow_tf32: True
+2025-10-01 23:41:47,213 - cudnn allow_tf32: True
+2025-10-01 23:41:47,213 - matmul precision: high
+2025-10-01 23:41:51,682 - for batch size: 64
+2025-10-01 23:41:51,682 - Total parameters: 36,966,915
+2025-10-01 23:41:51,682 - Total activations: 27,197,696
+2025-10-01 23:41:51,683 - params + gradients + states: 591,470,640
+2025-10-01 23:41:51,683 - activations per batch size: 108,790,784
+2025-10-01 23:41:51,683 - Parameters memory (GB): 0.14
+2025-10-01 23:41:51,683 - Gradients memory (GB): 0.14
+2025-10-01 23:41:51,683 - AdamW states memory (GB): 0.28
+2025-10-01 23:41:51,683 - Activations memory (GB): 6.48
+2025-10-01 23:41:51,683 - Total memory (GB): 7.04
+2025-10-01 23:41:51,683 - FLOPS for attention: 0.17 TFLOPS 171,798,691,840 FLOPS Percent: 19.32%
+2025-10-01 23:41:51,684 - FLOPS for FFN: 0.18 TFLOPS 180,388,626,432 FLOPS, Percent: 20.29%
+2025-10-01 23:41:51,684 - FLOPS per Transformer block: 0.35 TFLOPS 352,187,318,272 FLOPS, Percent: 39.61%
+2025-10-01 23:41:51,684 - FLOPS for output layer: 0.54 TFLOPS 536,870,912,000 FLOPS, Percent: 60.39%
+2025-10-01 23:41:51,684 - Total FLOPS: 0.89 TFLOPS 889,058,230,272 FLOPS
+2025-10-01 23:41:51,684 - Embedding params: 16,384,000 Percent: 44.32%
+2025-10-01 23:41:51,684 - MHA params: 4,194,304 Percent: 11.35%
+2025-10-01 23:41:51,684 - FFN params: 3 Percent: 0.00%
+2025-10-01 23:41:51,684 - rmsnorm params: 512 Percent: 0.00%
+2025-10-01 23:41:51,685 - Block params: 4,198,403 Percent: 11.36%
+2025-10-01 23:41:51,685 - RMSNorm params: 512 Percent: 0.00%
+2025-10-01 23:41:51,685 - LM Head params: 16,384,000 Percent: 44.32%
+2025-10-01 23:41:51,685 - Total params: 36,966,915 (0.14 GB)
+2025-10-01 23:41:51,685 - ------------------------------------------------------------------------------------------------------------------------
+2025-10-01 23:41:51,685 - FLOPs per step: 2,667,174.69 MFLOPs. FLOPs per token: 162.79 MFLOPs
+2025-10-01 23:41:51,685 - model parameters: 36.97 M, estimated FLOPs per token: 221.80 MFLOPs
+2025-10-01 23:41:51,685 - Total training: 53,343.49 TFLOPs
+2025-10-01 23:41:51,686 - ------------------------------------------------------------------------------------------------------------------------
+2025-10-01 23:41:51,686 - Training data has 2727120452 tokens.
+2025-10-01 23:41:51,686 - Validation data has 66401098 tokens.
+2025-10-01 23:41:51,686 - UseBF16=True BF16 support: True, device type: cuda, device name: NVIDIA GeForce RTX 4070 Ti
+2025-10-01 23:41:51,686 - torch version: 2.6.0+cu124
+2025-10-01 23:41:51,688 - Using cosine learning rate schedule with min 0.0, max 0.003, warmup steps 200, cosine cycle steps 20000
+2025-10-01 23:41:58,573 - Step 1: loss 10.3750 grad_norm 0.627 Tflops/sec 0.78
+2025-10-01 23:42:03,626 - Step 52: loss 7.1875 grad_norm 0.286 Tflops/sec 26.87
+2025-10-01 23:42:08,700 - Step 104: loss 6.5000 grad_norm 0.295 Tflops/sec 27.33
+2025-10-01 23:42:13,779 - Step 156: loss 6.0625 grad_norm 0.396 Tflops/sec 27.31
+2025-10-01 23:42:18,780 - Step 207: loss 5.8750 grad_norm 0.384 Tflops/sec 27.20
+2025-10-01 23:42:25,383 - Step 248: loss 5.9375 grad_norm 0.328 Tflops/sec 16.56
+2025-10-01 23:42:30,449 - Step 300: loss 5.6250 grad_norm 0.293 Tflops/sec 27.38
+2025-10-01 23:42:35,513 - Step 352: loss 5.7188 grad_norm 0.310 Tflops/sec 27.38
+2025-10-01 23:42:40,578 - Step 404: loss 5.5000 grad_norm 0.264 Tflops/sec 27.39
+2025-10-01 23:42:45,644 - Step 456: loss 5.4688 grad_norm 0.254 Tflops/sec 27.37
+2025-10-01 23:42:50,708 - Step 508: loss 5.4062 grad_norm 0.254 Tflops/sec 27.39
+2025-10-01 23:42:55,774 - Step 560: loss 5.4375 grad_norm 0.304 Tflops/sec 27.38
+2025-10-01 23:43:00,778 - Step 581: loss 5.4062 grad_norm 0.236 Tflops/sec 11.19
+2025-10-01 23:43:05,863 - Step 632: loss 5.2188 grad_norm 0.231 Tflops/sec 26.75
+2025-10-01 23:43:10,940 - Step 684: loss 5.2500 grad_norm 0.225 Tflops/sec 27.32
+2025-10-01 23:43:16,020 - Step 736: loss 5.2812 grad_norm 0.225 Tflops/sec 27.30
+2025-10-01 23:43:21,100 - Step 788: loss 5.1875 grad_norm 0.210 Tflops/sec 27.31
+2025-10-01 23:43:26,176 - Step 840: loss 5.3438 grad_norm 0.227 Tflops/sec 27.32
+2025-10-01 23:43:31,245 - Step 892: loss 5.1875 grad_norm 0.220 Tflops/sec 27.36
+2025-10-01 23:43:36,295 - Step 915: loss 5.1875 grad_norm 0.233 Tflops/sec 12.16
+2025-10-01 23:43:41,363 - Step 967: loss 5.0938 grad_norm 0.211 Tflops/sec 27.35
+2025-10-01 23:43:46,430 - Step 1019: loss 5.2188 grad_norm 0.213 Tflops/sec 27.37
+2025-10-01 23:43:51,500 - Step 1071: loss 5.0938 grad_norm 0.225 Tflops/sec 27.36
+2025-10-01 23:43:56,568 - Step 1123: loss 5.0000 grad_norm 0.203 Tflops/sec 27.37
+2025-10-01 23:44:01,643 - Step 1175: loss 5.0625 grad_norm 0.214 Tflops/sec 27.33
+2025-10-01 23:44:06,720 - Step 1227: loss 5.0938 grad_norm 0.223 Tflops/sec 27.30
+2025-10-01 23:44:11,813 - Step 1249: loss 5.0000 grad_norm 0.223 Tflops/sec 11.52
+2025-10-01 23:44:16,855 - Step 1299: loss 5.0000 grad_norm 0.206 Tflops/sec 26.46
+2025-10-01 23:44:21,927 - Step 1351: loss 5.0312 grad_norm 0.207 Tflops/sec 27.35
+2025-10-01 23:44:26,994 - Step 1403: loss 5.0312 grad_norm 0.202 Tflops/sec 27.37
+2025-10-01 23:44:32,079 - Step 1455: loss 4.9062 grad_norm 0.223 Tflops/sec 27.28
+2025-10-01 23:44:37,149 - Step 1507: loss 4.8438 grad_norm 0.215 Tflops/sec 27.35
+2025-10-01 23:44:42,227 - Step 1559: loss 4.9062 grad_norm 0.189 Tflops/sec 27.31
+2025-10-01 23:44:47,241 - Step 1582: loss 4.9062 grad_norm 0.198 Tflops/sec 12.23
+2025-10-01 23:44:52,316 - Step 1634: loss 4.9062 grad_norm 0.224 Tflops/sec 27.34
+2025-10-01 23:44:57,389 - Step 1686: loss 4.8438 grad_norm 0.207 Tflops/sec 27.33
+2025-10-01 23:45:02,476 - Step 1738: loss 4.7812 grad_norm 0.186 Tflops/sec 27.27
+2025-10-01 23:45:07,564 - Step 1790: loss 4.8438 grad_norm 0.198 Tflops/sec 27.26
+2025-10-01 23:45:12,651 - Step 1842: loss 4.8438 grad_norm 0.204 Tflops/sec 27.27
+2025-10-01 23:45:17,734 - Step 1894: loss 4.7500 grad_norm 0.201 Tflops/sec 27.28
+2025-10-01 23:45:22,820 - Step 1946: loss 4.7500 grad_norm 0.197 Tflops/sec 27.27
+2025-10-01 23:45:27,898 - Step 1998: loss 4.8125 grad_norm 0.223 Tflops/sec 27.31
+2025-10-01 23:45:32,987 - Step 2050: loss 4.9688 grad_norm 0.203 Tflops/sec 27.26
+2025-10-01 23:45:38,090 - Step 2058: loss 4.7500 grad_norm 0.202 Tflops/sec 4.18
+2025-10-01 23:45:43,136 - Step 2106: loss 4.6875 grad_norm 0.195 Tflops/sec 25.37
+2025-10-01 23:45:48,227 - Step 2158: loss 4.7812 grad_norm 0.190 Tflops/sec 27.25
+2025-10-01 23:45:53,312 - Step 2210: loss 4.6875 grad_norm 0.199 Tflops/sec 27.25
+2025-10-01 23:45:58,399 - Step 2262: loss 4.6562 grad_norm 0.196 Tflops/sec 27.28
+2025-10-01 23:46:03,481 - Step 2314: loss 4.7500 grad_norm 0.199 Tflops/sec 27.27
+2025-10-01 23:46:08,559 - Step 2366: loss 4.7188 grad_norm 0.214 Tflops/sec 27.33
+2025-10-01 23:46:13,608 - Step 2392: loss 4.6562 grad_norm 0.228 Tflops/sec 13.74
+2025-10-01 23:46:18,682 - Step 2444: loss 4.6875 grad_norm 0.226 Tflops/sec 27.31
+2025-10-01 23:46:23,756 - Step 2496: loss 4.6875 grad_norm 0.188 Tflops/sec 27.35
+2025-10-01 23:46:28,826 - Step 2548: loss 4.6875 grad_norm 0.190 Tflops/sec 27.35
+2025-10-01 23:46:33,903 - Step 2600: loss 4.8125 grad_norm 0.204 Tflops/sec 27.31
+2025-10-01 23:46:38,975 - Step 2652: loss 4.5938 grad_norm 0.190 Tflops/sec 27.36
+2025-10-01 23:46:44,045 - Step 2704: loss 4.6562 grad_norm 0.194 Tflops/sec 27.35
+2025-10-01 23:46:49,120 - Step 2726: loss 4.5938 grad_norm 0.187 Tflops/sec 11.56
+2025-10-01 23:46:50,776 - Saving checkpoint to checkpoints/owt-01_checkpoint_2744.pt
+2025-10-01 23:46:55,517 - Validation loss. step 2744: 4.6287
+2025-10-01 23:46:55,618 - Step 2744: loss 4.6250 grad_norm 0.182 Tflops/sec 7.39
+2025-10-01 23:47:00,699 - Step 2796: loss 4.5312 grad_norm 0.189 Tflops/sec 27.30
+2025-10-01 23:47:05,781 - Step 2848: loss 4.6250 grad_norm 0.214 Tflops/sec 27.29
+2025-10-01 23:47:10,866 - Step 2900: loss 4.5938 grad_norm 0.179 Tflops/sec 27.28
+2025-10-01 23:47:15,947 - Step 2952: loss 4.5938 grad_norm 0.222 Tflops/sec 27.30
+2025-10-01 23:47:21,026 - Step 3004: loss 4.4375 grad_norm 0.183 Tflops/sec 27.31
+2025-10-01 23:47:26,100 - Step 3056: loss 4.5625 grad_norm 0.212 Tflops/sec 27.33
+2025-10-01 23:47:31,174 - Step 3108: loss 4.6562 grad_norm 0.208 Tflops/sec 27.33
+2025-10-01 23:47:39,293 - Step 3147: loss 4.5000 grad_norm 0.187 Tflops/sec 12.81
+2025-10-01 23:47:44,365 - Step 3196: loss 4.5312 grad_norm 0.205 Tflops/sec 25.77
+2025-10-01 23:47:49,451 - Step 3248: loss 4.6562 grad_norm 0.195 Tflops/sec 27.27
+2025-10-01 23:47:54,539 - Step 3300: loss 4.5312 grad_norm 0.202 Tflops/sec 27.27
+2025-10-01 23:47:59,624 - Step 3352: loss 4.5312 grad_norm 0.196 Tflops/sec 27.28
+2025-10-01 23:48:04,699 - Step 3404: loss 4.4688 grad_norm 0.188 Tflops/sec 27.32
+2025-10-01 23:48:09,767 - Step 3456: loss 4.6250 grad_norm 0.183 Tflops/sec 27.37
+2025-10-01 23:48:14,862 - Step 3481: loss 4.5312 grad_norm 0.207 Tflops/sec 13.09
+2025-10-01 23:48:19,931 - Step 3533: loss 4.4688 grad_norm 0.188 Tflops/sec 27.36
+2025-10-01 23:48:25,003 - Step 3585: loss 4.5312 grad_norm 0.196 Tflops/sec 27.35
+2025-10-01 23:48:30,072 - Step 3637: loss 4.5938 grad_norm 0.198 Tflops/sec 27.36
+2025-10-01 23:48:35,140 - Step 3689: loss 4.4688 grad_norm 0.200 Tflops/sec 27.35
+2025-10-01 23:48:40,209 - Step 3741: loss 4.4688 grad_norm 0.193 Tflops/sec 27.38
+2025-10-01 23:48:45,281 - Step 3793: loss 4.5625 grad_norm 0.187 Tflops/sec 27.34
+2025-10-01 23:48:50,349 - Step 3815: loss 4.5000 grad_norm 0.194 Tflops/sec 11.58
+2025-10-01 23:48:55,417 - Step 3867: loss 4.4688 grad_norm 0.217 Tflops/sec 27.36
+2025-10-01 23:49:00,496 - Step 3919: loss 4.5312 grad_norm 0.193 Tflops/sec 27.31
+2025-10-01 23:49:05,579 - Step 3971: loss 4.4688 grad_norm 0.197 Tflops/sec 27.26
+2025-10-01 23:49:10,667 - Step 4023: loss 4.5938 grad_norm 0.239 Tflops/sec 27.28
+2025-10-01 23:49:15,747 - Step 4075: loss 4.4062 grad_norm 0.201 Tflops/sec 27.30
+2025-10-01 23:49:20,827 - Step 4127: loss 4.5000 grad_norm 0.182 Tflops/sec 27.30
+2025-10-01 23:49:25,905 - Step 4149: loss 4.4688 grad_norm 0.186 Tflops/sec 11.56
+2025-10-01 23:49:30,975 - Step 4201: loss 4.4688 grad_norm 0.195 Tflops/sec 27.35
+2025-10-01 23:49:36,046 - Step 4253: loss 4.5000 grad_norm 0.206 Tflops/sec 27.36
+2025-10-01 23:49:41,125 - Step 4305: loss 4.4375 grad_norm 0.207 Tflops/sec 27.31
+2025-10-01 23:49:46,207 - Step 4357: loss 4.4375 grad_norm 0.202 Tflops/sec 27.28
+2025-10-01 23:49:51,283 - Step 4409: loss 4.4375 grad_norm 0.213 Tflops/sec 27.33
+2025-10-01 23:49:56,349 - Step 4461: loss 4.5625 grad_norm 0.196 Tflops/sec 27.38
+2025-10-01 23:50:01,416 - Step 4513: loss 4.5312 grad_norm 0.217 Tflops/sec 27.37
+2025-10-01 23:50:06,485 - Step 4565: loss 4.5000 grad_norm 0.204 Tflops/sec 27.36
+2025-10-01 23:50:11,553 - Step 4617: loss 4.4062 grad_norm 0.186 Tflops/sec 27.37
+2025-10-01 23:50:16,642 - Step 4625: loss 4.4375 grad_norm 0.201 Tflops/sec 4.19
+2025-10-01 23:50:21,649 - Step 4673: loss 4.5625 grad_norm 0.201 Tflops/sec 25.57
+2025-10-01 23:50:26,717 - Step 4725: loss 4.5312 grad_norm 0.219 Tflops/sec 27.37
+2025-10-01 23:50:31,793 - Step 4777: loss 4.4375 grad_norm 0.202 Tflops/sec 27.32
+2025-10-01 23:50:36,863 - Step 4829: loss 4.5000 grad_norm 0.217 Tflops/sec 27.35
+2025-10-01 23:50:41,935 - Step 4881: loss 4.4062 grad_norm 0.203 Tflops/sec 27.35
+2025-10-01 23:50:47,008 - Step 4933: loss 4.3438 grad_norm 0.194 Tflops/sec 27.35
+2025-10-01 23:50:52,042 - Step 4958: loss 4.5312 grad_norm 0.224 Tflops/sec 13.25
+2025-10-01 23:50:57,125 - Step 5010: loss 4.4688 grad_norm 0.197 Tflops/sec 27.29
+2025-10-01 23:51:02,213 - Step 5062: loss 4.5000 grad_norm 0.207 Tflops/sec 27.26
+2025-10-01 23:51:07,301 - Step 5114: loss 4.4062 grad_norm 0.194 Tflops/sec 27.26
+2025-10-01 23:51:12,384 - Step 5166: loss 4.4375 grad_norm 0.196 Tflops/sec 27.28
+2025-10-01 23:51:17,472 - Step 5218: loss 4.4375 grad_norm 0.223 Tflops/sec 27.27
+2025-10-01 23:51:22,472 - Step 5269: loss 4.4375 grad_norm 0.200 Tflops/sec 27.20
+2025-10-01 23:51:27,563 - Step 5291: loss 4.4062 grad_norm 0.201 Tflops/sec 11.53
+2025-10-01 23:51:32,640 - Step 5343: loss 4.3750 grad_norm 0.225 Tflops/sec 27.32
+2025-10-01 23:51:37,722 - Step 5395: loss 4.4375 grad_norm 0.196 Tflops/sec 27.28
+2025-10-01 23:51:42,805 - Step 5447: loss 4.3438 grad_norm 0.199 Tflops/sec 27.30
+2025-10-01 23:51:47,886 - Step 5499: loss 4.4062 grad_norm 0.222 Tflops/sec 27.30
+2025-10-01 23:51:49,830 - Saving checkpoint to checkpoints/owt-01_checkpoint_5520.pt
+2025-10-01 23:51:53,088 - Validation loss. step 5520: 4.3966
+2025-10-01 23:51:53,195 - Step 5520: loss 4.4688 grad_norm 0.204 Tflops/sec 10.54
+2025-10-01 23:51:58,268 - Step 5572: loss 4.3438 grad_norm 0.214 Tflops/sec 27.35
+2025-10-01 23:52:03,349 - Step 5594: loss 4.3125 grad_norm 0.221 Tflops/sec 11.55
+2025-10-01 23:52:08,417 - Step 5646: loss 4.3750 grad_norm 0.212 Tflops/sec 27.36
+2025-10-01 23:52:13,494 - Step 5698: loss 4.4375 grad_norm 0.218 Tflops/sec 27.31
+2025-10-01 23:52:18,585 - Step 5750: loss 4.3438 grad_norm 0.192 Tflops/sec 27.25
+2025-10-01 23:52:23,657 - Step 5802: loss 4.3125 grad_norm 0.212 Tflops/sec 27.34
+2025-10-01 23:52:28,733 - Step 5854: loss 4.4062 grad_norm 0.203 Tflops/sec 27.32
+2025-10-01 23:52:33,805 - Step 5906: loss 4.2812 grad_norm 0.205 Tflops/sec 27.36
+2025-10-01 23:52:38,889 - Step 5928: loss 4.3750 grad_norm 0.217 Tflops/sec 11.54
+2025-10-01 23:52:43,977 - Step 5980: loss 4.3750 grad_norm 0.217 Tflops/sec 27.25
+2025-10-01 23:52:49,051 - Step 6032: loss 4.3438 grad_norm 0.208 Tflops/sec 27.32
+2025-10-01 23:52:54,123 - Step 6084: loss 4.3125 grad_norm 0.204 Tflops/sec 27.34
+2025-10-01 23:52:59,204 - Step 6136: loss 4.2812 grad_norm 0.228 Tflops/sec 27.31
+2025-10-01 23:53:04,296 - Step 6188: loss 4.3438 grad_norm 0.206 Tflops/sec 27.24
+2025-10-01 23:53:12,030 - Step 6237: loss 4.4062 grad_norm 0.215 Tflops/sec 16.90
+2025-10-01 23:53:17,114 - Step 6289: loss 4.3438 grad_norm 0.248 Tflops/sec 27.26
+2025-10-01 23:53:22,198 - Step 6341: loss 4.3750 grad_norm 0.210 Tflops/sec 27.30
+2025-10-01 23:53:27,293 - Step 6393: loss 4.3125 grad_norm 0.217 Tflops/sec 27.22
+2025-10-01 23:53:32,375 - Step 6445: loss 4.2812 grad_norm 0.264 Tflops/sec 27.27
+2025-10-01 23:53:37,456 - Step 6497: loss 4.2812 grad_norm 0.206 Tflops/sec 27.30
+2025-10-01 23:53:42,529 - Step 6549: loss 4.2812 grad_norm 0.214 Tflops/sec 27.34
+2025-10-01 23:53:47,607 - Step 6571: loss 4.3750 grad_norm 0.230 Tflops/sec 11.56
+2025-10-01 23:53:52,676 - Step 6623: loss 4.3750 grad_norm 0.203 Tflops/sec 27.37
+2025-10-01 23:53:57,745 - Step 6675: loss 4.2812 grad_norm 0.201 Tflops/sec 27.35
+2025-10-01 23:54:02,821 - Step 6727: loss 4.3438 grad_norm 0.207 Tflops/sec 27.34
+2025-10-01 23:54:07,900 - Step 6779: loss 4.3438 grad_norm 0.233 Tflops/sec 27.29
+2025-10-01 23:54:12,971 - Step 6831: loss 4.3125 grad_norm 0.220 Tflops/sec 27.37
+2025-10-01 23:54:18,053 - Step 6883: loss 4.3438 grad_norm 0.209 Tflops/sec 27.29
+2025-10-01 23:54:23,128 - Step 6905: loss 4.3125 grad_norm 0.220 Tflops/sec 11.56
+2025-10-01 23:54:28,206 - Step 6957: loss 4.3438 grad_norm 0.240 Tflops/sec 27.31
+2025-10-01 23:54:33,271 - Step 7009: loss 4.4375 grad_norm 0.244 Tflops/sec 27.36
+2025-10-01 23:54:38,337 - Step 7061: loss 4.4062 grad_norm 0.203 Tflops/sec 27.40
+2025-10-01 23:54:43,404 - Step 7113: loss 4.3438 grad_norm 0.219 Tflops/sec 27.37
+2025-10-01 23:54:48,468 - Step 7165: loss 4.2188 grad_norm 0.237 Tflops/sec 27.39
+2025-10-01 23:54:53,534 - Step 7217: loss 4.3438 grad_norm 0.212 Tflops/sec 27.38
+2025-10-01 23:54:58,612 - Step 7269: loss 4.3438 grad_norm 0.232 Tflops/sec 27.31
+2025-10-01 23:55:03,696 - Step 7321: loss 4.3438 grad_norm 0.212 Tflops/sec 27.28
+2025-10-01 23:55:08,707 - Step 7371: loss 4.3438 grad_norm 0.229 Tflops/sec 26.62
+2025-10-01 23:55:14,122 - Step 7382: loss 4.4062 grad_norm 0.232 Tflops/sec 5.42
+2025-10-01 23:55:19,122 - Step 7429: loss 4.2812 grad_norm 0.229 Tflops/sec 25.07
+2025-10-01 23:55:24,130 - Step 7476: loss 4.3438 grad_norm 0.229 Tflops/sec 25.04
+2025-10-01 23:55:29,148 - Step 7524: loss 4.2500 grad_norm 0.225 Tflops/sec 25.51
+2025-10-01 23:55:34,161 - Step 7571: loss 4.3750 grad_norm 0.245 Tflops/sec 25.00
+2025-10-01 23:55:39,211 - Step 7622: loss 4.2500 grad_norm 0.250 Tflops/sec 26.94
+2025-10-01 23:55:44,221 - Step 7671: loss 4.3750 grad_norm 0.239 Tflops/sec 26.09
+2025-10-01 23:55:49,286 - Step 7693: loss 4.3125 grad_norm 0.213 Tflops/sec 11.59
+2025-10-01 23:55:54,379 - Step 7745: loss 4.3125 grad_norm 0.240 Tflops/sec 27.23
+2025-10-01 23:55:59,468 - Step 7795: loss 4.3438 grad_norm 0.240 Tflops/sec 26.20
+2025-10-01 23:56:04,492 - Step 7844: loss 4.3438 grad_norm 0.247 Tflops/sec 26.02
+2025-10-01 23:56:09,566 - Step 7893: loss 4.4062 grad_norm 0.221 Tflops/sec 25.76
+2025-10-01 23:56:14,583 - Step 7942: loss 4.2812 grad_norm 0.225 Tflops/sec 26.05
+2025-10-01 23:56:19,679 - Step 7993: loss 4.3438 grad_norm 0.240 Tflops/sec 26.69
+2025-10-01 23:56:24,720 - Step 8014: loss 4.2812 grad_norm 0.223 Tflops/sec 11.11
+2025-10-01 23:56:29,769 - Step 8061: loss 4.3125 grad_norm 0.241 Tflops/sec 24.83
+2025-10-01 23:56:34,783 - Step 8109: loss 4.3438 grad_norm 0.241 Tflops/sec 25.53
+2025-10-01 23:56:39,876 - Step 8159: loss 4.2500 grad_norm 0.240 Tflops/sec 26.19
+2025-10-01 23:56:44,902 - Step 8209: loss 4.2812 grad_norm 0.215 Tflops/sec 26.53
+2025-10-01 23:56:48,898 - Saving checkpoint to checkpoints/owt-01_checkpoint_8250.pt
+2025-10-01 23:56:52,278 - Validation loss. step 8250: 4.2756
+2025-10-01 23:56:52,388 - Step 8250: loss 4.2812 grad_norm 0.253 Tflops/sec 14.60
+2025-10-01 23:56:59,551 - Step 8292: loss 4.2812 grad_norm 0.225 Tflops/sec 15.65
+2025-10-01 23:57:04,587 - Step 8342: loss 4.2188 grad_norm 0.247 Tflops/sec 26.47
+2025-10-01 23:57:09,640 - Step 8392: loss 4.3125 grad_norm 0.229 Tflops/sec 26.39
+2025-10-01 23:57:14,716 - Step 8441: loss 4.2812 grad_norm 0.244 Tflops/sec 25.77
+2025-10-01 23:57:19,731 - Step 8489: loss 4.1875 grad_norm 0.251 Tflops/sec 25.50
+2025-10-01 23:57:24,823 - Step 8539: loss 4.2500 grad_norm 0.261 Tflops/sec 26.19
+2025-10-01 23:57:29,885 - Step 8589: loss 4.3750 grad_norm 0.375 Tflops/sec 26.34
+2025-10-01 23:57:34,981 - Step 8610: loss 4.2812 grad_norm 0.230 Tflops/sec 10.99
+2025-10-01 23:57:39,995 - Step 8659: loss 4.2500 grad_norm 0.224 Tflops/sec 26.06
+2025-10-01 23:57:45,038 - Step 8708: loss 4.1875 grad_norm 0.231 Tflops/sec 25.92
+2025-10-01 23:57:50,106 - Step 8757: loss 4.2500 grad_norm 0.242 Tflops/sec 25.79
+2025-10-01 23:57:55,147 - Step 8807: loss 4.2500 grad_norm 0.230 Tflops/sec 26.45
+2025-10-01 23:58:00,238 - Step 8855: loss 4.1875 grad_norm 0.234 Tflops/sec 25.14
+2025-10-01 23:58:05,247 - Step 8906: loss 4.2500 grad_norm 0.237 Tflops/sec 27.15
+2025-10-01 23:58:10,308 - Step 8928: loss 4.3125 grad_norm 0.257 Tflops/sec 11.60
+2025-10-01 23:58:15,381 - Step 8980: loss 4.2812 grad_norm 0.223 Tflops/sec 27.33
+2025-10-01 23:58:20,456 - Step 9032: loss 4.1875 grad_norm 0.230 Tflops/sec 27.33
+2025-10-01 23:58:25,526 - Step 9084: loss 4.2188 grad_norm 0.253 Tflops/sec 27.34
+2025-10-01 23:58:30,601 - Step 9136: loss 4.2500 grad_norm 0.228 Tflops/sec 27.34
+2025-10-01 23:58:35,673 - Step 9188: loss 4.3125 grad_norm 0.240 Tflops/sec 27.36
+2025-10-01 23:58:40,751 - Step 9240: loss 4.2812 grad_norm 0.228 Tflops/sec 27.31
+2025-10-01 23:58:45,837 - Step 9262: loss 4.2500 grad_norm 0.236 Tflops/sec 11.54
+2025-10-01 23:58:50,905 - Step 9314: loss 4.2500 grad_norm 0.314 Tflops/sec 27.37
+2025-10-01 23:58:55,980 - Step 9366: loss 4.1875 grad_norm 0.264 Tflops/sec 27.31
+2025-10-01 23:59:01,062 - Step 9418: loss 4.2500 grad_norm 0.226 Tflops/sec 27.30
+2025-10-01 23:59:06,146 - Step 9470: loss 4.1562 grad_norm 0.245 Tflops/sec 27.28
+2025-10-01 23:59:11,234 - Step 9522: loss 4.2500 grad_norm 0.229 Tflops/sec 27.26
+2025-10-01 23:59:16,325 - Step 9574: loss 4.1562 grad_norm 0.254 Tflops/sec 27.24
+2025-10-01 23:59:21,401 - Step 9596: loss 4.0938 grad_norm 0.251 Tflops/sec 11.56
+2025-10-01 23:59:26,475 - Step 9648: loss 4.1875 grad_norm 0.249 Tflops/sec 27.33
+2025-10-01 23:59:31,544 - Step 9700: loss 4.1250 grad_norm 0.257 Tflops/sec 27.36
+2025-10-01 23:59:36,618 - Step 9752: loss 4.1875 grad_norm 0.244 Tflops/sec 27.33
+2025-10-01 23:59:41,692 - Step 9804: loss 4.2500 grad_norm 0.260 Tflops/sec 27.33
+2025-10-01 23:59:46,771 - Step 9856: loss 4.3438 grad_norm 0.247 Tflops/sec 27.29
+2025-10-01 23:59:51,845 - Step 9908: loss 4.2500 grad_norm 0.268 Tflops/sec 27.35
+2025-10-01 23:59:56,915 - Step 9960: loss 4.2812 grad_norm 0.255 Tflops/sec 27.36
+2025-10-02 00:00:01,987 - Step 10012: loss 4.2188 grad_norm 0.257 Tflops/sec 27.33
+2025-10-02 00:00:07,066 - Step 10064: loss 4.3750 grad_norm 0.293 Tflops/sec 27.33
+2025-10-02 00:00:12,156 - Step 10072: loss 4.2500 grad_norm 0.242 Tflops/sec 4.19
+2025-10-02 00:00:17,229 - Step 10124: loss 4.2500 grad_norm 0.257 Tflops/sec 27.34
+2025-10-02 00:00:22,310 - Step 10176: loss 4.2500 grad_norm 0.250 Tflops/sec 27.34
+2025-10-02 00:00:27,380 - Step 10228: loss 4.2812 grad_norm 0.266 Tflops/sec 27.32
+2025-10-02 00:00:32,445 - Step 10280: loss 4.0625 grad_norm 0.256 Tflops/sec 27.38
+2025-10-02 00:00:37,514 - Step 10332: loss 4.2812 grad_norm 0.282 Tflops/sec 27.36
+2025-10-02 00:00:42,587 - Step 10384: loss 4.1562 grad_norm 0.276 Tflops/sec 27.32
+2025-10-02 00:00:47,686 - Step 10406: loss 4.2188 grad_norm 0.258 Tflops/sec 11.52
+2025-10-02 00:00:52,753 - Step 10458: loss 4.2188 grad_norm 0.263 Tflops/sec 27.37
+2025-10-02 00:00:57,829 - Step 10510: loss 4.2188 grad_norm 0.270 Tflops/sec 27.32
+2025-10-02 00:01:02,920 - Step 10562: loss 4.2188 grad_norm 0.273 Tflops/sec 27.24
+2025-10-02 00:01:08,010 - Step 10614: loss 4.2500 grad_norm 0.276 Tflops/sec 27.25
+2025-10-02 00:01:13,095 - Step 10666: loss 4.1250 grad_norm 0.280 Tflops/sec 27.27
+2025-10-02 00:01:18,179 - Step 10718: loss 4.1875 grad_norm 0.271 Tflops/sec 27.28
+2025-10-02 00:01:23,268 - Step 10740: loss 4.1250 grad_norm 0.246 Tflops/sec 11.53
+2025-10-02 00:01:28,344 - Step 10792: loss 4.1875 grad_norm 0.272 Tflops/sec 27.32
+2025-10-02 00:01:33,415 - Step 10844: loss 4.1562 grad_norm 0.260 Tflops/sec 27.36
+2025-10-02 00:01:38,486 - Step 10896: loss 4.2188 grad_norm 0.271 Tflops/sec 27.35
+2025-10-02 00:01:43,566 - Step 10948: loss 4.2188 grad_norm 0.262 Tflops/sec 27.30
+2025-10-02 00:01:47,945 - Saving checkpoint to checkpoints/owt-01_checkpoint_10994.pt
+2025-10-02 00:01:51,693 - Validation loss. step 10994: 4.1822
+2025-10-02 00:01:51,798 - Step 10994: loss 4.1875 grad_norm 0.266 Tflops/sec 14.90
+2025-10-02 00:01:56,874 - Step 11046: loss 4.0938 grad_norm 0.274 Tflops/sec 27.34
+2025-10-02 00:02:01,946 - Step 11098: loss 4.2188 grad_norm 0.278 Tflops/sec 27.33
+2025-10-02 00:02:07,020 - Step 11150: loss 4.2500 grad_norm 0.265 Tflops/sec 27.34
+2025-10-02 00:02:14,250 - Step 11180: loss 4.1562 grad_norm 0.260 Tflops/sec 11.07
+2025-10-02 00:02:19,351 - Step 11231: loss 4.1875 grad_norm 0.266 Tflops/sec 26.69
+2025-10-02 00:02:24,422 - Step 11283: loss 4.1562 grad_norm 0.287 Tflops/sec 27.33
+2025-10-02 00:02:29,499 - Step 11335: loss 4.2188 grad_norm 0.268 Tflops/sec 27.33
+2025-10-02 00:02:34,576 - Step 11387: loss 4.1250 grad_norm 0.286 Tflops/sec 27.31
+2025-10-02 00:02:39,646 - Step 11439: loss 4.2500 grad_norm 0.271 Tflops/sec 27.36
+2025-10-02 00:02:44,728 - Step 11491: loss 4.1875 grad_norm 0.268 Tflops/sec 27.30
+2025-10-02 00:02:49,793 - Step 11514: loss 4.0938 grad_norm 0.262 Tflops/sec 12.10
+2025-10-02 00:02:54,873 - Step 11566: loss 4.2500 grad_norm 0.287 Tflops/sec 27.31
+2025-10-02 00:02:59,956 - Step 11618: loss 4.1875 grad_norm 0.291 Tflops/sec 27.28
+2025-10-02 00:03:05,050 - Step 11670: loss 4.2188 grad_norm 0.268 Tflops/sec 27.23
+2025-10-02 00:03:10,138 - Step 11722: loss 4.1562 grad_norm 0.281 Tflops/sec 27.26
+2025-10-02 00:03:15,231 - Step 11774: loss 4.2188 grad_norm 0.344 Tflops/sec 27.23
+2025-10-02 00:03:20,323 - Step 11826: loss 4.1562 grad_norm 0.285 Tflops/sec 27.23
+2025-10-02 00:03:25,327 - Step 11847: loss 4.1875 grad_norm 0.283 Tflops/sec 11.20
+2025-10-02 00:03:30,409 - Step 11899: loss 4.1562 grad_norm 0.296 Tflops/sec 27.27
+2025-10-02 00:03:35,487 - Step 11951: loss 4.0625 grad_norm 0.287 Tflops/sec 27.32
+2025-10-02 00:03:40,574 - Step 12003: loss 4.2812 grad_norm 0.290 Tflops/sec 27.27
+2025-10-02 00:03:45,644 - Step 12055: loss 4.1250 grad_norm 0.290 Tflops/sec 27.36
+2025-10-02 00:03:50,715 - Step 12107: loss 4.1250 grad_norm 0.290 Tflops/sec 27.35
+2025-10-02 00:03:55,785 - Step 12159: loss 4.1250 grad_norm 0.309 Tflops/sec 27.35
+2025-10-02 00:04:00,861 - Step 12181: loss 4.0625 grad_norm 0.285 Tflops/sec 11.56
+2025-10-02 00:04:05,940 - Step 12233: loss 4.2188 grad_norm 0.299 Tflops/sec 27.29
+2025-10-02 00:04:11,021 - Step 12285: loss 4.0625 grad_norm 0.279 Tflops/sec 27.32
+2025-10-02 00:04:16,095 - Step 12337: loss 4.1250 grad_norm 0.347 Tflops/sec 27.32
+2025-10-02 00:04:21,179 - Step 12389: loss 4.2188 grad_norm 0.287 Tflops/sec 27.29
+2025-10-02 00:04:26,252 - Step 12441: loss 4.1250 grad_norm 0.294 Tflops/sec 27.35
+2025-10-02 00:04:31,328 - Step 12493: loss 4.1875 grad_norm 0.298 Tflops/sec 27.31
+2025-10-02 00:04:36,426 - Step 12515: loss 4.1562 grad_norm 0.315 Tflops/sec 11.51
+2025-10-02 00:04:41,499 - Step 12567: loss 4.1562 grad_norm 0.287 Tflops/sec 27.33
+2025-10-02 00:04:46,575 - Step 12619: loss 4.1562 grad_norm 0.287 Tflops/sec 27.34
+2025-10-02 00:04:51,661 - Step 12671: loss 4.0625 grad_norm 0.293 Tflops/sec 27.27
+2025-10-02 00:04:56,743 - Step 12723: loss 4.0938 grad_norm 0.289 Tflops/sec 27.29
+2025-10-02 00:05:01,826 - Step 12775: loss 4.1562 grad_norm 0.284 Tflops/sec 27.28
+2025-10-02 00:05:06,905 - Step 12827: loss 4.0625 grad_norm 0.292 Tflops/sec 27.31
+2025-10-02 00:05:11,907 - Step 12848: loss 4.1562 grad_norm 0.296 Tflops/sec 11.20
+2025-10-02 00:05:16,997 - Step 12900: loss 4.0938 grad_norm 0.327 Tflops/sec 27.25
+2025-10-02 00:05:22,080 - Step 12952: loss 4.1875 grad_norm 0.292 Tflops/sec 27.29
+2025-10-02 00:05:27,164 - Step 13004: loss 4.0938 grad_norm 0.293 Tflops/sec 27.27
+2025-10-02 00:05:32,236 - Step 13056: loss 4.1250 grad_norm 0.312 Tflops/sec 27.35
+2025-10-02 00:05:37,307 - Step 13108: loss 4.0938 grad_norm 0.297 Tflops/sec 27.33
+2025-10-02 00:05:42,379 - Step 13160: loss 4.1562 grad_norm 0.299 Tflops/sec 27.36
+2025-10-02 00:05:47,464 - Step 13182: loss 4.2188 grad_norm 0.324 Tflops/sec 11.53
+2025-10-02 00:05:52,539 - Step 13234: loss 4.0625 grad_norm 0.310 Tflops/sec 27.34
+2025-10-02 00:05:57,611 - Step 13286: loss 4.1562 grad_norm 0.298 Tflops/sec 27.33
+2025-10-02 00:06:02,691 - Step 13338: loss 4.1562 grad_norm 0.294 Tflops/sec 27.32
+2025-10-02 00:06:07,765 - Step 13390: loss 4.1250 grad_norm 0.306 Tflops/sec 27.34
+2025-10-02 00:06:12,840 - Step 13442: loss 4.2188 grad_norm 0.297 Tflops/sec 27.32
+2025-10-02 00:06:20,750 - Step 13493: loss 4.1250 grad_norm 0.312 Tflops/sec 17.20
+2025-10-02 00:06:25,825 - Step 13545: loss 4.1250 grad_norm 0.319 Tflops/sec 27.34
+2025-10-02 00:06:30,895 - Step 13597: loss 4.1875 grad_norm 0.316 Tflops/sec 27.34
+2025-10-02 00:06:35,966 - Step 13649: loss 4.1562 grad_norm 0.325 Tflops/sec 27.35
+2025-10-02 00:06:41,040 - Step 13701: loss 4.0625 grad_norm 0.315 Tflops/sec 27.32
+2025-10-02 00:06:46,111 - Step 13753: loss 4.0938 grad_norm 0.305 Tflops/sec 27.35
+2025-10-02 00:06:46,985 - Saving checkpoint to checkpoints/owt-01_checkpoint_13763.pt
+2025-10-02 00:06:50,922 - Validation loss. step 13763: 4.1095
+2025-10-02 00:06:51,124 - Step 13764: loss 4.1250 grad_norm 0.303 Tflops/sec 5.86
+2025-10-02 00:06:56,204 - Step 13786: loss 4.1562 grad_norm 0.299 Tflops/sec 11.55
+2025-10-02 00:07:01,282 - Step 13838: loss 4.1562 grad_norm 0.314 Tflops/sec 27.31
+2025-10-02 00:07:06,365 - Step 13890: loss 4.1250 grad_norm 0.307 Tflops/sec 27.29
+2025-10-02 00:07:11,447 - Step 13942: loss 4.1875 grad_norm 0.316 Tflops/sec 27.29
+2025-10-02 00:07:16,531 - Step 13994: loss 4.0000 grad_norm 0.321 Tflops/sec 27.28
+2025-10-02 00:07:21,612 - Step 14046: loss 4.0938 grad_norm 0.320 Tflops/sec 27.29
+2025-10-02 00:07:26,686 - Step 14098: loss 4.0312 grad_norm 0.304 Tflops/sec 27.33
+2025-10-02 00:07:31,755 - Step 14150: loss 4.0938 grad_norm 0.323 Tflops/sec 27.36
+2025-10-02 00:07:36,852 - Step 14202: loss 4.0625 grad_norm 0.304 Tflops/sec 27.22
+2025-10-02 00:07:41,866 - Step 14249: loss 3.9688 grad_norm 0.330 Tflops/sec 25.00
+2025-10-02 00:07:47,162 - Step 14264: loss 4.0312 grad_norm 0.313 Tflops/sec 7.55
+2025-10-02 00:07:52,265 - Step 14309: loss 4.0312 grad_norm 0.311 Tflops/sec 23.53
+2025-10-02 00:07:57,307 - Step 14355: loss 4.0938 grad_norm 0.321 Tflops/sec 24.33
+2025-10-02 00:08:02,377 - Step 14407: loss 4.1875 grad_norm 0.326 Tflops/sec 27.36
+2025-10-02 00:08:07,447 - Step 14459: loss 4.1250 grad_norm 0.323 Tflops/sec 27.36
+2025-10-02 00:08:12,519 - Step 14511: loss 4.0312 grad_norm 0.318 Tflops/sec 27.36
+2025-10-02 00:08:17,591 - Step 14563: loss 4.0938 grad_norm 0.317 Tflops/sec 27.33
+2025-10-02 00:08:22,642 - Step 14599: loss 4.0625 grad_norm 0.334 Tflops/sec 19.01
+2025-10-02 00:08:27,715 - Step 14651: loss 4.0312 grad_norm 0.322 Tflops/sec 27.34
+2025-10-02 00:08:32,793 - Step 14703: loss 4.0312 grad_norm 0.321 Tflops/sec 27.32
+2025-10-02 00:08:37,866 - Step 14755: loss 4.0312 grad_norm 0.328 Tflops/sec 27.32
+2025-10-02 00:08:42,938 - Step 14807: loss 4.0312 grad_norm 0.326 Tflops/sec 27.37
+2025-10-02 00:08:48,017 - Step 14859: loss 4.0938 grad_norm 0.342 Tflops/sec 27.30
+2025-10-02 00:08:53,094 - Step 14911: loss 4.0625 grad_norm 0.327 Tflops/sec 27.32
+2025-10-02 00:08:58,167 - Step 14933: loss 3.9688 grad_norm 0.327 Tflops/sec 11.57
+2025-10-02 00:09:03,256 - Step 14985: loss 4.0625 grad_norm 0.332 Tflops/sec 27.25
+2025-10-02 00:09:08,348 - Step 15037: loss 4.0625 grad_norm 0.338 Tflops/sec 27.24
+2025-10-02 00:09:13,437 - Step 15089: loss 4.1250 grad_norm 0.346 Tflops/sec 27.25
+2025-10-02 00:09:18,526 - Step 15141: loss 4.1250 grad_norm 0.335 Tflops/sec 27.25
+2025-10-02 00:09:23,617 - Step 15193: loss 4.0312 grad_norm 0.342 Tflops/sec 27.26
+2025-10-02 00:09:31,235 - Step 15241: loss 3.9844 grad_norm 0.346 Tflops/sec 16.80
+2025-10-02 00:09:36,302 - Step 15293: loss 4.0312 grad_norm 0.334 Tflops/sec 27.37
+2025-10-02 00:09:41,373 - Step 15345: loss 4.0938 grad_norm 0.359 Tflops/sec 27.35
+2025-10-02 00:09:46,379 - Step 15393: loss 4.0312 grad_norm 0.346 Tflops/sec 25.58
+2025-10-02 00:09:51,397 - Step 15443: loss 4.0312 grad_norm 0.313 Tflops/sec 26.57
+2025-10-02 00:09:56,468 - Step 15495: loss 3.9531 grad_norm 0.357 Tflops/sec 27.33
+2025-10-02 00:10:01,542 - Step 15547: loss 4.0938 grad_norm 0.329 Tflops/sec 27.36
+2025-10-02 00:10:06,611 - Step 15574: loss 3.9688 grad_norm 0.341 Tflops/sec 14.20
+2025-10-02 00:10:11,680 - Step 15626: loss 4.0000 grad_norm 0.329 Tflops/sec 27.37
+2025-10-02 00:10:16,759 - Step 15678: loss 4.0000 grad_norm 0.332 Tflops/sec 27.29
+2025-10-02 00:10:21,836 - Step 15730: loss 4.0625 grad_norm 0.337 Tflops/sec 27.33
+2025-10-02 00:10:26,911 - Step 15782: loss 4.1562 grad_norm 0.347 Tflops/sec 27.33
+2025-10-02 00:10:31,986 - Step 15834: loss 3.9688 grad_norm 0.341 Tflops/sec 27.34
+2025-10-02 00:10:37,070 - Step 15886: loss 4.1875 grad_norm 0.335 Tflops/sec 27.27
+2025-10-02 00:10:42,165 - Step 15908: loss 4.0625 grad_norm 0.364 Tflops/sec 11.52
+2025-10-02 00:10:47,244 - Step 15959: loss 4.0938 grad_norm 0.337 Tflops/sec 26.78
+2025-10-02 00:10:52,298 - Step 16009: loss 3.9688 grad_norm 0.333 Tflops/sec 26.38
+2025-10-02 00:10:57,307 - Step 16056: loss 4.0938 grad_norm 0.353 Tflops/sec 25.03
+2025-10-02 00:11:02,314 - Step 16107: loss 3.9688 grad_norm 0.331 Tflops/sec 27.16
+2025-10-02 00:11:07,393 - Step 16159: loss 4.0625 grad_norm 0.365 Tflops/sec 27.31
+2025-10-02 00:11:12,476 - Step 16211: loss 4.0938 grad_norm 0.337 Tflops/sec 27.29
+2025-10-02 00:11:17,548 - Step 16241: loss 4.1875 grad_norm 0.347 Tflops/sec 15.77
+2025-10-02 00:11:22,629 - Step 16293: loss 4.0312 grad_norm 0.341 Tflops/sec 27.30
+2025-10-02 00:11:27,703 - Step 16345: loss 3.9844 grad_norm 0.337 Tflops/sec 27.33
+2025-10-02 00:11:32,773 - Step 16397: loss 4.0312 grad_norm 0.348 Tflops/sec 27.34
+2025-10-02 00:11:37,850 - Step 16449: loss 4.0938 grad_norm 0.347 Tflops/sec 27.32
+2025-10-02 00:11:42,928 - Step 16501: loss 4.0312 grad_norm 0.346 Tflops/sec 27.33
+2025-10-02 00:11:46,047 - Saving checkpoint to checkpoints/owt-01_checkpoint_16534.pt
+2025-10-02 00:11:52,456 - Validation loss. step 16534: 4.0445
+2025-10-02 00:11:52,562 - Step 16534: loss 4.0938 grad_norm 0.344 Tflops/sec 9.13
+2025-10-02 00:11:57,570 - Step 16584: loss 4.1250 grad_norm 0.349 Tflops/sec 26.65
+2025-10-02 00:12:02,633 - Step 16635: loss 3.9844 grad_norm 0.358 Tflops/sec 26.86
+2025-10-02 00:12:07,709 - Step 16687: loss 4.0000 grad_norm 0.347 Tflops/sec 27.31
+2025-10-02 00:12:12,795 - Step 16739: loss 4.0312 grad_norm 0.340 Tflops/sec 27.29
+2025-10-02 00:12:17,870 - Step 16791: loss 3.9531 grad_norm 0.345 Tflops/sec 27.33
+2025-10-02 00:12:25,651 - Step 16843: loss 3.9688 grad_norm 0.350 Tflops/sec 17.82
+2025-10-02 00:12:30,721 - Step 16895: loss 4.0625 grad_norm 0.350 Tflops/sec 27.36
+2025-10-02 00:12:35,791 - Step 16947: loss 4.0938 grad_norm 0.357 Tflops/sec 27.36
+2025-10-02 00:12:40,866 - Step 16999: loss 4.0625 grad_norm 0.339 Tflops/sec 27.32
+2025-10-02 00:12:45,937 - Step 17051: loss 4.0938 grad_norm 0.359 Tflops/sec 27.35
+2025-10-02 00:12:51,008 - Step 17103: loss 4.0312 grad_norm 0.334 Tflops/sec 27.34
+2025-10-02 00:12:56,181 - Step 17154: loss 3.8906 grad_norm 0.348 Tflops/sec 26.31
+2025-10-02 00:13:01,201 - Step 17176: loss 4.0938 grad_norm 0.349 Tflops/sec 11.69
+2025-10-02 00:13:06,228 - Step 17229: loss 4.0312 grad_norm 0.363 Tflops/sec 28.12
+2025-10-02 00:13:11,243 - Step 17282: loss 4.0312 grad_norm 0.340 Tflops/sec 28.18
+2025-10-02 00:13:16,266 - Step 17335: loss 4.0625 grad_norm 0.359 Tflops/sec 28.14
+2025-10-02 00:13:21,282 - Step 17388: loss 4.1562 grad_norm 0.344 Tflops/sec 28.19
+2025-10-02 00:13:26,293 - Step 17441: loss 4.0625 grad_norm 0.349 Tflops/sec 28.20
+2025-10-02 00:13:31,299 - Step 17494: loss 4.0312 grad_norm 0.345 Tflops/sec 28.25
+2025-10-02 00:13:36,305 - Step 17516: loss 3.9375 grad_norm 0.344 Tflops/sec 11.72
+2025-10-02 00:13:41,307 - Step 17569: loss 3.9375 grad_norm 0.378 Tflops/sec 28.26
+2025-10-02 00:13:46,307 - Step 17622: loss 4.0938 grad_norm 0.347 Tflops/sec 28.27
+2025-10-02 00:13:51,307 - Step 17675: loss 3.9688 grad_norm 0.352 Tflops/sec 28.27
+2025-10-02 00:13:56,314 - Step 17728: loss 4.0000 grad_norm 0.359 Tflops/sec 28.24
+2025-10-02 00:14:01,313 - Step 17781: loss 4.0625 grad_norm 0.341 Tflops/sec 28.27
+2025-10-02 00:14:06,314 - Step 17834: loss 4.0312 grad_norm 0.369 Tflops/sec 28.27
+2025-10-02 00:14:11,411 - Step 17888: loss 4.0625 grad_norm 0.339 Tflops/sec 28.26
+2025-10-02 00:14:16,415 - Step 17940: loss 4.0625 grad_norm 0.369 Tflops/sec 27.72
+2025-10-02 00:14:21,463 - Step 17989: loss 4.0000 grad_norm 0.354 Tflops/sec 25.89
+2025-10-02 00:14:27,106 - Step 18009: loss 3.9844 grad_norm 0.354 Tflops/sec 9.46
+2025-10-02 00:14:32,176 - Step 18057: loss 3.9844 grad_norm 0.367 Tflops/sec 25.24
+2025-10-02 00:14:37,234 - Step 18106: loss 3.9531 grad_norm 0.349 Tflops/sec 25.85
+2025-10-02 00:14:42,282 - Step 18155: loss 4.0625 grad_norm 0.369 Tflops/sec 25.87
+2025-10-02 00:14:47,337 - Step 18208: loss 3.9844 grad_norm 0.353 Tflops/sec 27.97
+2025-10-02 00:14:52,343 - Step 18261: loss 4.0312 grad_norm 0.347 Tflops/sec 28.24
+2025-10-02 00:14:57,357 - Step 18314: loss 4.1250 grad_norm 0.368 Tflops/sec 28.20
+2025-10-02 00:15:02,416 - Step 18353: loss 4.0625 grad_norm 0.379 Tflops/sec 20.56
+2025-10-02 00:15:07,436 - Step 18406: loss 4.0625 grad_norm 0.351 Tflops/sec 28.15
+2025-10-02 00:15:12,454 - Step 18459: loss 4.0625 grad_norm 0.355 Tflops/sec 28.18
+2025-10-02 00:15:17,478 - Step 18512: loss 4.0000 grad_norm 0.361 Tflops/sec 28.14
+2025-10-02 00:15:22,500 - Step 18565: loss 4.0625 grad_norm 0.349 Tflops/sec 28.14
+2025-10-02 00:15:27,513 - Step 18618: loss 4.0625 grad_norm 0.351 Tflops/sec 28.19
+2025-10-02 00:15:32,519 - Step 18671: loss 4.0312 grad_norm 0.357 Tflops/sec 28.24
+2025-10-02 00:15:37,529 - Step 18693: loss 4.1250 grad_norm 0.359 Tflops/sec 11.71
+2025-10-02 00:15:42,534 - Step 18743: loss 4.0625 grad_norm 0.349 Tflops/sec 26.65
+2025-10-02 00:15:47,611 - Step 18796: loss 4.0312 grad_norm 0.363 Tflops/sec 27.84
+2025-10-02 00:15:52,613 - Step 18849: loss 4.0312 grad_norm 0.365 Tflops/sec 28.25
+2025-10-02 00:15:57,629 - Step 18902: loss 4.0312 grad_norm 0.362 Tflops/sec 28.20
+2025-10-02 00:16:02,643 - Step 18955: loss 4.0312 grad_norm 0.361 Tflops/sec 28.19
+2025-10-02 00:16:07,647 - Step 19008: loss 3.9844 grad_norm 0.347 Tflops/sec 28.24
+2025-10-02 00:16:12,669 - Step 19034: loss 4.1250 grad_norm 0.369 Tflops/sec 13.81
+2025-10-02 00:16:17,675 - Step 19087: loss 3.9844 grad_norm 0.348 Tflops/sec 28.23
+2025-10-02 00:16:22,680 - Step 19140: loss 4.0000 grad_norm 0.360 Tflops/sec 28.25
+2025-10-02 00:16:27,687 - Step 19193: loss 4.0938 grad_norm 0.352 Tflops/sec 28.23
+2025-10-02 00:16:32,689 - Step 19246: loss 4.0312 grad_norm 0.364 Tflops/sec 28.27
+2025-10-02 00:16:37,693 - Step 19299: loss 4.0938 grad_norm 0.356 Tflops/sec 28.23
+2025-10-02 00:16:42,700 - Step 19352: loss 4.0938 grad_norm 0.357 Tflops/sec 28.23
+2025-10-02 00:16:45,911 - Saving checkpoint to checkpoints/owt-01_checkpoint_19356.pt
+2025-10-02 00:16:49,059 - Validation loss. step 19356: 4.0222
+2025-10-02 00:16:49,157 - Step 19356: loss 4.0312 grad_norm 0.353 Tflops/sec 1.65
+2025-10-02 00:16:54,245 - Step 19408: loss 4.0312 grad_norm 0.376 Tflops/sec 27.26
+2025-10-02 00:16:59,260 - Step 19461: loss 4.0625 grad_norm 0.355 Tflops/sec 28.19
+2025-10-02 00:17:04,273 - Step 19514: loss 4.0312 grad_norm 0.364 Tflops/sec 28.20
+2025-10-02 00:17:09,289 - Step 19567: loss 4.1250 grad_norm 0.355 Tflops/sec 28.17
+2025-10-02 00:17:14,304 - Step 19620: loss 4.0312 grad_norm 0.365 Tflops/sec 28.20
+2025-10-02 00:17:20,840 - Step 19660: loss 4.0312 grad_norm 0.367 Tflops/sec 16.32
+2025-10-02 00:17:25,860 - Step 19712: loss 3.9844 grad_norm 0.353 Tflops/sec 27.63
+2025-10-02 00:17:30,918 - Step 19764: loss 3.9844 grad_norm 0.366 Tflops/sec 27.41
+2025-10-02 00:17:35,929 - Step 19817: loss 4.0312 grad_norm 0.355 Tflops/sec 28.21
+2025-10-02 00:17:40,942 - Step 19870: loss 4.0312 grad_norm 0.365 Tflops/sec 28.20
+2025-10-02 00:17:45,952 - Step 19923: loss 3.9844 grad_norm 0.354 Tflops/sec 28.21
+2025-10-02 00:17:50,962 - Step 19976: loss 3.9688 grad_norm 0.335 Tflops/sec 28.22
+2025-10-02 00:17:53,134 - Step 19999: loss 4.0312 grad_norm 0.356 Tflops/sec 28.26
+2025-10-02 00:17:53,135 - Saving checkpoint to checkpoints/owt-01_checkpoint_20000.pt
+2025-10-02 00:17:56,266 - Validation loss. step 20000: 4.0188
+2025-10-02 00:17:56,268 - Training complete. Time taken: 36.08 minutes
